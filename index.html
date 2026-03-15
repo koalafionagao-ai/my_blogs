@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Blogs | Thoughts & Insights</title>
     <style>
-        /* Color Palette: Warm Oat & Ivory (同 Toolkit 风格) */
+        /* 保持原有的温婉燕麦配色 */
         :root {
             --bg-color: #FDFCF8;      
             --text-main: #4A4643;     
@@ -14,6 +14,12 @@
             --card-bg: #FFFFFF;       
             --border-color: #EBE8E0;  
             --toggle-bg: #F0EFE9;
+            --nav-hover: #F5F4EE;
+        }
+
+        /* 开启平滑滚动 */
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -21,7 +27,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 60px 20px 40px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,11 +36,12 @@
             line-height: 1.6;
         }
 
-        /* Header & Toggle Styles */
+        /* Header 居中 */
         .header {
             text-align: center;
             margin-bottom: 40px;
-            max-width: 600px;
+            width: 100%;
+            max-width: 900px;
         }
 
         .header h1 {
@@ -52,13 +59,12 @@
             margin-bottom: 25px;
         }
 
-        /* 极简语言切换器 */
+        /* 中英文切换按钮 */
         .lang-toggle {
             display: inline-flex;
             background: var(--toggle-bg);
             border-radius: 30px;
             padding: 4px;
-            position: relative;
         }
 
         .lang-btn {
@@ -79,15 +85,62 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* Content Sections */
-        .content-section {
+        /* 核心布局：左右分栏 */
+        .layout-container {
+            display: flex;
             width: 100%;
-            max-width: 650px;
-            display: none; /* 默认隐藏，由 JS 控制显示 */
+            max-width: 1000px;
+            gap: 40px;
+            align-items: flex-start; /* 让侧边栏可以贴顶 */
+        }
+
+        /* 左侧边栏导航 */
+        .sidebar {
+            width: 220px;
+            position: sticky;
+            top: 40px; /* 页面往下滚时，距离顶部40px停住 */
+            flex-shrink: 0;
+        }
+
+        .nav-menu {
+            display: none; /* 默认隐藏，由JS控制语言切换 */
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background-color: var(--nav-hover);
+            color: var(--text-main);
+        }
+
+        /* 右侧内容区 */
+        .main-content {
+            flex-grow: 1;
+            min-width: 0; /* 防止子元素撑破flex容器 */
+        }
+
+        .content-lang-section {
+            display: none;
             animation: fadeIn 0.4s ease forwards;
         }
 
-        .content-section.active {
+        .content-lang-section.active {
             display: block;
         }
 
@@ -96,17 +149,22 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .category-title {
-            font-size: 1.1rem;
-            color: var(--accent-color);
-            margin: 30px 0 15px 5px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* 锚点区块设置，防止被顶部遮挡 */
+        .anchor-section {
+            scroll-margin-top: 40px; 
+            margin-bottom: 50px;
         }
 
-        /* Card Styles (继承优雅卡片风格) */
+        .category-title {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin: 0 0 20px 0;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* 卡片样式继承 */
         .blog-list {
             display: flex;
             flex-direction: column;
@@ -116,25 +174,24 @@
         .blog-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px 28px;
+            border-radius: 12px;
+            padding: 24px;
             text-decoration: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
         }
 
         .blog-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
             border-color: var(--accent-color);
         }
 
         .blog-info h3 {
             margin: 0 0 8px 0;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-main);
             line-height: 1.4;
@@ -146,30 +203,73 @@
             color: var(--text-muted);
             line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* 限制摘要最多显示两行 */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
         .arrow {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--accent-color);
-            font-weight: 300;
-            transition: transform 0.3s ease;
             margin-left: 20px;
+            transition: transform 0.3s ease;
         }
 
         .blog-card:hover .arrow {
-            transform: translateX(6px);
+            transform: translateX(4px);
             color: var(--text-main);
         }
 
         .footer {
-            margin-top: auto;
-            padding-top: 60px;
+            margin-top: 60px;
+            padding-top: 20px;
             text-align: center;
             font-size: 0.85rem;
             color: var(--text-muted);
+            width: 100%;
+        }
+
+        /* 📱 移动端自适应 (魔法发生的地方) */
+        @media (max-width: 768px) {
+            .layout-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: sticky;
+                top: 0;
+                background-color: var(--bg-color); /* 防止透明露出底下的文字 */
+                z-index: 100;
+                padding: 10px 0;
+                margin-top: -10px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .nav-menu.active {
+                flex-direction: row;
+                overflow-x: auto; /* 允许横向滑动 */
+                white-space: nowrap; /* 文本不换行 */
+                padding-bottom: 5px; /* 给滚动条留点空间 */
+            }
+
+            .nav-link {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 20px; /* 手机端变成圆角小标签 */
+                padding: 6px 16px;
+                font-size: 0.85rem;
+            }
+            
+            /* 隐藏移动端导航的原生滚动条以保持美观 */
+            .nav-menu::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .anchor-section {
+                scroll-margin-top: 80px; /* 手机端顶部有导航，所以预留多一点空间 */
+            }
         }
     </style>
 </head>
@@ -185,56 +285,82 @@
         </div>
     </div>
 
-    <div id="content-en" class="content-section active">
+    <div class="layout-container">
         
-        <div class="category-title">📂 Case Studies</div>
-        <div class="blog-list">
-            <a href="./en/case-studies/payment-uber/" class="blog-card" target="_blank" rel="noopener noreferrer">
-                <div class="blog-info">
-                    <h3>Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway</h3>
-                    <p>The Marketplace economic model and vast global expansion dictate Uber's complex fund flows and data links. Dealing with massive transaction volumes while consistently performing multi-role, localized settlements in different regions inevitably brings up the challenge of managing currencies and FX rates across the entire transaction cycle.
+        <aside class="sidebar">
+            <nav id="nav-en" class="nav-menu active">
+                <a href="#en-case-studies" class="nav-link">📂 Case Studies</a>
+                <a href="#en-ai-insights" class="nav-link">💡 AI Insights</a>
+                </nav>
+            <nav id="nav-zh" class="nav-menu">
+                <a href="#zh-case-studies" class="nav-link">📂 案例分析</a>
+                <a href="#zh-ai-insights" class="nav-link">💡 AI 观察</a>
+            </nav>
+        </aside>
 
-Uber’s in-house **Real-time Ledger** system and **Hybrid Reconciliation** mechanism provide a blueprint for how a multinational platform can steadily expand both its business lines and its market reach.</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
-        </div>
+        <main class="main-content">
+            
+            <div id="content-en" class="content-lang-section active">
+                
+                <section id="en-case-studies" class="anchor-section">
+                    <h2 class="category-title">📂 Case Studies</h2>
+                    <div class="blog-list">
+                        <a href="./en/case-studies/payment-uber/" class="blog-card" target="_blank" rel="noopener noreferrer">
+                            <div class="blog-info">
+                                <h3>Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway</h3>
+                                <p>An in-depth analysis of how Uber evolved its payment infrastructure into a strategic growth lever and ecosystem gateway.</p>
+                            </div>
+                            <div class="arrow">→</div>
+                        </a>
+                    </div>
+                </section>
 
-        <div class="category-title">💡 AI Insights</div>
-        <div class="blog-list">
-            <a href="#" class="blog-card" target="_blank" rel="noopener noreferrer">
-                <div class="blog-info">
-                    <h3>Draft title placeholder...</h3>
-                    <p>Upcoming thoughts on AI product strategies, LLM applications, and market trends.</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
-        </div>
-    </div>
+                <section id="en-ai-insights" class="anchor-section">
+                    <h2 class="category-title">💡 AI Insights</h2>
+                    <div class="blog-list">
+                        <a href="#" class="blog-card" target="_blank" rel="noopener noreferrer">
+                            <div class="blog-info">
+                                <h3>Draft title placeholder...</h3>
+                                <p>Upcoming thoughts on AI product strategies, LLM applications, and market trends.</p>
+                            </div>
+                            <div class="arrow">→</div>
+                        </a>
+                    </div>
+                </section>
 
-    <div id="content-zh" class="content-section">
-        
-        <div class="category-title">📂 案例分析 (Case Studies)</div>
-        <div class="blog-list">
-            <a href="./zh/case-studies/uber-payment-system-evolution-zh.html" class="blog-card" target="_blank" rel="noopener noreferrer">
-                <div class="blog-info">
-                    <h3>Uber 支付系统架构演进深度解析</h3>
-                    <p>全面拆解 Uber 如何将底层支付基础设施，转化为驱动业务增长与构建生态闭环的全新流量网关。</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
-        </div>
+            </div>
 
-        <div class="category-title">💡 AI 观察 (AI Insights)</div>
-        <div class="blog-list">
-            <a href="#" class="blog-card" target="_blank" rel="noopener noreferrer">
-                <div class="blog-info">
-                    <h3>待发布文章标题...</h3>
-                    <p>关于 AI 产品策略、大模型应用落地以及行业趋势的深度思考与复盘，即将更新。</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
-        </div>
+            <div id="content-zh" class="content-lang-section">
+                
+                <section id="zh-case-studies" class="anchor-section">
+                    <h2 class="category-title">📂 案例分析</h2>
+                    <div class="blog-list">
+                        <a href="./zh/case-studies/uber-payment-system-evolution-zh.html" class="blog-card" target="_blank" rel="noopener noreferrer">
+                            <div class="blog-info">
+                                <h3>Uber 支付系统架构演进深度解析</h3>
+                                <p>全面拆解 Uber 如何将底层支付基础设施，转化为驱动业务增长与构建生态闭环的全新流量网关。</p>
+                            </div>
+                            <div class="arrow">→</div>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="zh-ai-insights" class="anchor-section">
+                    <h2 class="category-title">💡 AI 观察</h2>
+                    <div class="blog-list">
+                        <a href="#" class="blog-card" target="_blank" rel="noopener noreferrer">
+                            <div class="blog-info">
+                                <h3>待发布文章标题...</h3>
+                                <p>关于 AI 产品策略、大模型应用落地以及行业趋势的深度思考与复盘，即将更新。</p>
+                            </div>
+                            <div class="arrow">→</div>
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
     </div>
 
     <div class="footer">
@@ -243,31 +369,34 @@ Uber’s in-house **Real-time Ledger** system and **Hybrid Reconciliation** mech
 
     <script>
         function switchLang(lang) {
-            // 1. 获取所有需要操作的 DOM 元素
+            // 获取需要操作的元素
             const contentEn = document.getElementById('content-en');
             const contentZh = document.getElementById('content-zh');
+            const navEn = document.getElementById('nav-en');
+            const navZh = document.getElementById('nav-zh');
             const btnEn = document.getElementById('btn-en');
             const btnZh = document.getElementById('btn-zh');
             const pageTitle = document.getElementById('page-title');
             const pageDesc = document.getElementById('page-desc');
 
-            // 2. 根据选中的语言切换显示状态和文案
             if (lang === 'zh') {
                 contentEn.classList.remove('active');
                 contentZh.classList.add('active');
+                navEn.classList.remove('active');
+                navZh.classList.add('active');
                 btnEn.classList.remove('active');
                 btnZh.classList.add('active');
                 
-                // 切换主标题和描述为中文
                 pageTitle.textContent = "博客与思考";
                 pageDesc.textContent = "记录我在 AI、金融科技与产品管理领域的探索与复盘。";
             } else {
                 contentZh.classList.remove('active');
                 contentEn.classList.add('active');
+                navZh.classList.remove('active');
+                navEn.classList.add('active');
                 btnZh.classList.remove('active');
                 btnEn.classList.add('active');
                 
-                // 切换主标题和描述为英文
                 pageTitle.textContent = "My Blogs & Thoughts";
                 pageDesc.textContent = "Documenting my journey and insights in AI, Fintech, and Product Management.";
             }
