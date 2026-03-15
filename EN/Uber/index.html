@@ -1,0 +1,735 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3225dc8c-3cb9-8018-8533-e0d5d00761d7" class="page sans"><header><h1 class="page-title" dir="auto">Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway</h1><p class="page-description" dir="auto"></p><table class="properties"><tbody><tr class="property-row property-row-created_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>创建时间</th><td><time>@2026年3月13日 14:58</time></td></tr><tr class="property-row property-row-multi_select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/list_gray.svg" style="width:14px;height:14px;display:block"/></span>标签</th><td><span class="selected-value select-value-color-gray">Case Studies</span><span class="selected-value select-value-color-green">Top Posts</span></td></tr><tr class="property-row property-row-last_edited_time"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/clock_gray.svg" style="width:14px;height:14px;display:block"/></span>上次更新时间</th><td><time>@2026年3月13日 18:57</time></td></tr></tbody></table></header><div class="page-body"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8042-97fb-dff5277a6917"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80a5-baf5-d6a6d499f53f" class=""><strong>Story</strong></p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-80d4-89cc-c3a987cda10e" class=""><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80bd-bedd-e0f170277905" class="">Whether it&#x27;s 3 kilometers or 30, my commutes over the past ten years have been much less messy thanks to ride-hailing. Sometimes, due to professional habit, I notice new features or small tweaks in the apps, or even the welcome messages on the car windows that change with the holidays. Once, I actually managed to book the only Song Dynasty-themed premier car in all of Beijing; I spent the whole trip trying to figure out if the calligraphy and paintings inside were authentic 😂.</p></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-807a-97e6-ff6f11822c35" class="">Thanks to the convenience of ride-hailing, I get a slice of time and space to just zone out before and after work every day. Because of this, I started using Uber frequently when traveling abroad. That sense of familiarity in a foreign land feels really warm and personal. I use it for rides and for food delivery. The fact that the transaction process remains seamless across multiple countries is a huge, pleasant surprise for a sensitive product manager (and also a picky user).<strong> If you&#x27;ve ever dealt with travel hiccups, you&#x27;ll know exactly what I mean:</strong></p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-806f-bcd3-deec1eae46bb" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80bc-b236-ca42f62cb897" class="bulleted-list"><li style="list-style-type:disc">Getting ditched by a connecting Eurail train at night, then quickly booking a cross-city Uber in a small town with no public transit to my destination, and later claim compensation on Eurail website .</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8071-a46a-ce604155aa79" class="bulleted-list"><li style="list-style-type:disc">Booking a connecting flight home with a local airline, receiving a text at midnight that the flight was canceled but the platform hadn&#x27;t issued a refund; luckily, I had left a local phone number, so I could call immediately to change the flight.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8094-912a-c70c24018759" class="bulleted-list"><li style="list-style-type:disc">Being overcharged on my credit card at a five-star hotel in the US, only discovering it after returning home and seeing the statement, and having to email proof (order and payment screenshots) to complain and get the money back.</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-803f-8312-c548b39867a7" class="">These fascinating digital details build a profound transaction experience map for an international traveler in a foreign land—is it a tolerance for mistakes, or an anticipation of backup plans? I believe <mark class="highlight-red"><strong>it&#x27;s the trust in contactless transactions brought by digital payments. This trust is strong enough to dial down the uncertainty and insecurity of a strange environment, providing a universal way to solve problems that breaks through geographical limits and language barriers.</strong></mark></p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-805f-b8d3-da206289dba7" class="">In this article, I’ve traced<strong> the stories from Uber&#x27;s payment and reconciliation space over the past 17 years. I’m trying to understand how its Fintech foundation evolved</strong>, how it supports Uber&#x27;s complex and diverse Marketplace platform economy as it flourishes globally, and how it ultimately uses digital payments as a psychological force to break through and grow into an innovative traffic gateway.</p></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-80f1-91f1-d170c1272a81" class="">1 Global Business Status</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80bb-8489-edd949312add"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8095-abb7-c862dac8ce34" class="">Since its inception in 2009, Uber has expanded its reach to over 10,000 cities across 70 countries, boasting 202 million Monthly Active Platform Consumers (MAPCs) worldwide.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8039-b9c7-db55093d869a" class="">According to <strong>Uber&#x27;s Q4 and full-year 2025 earnings report</strong> (released on February 4, 2026) and related market research data:</p></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-807c-aa70-ed605d50e334" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red">Uber categorizes its business into three main segments: </mark><mark class="highlight-red"><strong>Mobility, Delivery, and Freight.</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80fe-ad6f-f912dd6517a3" class="bulleted-list"><li style="list-style-type:disc">In 2025, Uber&#x27;s total Gross Bookings (GMV) reached <strong>$193.5 billion, a YOY increase of approximately 19%.</strong> In the U.S. market, Uber holds about 71% of the ride-hailing market share.</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><table id="3225dc8c-3cb9-8066-99f8-dfbeddfa6678" class="simple-table"><tbody><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-808e-b3ee-f1413ff54649"><td id="Ze:l" class=""><strong>Product/Segment</strong></td><td id="fMq_" class=""><strong>2025 Q4 Revenue ($B)</strong></td><td id="RB={" class=""><strong>Gross Bookings Share (Q4)</strong></td><td id="MuLL" class=""><strong>Market Share (Latest Data)</strong></td><td id="r:iz" class=""><strong>Business Positioning</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80d3-910d-e638c1eb5ef7"><td id="Ze:l" class=""><strong>Ride/Drive (Mobility)</strong></td><td id="fMq_" class="">$27.442</td><td id="RB={" class="">~50.69%</td><td id="MuLL" class="">71%-76% (US/Global)</td><td id="r:iz" class="">Core growth engine; 2025 trip volume grew 20% YoY.</td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80d8-9311-f96b587ce69e"><td id="Ze:l" class=""><strong>Eat / Deliver (Delivery)</strong></td><td id="fMq_" class="">$25.431</td><td id="RB={" class="">~46.97%</td><td id="MuLL" class="">Global Leader (Annual GB &gt;$100B)</td><td id="r:iz" class="">Includes food and instant delivery. Q4 2025 GB grew by 26%.</td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80db-9c02-e461341040b0"><td id="Ze:l" class=""><strong>Uber Freight</strong></td><td id="fMq_" class="">$1.267</td><td id="RB={" class="">~2.34%</td><td id="MuLL" class="">Industry Leader (Digital Brokerage)</td><td id="r:iz" class="">Facing market challenges; revenue flat YoY.</td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80d6-afb2-d8e288bcdb58"><td id="Ze:l" class=""><strong>Total</strong></td><td id="fMq_" class=""><strong>$54.14</strong></td><td id="RB={" class=""><strong>100%</strong></td><td id="MuLL" class=""><strong>-</strong></td><td id="r:iz" class=""><strong>-</strong></td></tr></div></tbody></table></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80d3-90ed-efdd4f7eabb6" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image.png"><img style="width:1009.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-8031-8a72-da35895cdcca" class="">2 Marketplace Model</h1></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-803a-b1b2-e7d5ae327634" class="column-list"><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80e5-9f78-d07b31478d55" style="width:50%" class="column"><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3225dc8c-3cb9-80dd-88be-e5ada350b707" class="code code-wrap"><code class="language-Python" style="white-space:pre-wrap;word-break:break-all">Uber’s core business model is Marketplace. 
+Understanding it from the perspective of supply and demand:
+
+Demand Side ↔ Uber Platform ↔ Supply Side
+
+Demand                |      Supply
+Passenger             |      Driver
+Customer              |      Restaurant
+Shipper               |      Carrier
+Corporate             |      Driver / Courier</code></pre></div></div></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80c8-a3f6-cff7e88e6626" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-806c-8738-ee4260d56528"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8076-adad-dbb5116ca801" class="">The Marketplace Model (Drive and Ride as examples):</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-805c-b253-e6bc83b4cdb4" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80c4-8e35-e6052db4912f" class="bulleted-list"><li style="list-style-type:disc">Passenger ↔ Platform ↔ Driver</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-809d-bfd6-ead598fa3de5" class="">Multi-party Payments (Drive and Ride as examples):</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8009-9710-cb4979b2711c" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8068-9d75-ea9e7cb3c08b" class="bulleted-list"><li style="list-style-type:disc">Passenger pays $100</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ec-863c-f27e914770bf" class="bulleted-list"><li style="list-style-type:disc">Driver earns $75</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8062-a33d-d7305a50a042" class="bulleted-list"><li style="list-style-type:disc">Platform takes $25</li></ul></div></blockquote></div></div></figure></div></div></div></div></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-803e-9db0-e62a1cd8c050" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%201.png"><img style="width:991.984375px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%201.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-809b-94a2-daca781513b6" class="">3 Evolution of Payment Platform</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8030-a8d8-cc4dff7aebb5"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80c7-8266-d44eda9955f1" class="">While sorting through Uber’s official engineering blog, it’s clear that <strong>2017 is mentioned over and over. This is a massive signal:</strong> that was the year Uber finally launched its unified payment platform.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80ff-8949-fa7cc0dce28e" class="">In the years that followed, Uber rolled out several iterations to fix financial data consistency, <strong>shifting the focus from &quot;payment smoothness&quot; to &quot;financial precision.&quot;</strong></p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8066-8555-cc05062fd8a1" class="">This robust <strong>Immutable Ledger </strong>systems and flexible global infrastructure—with well-structured data and plenty of in-house resources—became the natural breeding ground for subsequent AI applications.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8063-bab1-faeddfa411b2" class="">Since 2024, thanks to the boom in AI, Uber has been <strong>experimenting with automated reconciliation to slash financial operating costs (efficiency through cost reduction).</strong></p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80c9-af8b-da4421389ed9" class=""><mark class="highlight-red">Up to this point, I still believe Uber’s Fintech strategy was primarily about ensuring its infrastructure could keep pace with its agile global expansion.</mark></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80ad-b96a-d03a1d5489c2" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%202.png"><img style="width:991.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%202.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8080-9be0-dab2677b4f87"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8005-9607-faa976f46a5e" class="bulleted-list"><li style="list-style-type:disc"><strong>2009:</strong> At its launch, Uber only had ride-hailing and a single payment method (mostly credit cards). Payment logic was scattered across different business services. It relied on Braintree to enable that &quot;seamless payment”.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8075-9450-ca39399c295f" class="bulleted-list"><li style="list-style-type:disc"><strong>2011–2015:</strong> After entering markets outside the US, Uber was forced to support <strong>LPMs</strong> (Local Payment Methods)—for example, supporting <strong>asynchronous cash payments</strong> in India. <strong>The growing complexity and customization led Uber to start decoupling payment interfaces from business logic.</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8038-a336-c2558582262b" class="bulleted-list"><li style="list-style-type:disc"><strong>2012:</strong> The partnership with Adyen began, originally just to support Uber’s launch in the Netherlands. Over a decade later, this has expanded from a single market to <strong>over 70 countries and regions.</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8013-8866-e30aa8e97771" class="bulleted-list"><li style="list-style-type:disc"><strong>2016:</strong> Stripe and Uber teamed up mainly on the supply side, specifically for <strong>Instant Pay</strong>. Stripe provided the underlying APIs to support real-time debit card settlements for drivers.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8092-a3c4-c7528a2c760c" class="bulleted-list"><li style="list-style-type:disc"><strong>2017:</strong> <strong>Uber launched its next-gen payment platform. Beyond supporting strong consistency in transactions, it also began improving the precision of financial data.</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-801d-a78b-e9dde7520471" class="bulleted-list"><li style="list-style-type:disc"><strong>2018:</strong> <strong>LedgerStore</strong> was introduced to support Uber’s 5th generation of pay-in and pay-out platforms.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80aa-a753-d6f9029fe877" class="bulleted-list"><li style="list-style-type:disc"><strong>2021:</strong> <strong>LedgerStore 2.0</strong> was released, estimated to save $6 million annually with a significant boost in operational efficiency.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-806c-904d-e5a1f6c8f594" class="bulleted-list"><li style="list-style-type:disc"><strong>2024:</strong> The focus shifted to ledger indexing and asynchronous reconciliation to ensure data consistency. Uber also used <strong>machine learning to automate large-scale Reconciliation</strong>, handling over 99% of minor discrepancies, with only a tiny fraction of exceptions requiring human intervention.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80bf-b299-de7f890de2a1" class="bulleted-list"><li style="list-style-type:disc"><strong>2026:</strong> Adyen and Uber (NYSE: UBER) renewed and expanded their global partnership, extending Adyen’s Checkout API, local acquiring, and new payment methods to even more regions. Simply put, through Adyen’s <strong>&quot;hardware-software integration&quot;</strong> solution, Uber is extending its payment reach from mobile screens into every corner of the physical world.</li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-800b-8148-e535e769d2fa" class="">4 Challenges: New Businesses AND New Markets</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8028-bd3e-d3b051d204a3"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80cc-a1e0-c014d15b2928" class="">Imagine Uber between 2014 and 2018, frantically pulling the X and Y axes of a coordinate system toward their maximum values: scaling new businesses horizontally while conquering new territories globally.</p></div><div style="display:contents" dir="auto"><ol type="1" id="3225dc8c-3cb9-80f9-89e4-ee9ad8e3c8ca" class="numbered-list" start="1"><li><strong>Continuous Launch of New Businesses:</strong> The rapid layering of business models led to a hodgepodge of payment and settlement methods. As fund flows and accounting became increasingly complex, monolithic payment systems had to be platformized.</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="3225dc8c-3cb9-809c-b966-d7ca5c066b6d" class="numbered-list" start="2"><li><strong>Continuous Global Expansion:</strong> Even with global PSP partners, Uber still had to adapt to LPMs. Financial and accounting data across every business line in every market had to be perfectly aligned.</li></ol></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80b2-b3f1-f17e82d9c30f" class="">Payment expansion innovated within this &quot;I want it all&quot; environment. It evolved from a simple business &quot;plug-in&quot; used for manual spreadsheet payouts into a systematic backbone, creating a solid foundation where new businesses could be integrated without requiring developer intervention.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80ea-ade9-c7765110578a" class="">You could say: <strong>Before 2018, Uber&#x27;s payments were just about &quot;completing a transaction&quot;; after 2018, they became a global-ready, multi-party settlement, and integrated financial-business Fintech infrastructure platform.</strong></p></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-8086-b62c-f3d9d10baa2d" class="">（1）Rapid Launch of New Businesses</h2></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-8067-ac74-f35c228ef0a8" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%203.png"><img style="width:991.984375px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%203.png"/></a></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-8058-bf26-ef4e2354562e" class="">（2）Blooming in Global New Markets</h2></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80bd-8389-fcc9f774d2d3" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%204.png"><img style="width:991.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%204.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-80cc-bce3-cabcc7f2c797" class="">5 Solutions：In-house Ledger+Reconciliation</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-800d-9cef-d718fbfb6c8f"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8021-b892-e8f418ae273e" class="bulleted-list"><li style="list-style-type:disc">To support new businesses: the payment platform’s front-end must connect with various business lines and roles (Mobility/Delivery × Riders/Drivers/Merchants/Couriers/Receivers...).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80f0-8fd7-f23ca07d8fe3" class="bulleted-list"><li style="list-style-type:disc">To serve globalization: the payment platform’s back-end must integrate with countless PSPs (while adapting to Local Payment Methods, LPMs, in every country).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8043-9b09-ce99c8713f3f" class="bulleted-list"><li style="list-style-type:disc">Then, think back to Uber’s business volume—you’ll get a sense of what it means for &quot;<strong>funds and data crashing in like a tsunami every single second.</strong>&quot;<div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-803f-b48b-d8682b5969af" class="bulleted-list"><li style="list-style-type:circle"><em>In 2025, GMV reached $193.5 billion; monthly active users exceeded 200 million, with over 40 million trips completed every day.</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-804b-82d2-e91b8a1bb617" class="bulleted-list"><li style="list-style-type:circle"><em>This translates to an average daily flow of $530 million (</em><em><mark class="highlight-red">using a simple average, ignoring refunds, compensation, settlement processes, or peak/off-peak differences</mark></em><em>).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ad-86f2-fd30307ce44b" class="bulleted-list"><li style="list-style-type:circle"><em>That’s an average of $22 million per hour (with 1.67 million trips completed and paid every hour).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ad-9708-de30ced39b74" class="bulleted-list"><li style="list-style-type:circle"><em>An average of $360,000 in fund movements every minute (27,000 trips completed and paid every minute).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-807f-9643-c4cdc91952de" class="bulleted-list"><li style="list-style-type:circle"><em>And </em><em><mark class="highlight-red">an average of $6,000 in fund movements every second (450 trips completed and paid every second)—running 24/7/365 without ever shutting down.</mark></em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ee-8a17-da24429e272a" class="bulleted-list"><li style="list-style-type:disc">To put these numbers in perspective, I looked up the transaction volumes of global e-commerce and payment giants. <strong>Uber’s absolute requirement for high frequency and real-time processing sits right between e-commerce and payment companies.</strong></li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><table id="3225dc8c-3cb9-80dd-86f7-c238f9e5fd57" class="simple-table"><tbody><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-801b-9e3f-ee51b42a40d5"><td id="~de=" class="" style="width:106.328125px"><strong>Company</strong></td><td id="kf&lt;h" class="" style="width:149.328125px"><strong>Avg. Daily Transactions</strong></td><td id="&lt;th=" class="" style="width:126.328125px"><strong>Transactions Per Second (TPS)</strong></td><td id="EBxP" class="" style="width:150px"><strong>Uber vs. Company</strong></td><td id="n?NG" class="" style="width:408px"><strong>Comparison Notes</strong></td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-802d-964f-e446513dd9be"><td id="~de=" class="" style="width:106.328125px">Uber</td><td id="kf&lt;h" class="" style="width:149.328125px">40 Million / Day</td><td id="&lt;th=" class="" style="width:126.328125px">450 / sec</td><td id="EBxP" class="" style="width:150px">100%</td><td id="n?NG" class="" style="width:408px"><mark class="highlight-red">Simple average; ignores refunds, settlements, and peak/off-peak variance.</mark></td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80ea-9463-f27f3232f153"><td id="~de=" class="" style="width:106.328125px">Amazon</td><td id="kf&lt;h" class="" style="width:149.328125px">26 Million / Day</td><td id="&lt;th=" class="" style="width:126.328125px">300 / sec</td><td id="EBxP" class="" style="width:150px">1.5x</td><td id="n?NG" class="" style="width:408px"><mark class="highlight-red">Ignoring time differences, Uber is 1.5x Amazon&#x27;s volume.</mark></td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-80e4-8614-da27f3751f10"><td id="~de=" class="" style="width:106.328125px">PayPal</td><td id="kf&lt;h" class="" style="width:149.328125px">72.05 Million / Day</td><td id="&lt;th=" class="" style="width:126.328125px">833 / sec</td><td id="EBxP" class="" style="width:150px">54%</td><td id="n?NG" class="" style="width:408px"><mark class="highlight-red">Ignoring time differences, Uber’s throughput is already 54% of PayPal’s.</mark></td></tr></div><div style="display:contents" dir="ltr"><tr id="3225dc8c-3cb9-8055-86ce-fad9d22bce13"><td id="~de=" class="" style="width:106.328125px">Visa</td><td id="kf&lt;h" class="" style="width:149.328125px">901 Million / Day</td><td id="&lt;th=" class="" style="width:126.328125px">10,428 / sec</td><td id="EBxP" class="" style="width:150px">4.30%</td><td id="n?NG" class="" style="width:408px"><mark class="highlight-red">Ignoring time differences, Uber’s throughput is 4.3% of Visa’s.</mark></td></tr></div></tbody></table></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8021-a14c-c92a3ac5e3ef"><div style="width:100%"><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-80e0-94d9-c46612131b22" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-809e-bae2-f9389d53c6e4" class="bulleted-list"><li style="list-style-type:disc"><strong>Amazon:</strong> In 2025, customer transactions were about 26 million per day, <strong>averaging about 300 orders paid per second. </strong><em>(</em><em><mark class="highlight-red">Ignoring time differences, Uber is 1.5x that volume.</mark></em><em>)</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8024-a96e-c07b0c2d7619" class="bulleted-list"><li style="list-style-type:disc"><strong>PayPal:</strong> In 2024, total payment transactions reached<strong> 26.3 billion</strong>, roughly<strong> 833 per second</strong>. <em>(</em><em><mark class="highlight-red">Ignoring time differences, Uber’s throughput has reached 54% of PayPal’s</mark></em><em>.)</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8038-8f33-c92c51fd580c" class="bulleted-list"><li style="list-style-type:disc"><strong>Visa:</strong> In fiscal year 2025, Visa processed <strong>329 billion transactions</strong>, averaging 901 million per day (<strong>about 10,428 per second</strong>), with a theoretical peak capacity of 65,000 TPS. <em>(</em><em><mark class="highlight-red">Ignoring fiscal year differences, Uber’s throughput is 4.3% of Visa’s.</mark></em><em>)</em></li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8076-b3d0-f3fe3e5ddcb1"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8097-a417-cfb1d98cac7b" class=""><strong>However, &quot;1 business order does NOT equal 1 Ledger Entry.&quot;</strong></p></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8057-b5be-f572f11c54d9" class="bulleted-list"><li style="list-style-type:disc">Take Mobility as an example: for those 450 passengers getting out of cars every second (450 Trips), the system generates:：</li></ul></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-80d3-ab5c-cf82bafa0104" class=""><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8099-bcb3-df928105b99e" class="">450 Pricing snapshots (User Payable + Promo Deduction + User Paid + Driver Earning + Platform Commission + Global Taxes).</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8078-9398-f7341b59a0f4" class="">450 Currency &amp; FX lock-ins (Transaction currency paid by user, Ledger currency for platform accounting, Settlement currency from PSP, and Payout currency for withdrawals) × FX locking.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80fd-b167-fd22bd2f54b9" class="">450 Business ledger processing steps (Mapping User Payable ↔ User Paid ↔ PSP Received).</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-803a-884c-f15abe09f09b" class="">450 Payment gateway routing and &quot;Capture&quot; requests.</p></div></blockquote></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8036-8118-f07b7470cb38" class="bulleted-list"><li style="list-style-type:disc">While the business average is 450 trips per second (not counting reverse flows), the underlying <strong>LedgerStore</strong> is often handling multiples of those 450 actions stacked within every single second.</li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-8091-8611-e1cb16f8427d" class="">（1）Real-Time Ledger</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80f2-ab95-fc75afa2ed9e"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8049-b095-f732edd46b55" class="">Taking a user booking a ride as an example, I’ve broken down the <strong>Ledger Entry</strong> nodes into three stages following the Uber Trip lifecycle to track the entire chain:</p></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80c3-94dd-e8ca2bfaa71b" class="bulleted-list"><li style="list-style-type:disc"><strong>Pre-Trip:</strong> Before the ride, the user places an order. At this point, the trip is created, triggering business events and price estimation. The initial price breakdown at the time of the request is recorded in the <strong>Pricing Ledger</strong>.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8058-9d08-f73e79410981" class="bulleted-list"><li style="list-style-type:disc"><strong>Trip-Completed:</strong> When the ride ends, the system re-calculates the fare based on the actual trip. The final price breakdown enters the <strong>Finance Ledger</strong>, generating a set of <strong>Payable</strong> entries. <div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8052-90c5-e062f2efdd81" class="bulleted-list"><li style="list-style-type:circle">At this same node, once the user completes the payment, a <strong>Paid</strong> entry is generated and matched against the Payable entry in real-time.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-805f-a10e-da5b2506c007" class="bulleted-list"><li style="list-style-type:disc"><strong>Post-Trip:</strong> After the ride, within the settlement cycle, the platform splits profits and calculates taxes based on agreed rules. The payee receives a set of <strong>Receivable</strong> entries, which are matched in real-time against the Payable entries from the previous step. <div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8074-959a-e02b79244266" class="bulleted-list"><li style="list-style-type:circle">Note that this is settlement-level matching; no actual movement of funds has occurred yet.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8005-8792-c0611da00d6d" class="bulleted-list"><li style="list-style-type:circle">True movement of funds only happens when a driver initiates a withdrawal or the platform makes a payout (at which point, <strong>Accounts Payable</strong> and <strong>Actual Paid</strong> entries are generated and matched). </li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-804a-bd97-fd059acce88d" class="bulleted-list"><li style="list-style-type:circle">Also, at this stage, the platform performs the split based on settlement results without waiting for the user&#x27;s payment (as collection occasionally lags).</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80a6-b3fe-fc441129e7c4" class="">By covering these four nodes—<strong>Estimation → Payment → Settlement → Withdrawal</strong>—across the Trip lifecycle, this <mark class="highlight-red">real-time ledger with a complete chain of evidence </mark>allows for daily-level settlement and distribution across all parties.</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80f4-a842-cf975dbed3a2" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%205.png"><img style="width:1009.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%205.png"/></a></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-8064-9b15-d9fe25b8c0e9" class="">（2）Hybrid Reconciliation</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80a9-9f3a-e8578a2aedae"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8078-b202-f5ad851cb961" class="">Uber&#x27;s official engineering blog emphasizes the ingestion&amp;downloading, processing/cleaning, and normalization of reconciliation files, which is essentially about bridging the gap between different fund records.</p></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80f9-8258-f32bb3f7d3f8" class="bulleted-list"><li style="list-style-type:disc">The design in part (1) only ensures that Uber’s internal business ledger entries are accurate under normal circumstances. </li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80c1-a19d-cc10c3ad066c" class="bulleted-list"><li style="list-style-type:disc">However, the actual payment chain looks like this:</li></ul></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8069-bdae-c59585944350" class=""><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8017-aa41-c3f2e78a7c00" class=""><strong>User chooses a payment method → Uber dynamically routes to a payment channel → The selected PSP collects the payment → The user&#x27;s money enters the PSP&#x27;s bank account → The PSP reconciles internally, deducts channel fees, and settles with Uber → The PSP sends a payout (often one or more large lump sums) to Uber’s bank account.</strong></p></div></blockquote></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80e0-8f01-f18d10490d2f" class="bulleted-list"><li style="list-style-type:disc">How do we ensure that Uber’s view of its account balance at the PSP matches the settlement files and internal business flows? And how do we ensure the funds in Uber’s bank account align with the ledgers?</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8007-8a70-e389303becf8" class="bulleted-list"><li style="list-style-type:disc">In reality, the funds in a bank account depend entirely on inter-bank transfer and arrival times; they don&#x27;t move exactly when a bill is cleared in the ledger. </li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-800b-9bfe-cf6a7d4c6024" class="bulleted-list"><li style="list-style-type:disc">Since Uber uses multiple PSPs globally for collection, the PSP channel accounts must be aligned first, followed by the fund movements between the PSP and Uber.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-806a-b492-c4d4e4fd5694" class="bulleted-list"><li style="list-style-type:disc">This reality—matching transaction-level details against large-sum settlements across multiple nodes—means Uber must adopt a <strong>Hybrid Reconciliation Strategy</strong>.</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80ce-ba64-fb80d2a3f1f0" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%206.png"><img style="width:2420px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%206.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-807c-8cf5-f2a2017c9b10"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-800d-ba46-f068f1b13268" class="">Although Uber has claimed using machine learning for<mark class="highlight-red"> AI automated reconciliation</mark> since 2024, this article won&#x27;t dive deep into that.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-808f-96b9-f29d903aed6f" class="">Public resources are limited, but based on my current understanding of AI and LLMs, I can make an educated guess about how Uber’s AI reconciliation actually works:</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8035-8957-c5380ae3bfda" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8040-8bb6-e59765aecba3" class="bulleted-list"><li style="list-style-type:disc">❌ <strong>LLMs aren&#x27;t great at precise math or financial data handling</strong>, yet finance is a field that demands absolute numerical certainty.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80a6-9343-c691025db22b" class="bulleted-list"><li style="list-style-type:disc">❌ <strong>LLM reasoning is based on probability</strong>, whereas finance is a serious, legally binding domain that requires strict traceability and auditing.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8049-8f9c-e073bd97f473" class="bulleted-list"><li style="list-style-type:disc">😱 In a 2024 tech blog, Uber stated: <div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80db-9a9d-d23565649f8e" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">&quot;We process approximately </mark></em><em><mark class="highlight-red"><strong>1.2 billion settlements monthly</strong></mark></em><em><mark class="highlight-red"> and handle about $130 billion in cash annually from over 50 Payment Service Providers (PSPs).&quot;</mark></em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8017-8d24-e51b59b219e4" class="bulleted-list"><li style="list-style-type:disc">🤔 Let’s assume that after multiple iterations, Uber&#x27;s Fintech is robust enough to provide stable and accurate accounting—<strong>solving 99% of reconciliation tasks. </strong><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80f8-83e4-e016a7e0cb85" class="bulleted-list"><li style="list-style-type:circle">That still leaves <mark class="highlight-default">a 1% exception rate: </mark><mark class="highlight-default"><strong>12 million exceptions per month.</strong></mark></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8024-b01b-e441d87b4550" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">That averages out to </mark></em><em><mark class="highlight-red"><strong>400,000 errors per day</strong></mark></em><em><mark class="highlight-red">—a financial operating cost that simply cannot be ignored.</mark></em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-803b-8ab1-e649abfc0dab" class="bulleted-list"><li style="list-style-type:disc">✅ If we break down the current reconciliation process as: <strong>Match Ruler Engine → Exceptions Review → Human Intervention</strong><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ba-9663-d3e905af852c" class="bulleted-list"><li style="list-style-type:circle">We always stand by the principle: <strong>&quot;Code is Law, Ledger is Truth.&quot;</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8063-8311-d131ab0a2786" class="bulleted-list"><li style="list-style-type:circle">AI&#x27;s role is likely limited to the middle part—<strong>Exceptions Classification</strong>—followed by acting as an <strong>Assistant</strong> for human decision-making.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8085-aac2-c392a1b95249" class="bulleted-list"><li style="list-style-type:circle">In other words, the level of autonomy granted to AI is quite small. The overall cost of human review hasn&#x27;t necessarily decreased; rather, AI &quot;digital employees&quot; are just saving immediate time for the finance team. </li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-808f-b7d1-edcd0977e4ef" class="bulleted-list"><li style="list-style-type:circle"><strong>Human-in-the-Loop</strong> remains an unavoidable checkpoint in the Fintech world, at least for now—even if that human is just clicking a single &quot;Approve&quot; button.</li></ul></div></li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-801c-bd22-c83390565f7c" class="column-list"><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-8087-a75f-c6577f6e9a8f" style="width:37.5%" class="column"><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80d0-930a-cab465601ca5" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%207.png"><img style="width:991.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%207.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80dc-99e9-e707008a3ef5" style="width:62.5%" class="column"><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3225dc8c-3cb9-8075-98e8-d9099a002428" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">+--------------------------+        +--------------------------+
+|  1. Exception Inputs     | =====&gt; |  2. AI Copilot Engine    |
++--------------------------+        +--------------------------+
+| • Recon Hard Errors      |        | • Extract &amp; Classify     |
+| • Unstructured Data      |        | • Suggest Resolution     |
++--------------------------+        +--------------------------+
+                                                 ||
+                                                 \/
++--------------------------+        +--------------------------+
+|  4. Ledger &amp; Compliance  | &lt;===== |  3. Human-in-the-Loop    |
++--------------------------+        +--------------------------+
+| • Ledger Write-back      |        | • Review AI Evidence     |
+| • Immutable Audit Trail  |        | • Approve / Reject       |
++--------------------------+        +--------------------------+</code></pre></div></div></div></div></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-801e-bd40-f810bf8c3db1" class="">（3）Fintech Architecture</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8006-ad41-c99c24313835"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-807e-bc47-c1539b71271d" class="">The Marketplace economic model and vast global expansion dictate Uber&#x27;s complex fund flows and data links. Dealing with massive transaction volumes while consistently performing multi-role, localized settlements in different regions inevitably brings up the challenge of managing currencies and FX rates across the entire transaction cycle.</p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-80a0-bb38-f8096478824c" class="">Uber’s in-house <strong>Real-time Ledger</strong> system and <strong>Hybrid Reconciliation</strong> mechanism provide a blueprint for how a multinational platform can steadily expand both its business lines and its market reach. </p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8038-b6fa-e2dccfb5a493" class="">I’ve <mark class="highlight-red">mapped out its </mark><mark class="highlight-red"><strong>Fintech Architecture</strong></mark><mark class="highlight-red"> based on my understanding</mark>, including best practices for how <strong>Ledger Data</strong> feeds back into business operations. But this isn&#x27;t the finish line. After digging deeper, I’ve found that Uber&#x27;s payments haven&#x27;t stopped at &quot;making Fintech infrastructure serve global layout.&quot; At the very least, I see it moving upstream in the business chain, working hard to find new breakthroughs for traffic growth.</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-8047-a891-c551ff4626ac" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%208.png"><img style="width:991.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%208.png"/></a></figure></div><div style="display:contents" dir="auto"><h1 id="3225dc8c-3cb9-8070-a317-f57cb2fce7f5" class="">6 Breakthrough: Turning Fintech into a New Traffic Gateway</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80a2-adcc-fa006eea7dbd"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8038-8583-d2226c663ced" class="">Actually, when it comes to finding new traffic entry points, Uber has been constantly exploring niche scenarios. For example:</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8001-8f6d-f3d128fa4eb7" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8095-bbb0-c537338dedb1" class="bulleted-list"><li style="list-style-type:disc"><strong>In 2025</strong>, Uber integrated Joby Aviation&#x27;s &quot;Blade&quot; into the app, enabling one-tap helicopter bookings and securing a foothold in the high-end market and low-altitude economy or Urban Air Mobility (UAM).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-804c-8066-d02952a0a7e3" class="bulleted-list"><li style="list-style-type:disc"><strong>In 2026</strong>, the hardware partnership with Adyen for airport channels suggests a push to reach High-net-worth individuals (HNWIs) outside the Uber app to solve growth bottlenecks.</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8058-acf1-f890e664c506" class="">I took a close look at the airport collaboration, which specifically targets the &quot;four-noes&quot; dilemma international travelers face when they land:</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8035-a2d0-e65ece948da2" class=""><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8097-bd1b-faca5c29f7da" class=""><strong>No local data plan, no airport Wi-Fi, no battery, or simply no Uber app downloaded.</strong></p></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8001-b743-d1f8ad1dd5d7" class=""><mark class="highlight-red">As an international traveler, I have to say</mark><mark class="highlight-red"><strong> this pain point </strong></mark><mark class="highlight-red">is spotted with surgical precision. </mark></p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-803f-9074-f2078f8e1326" class=""><mark class="highlight-red">The first thing you do after landing is try to get to your hotel, but you have to buy a ticket or book a ride first. Payment becomes a &quot;deadlock&quot; under a foreign network—faced with a pile of luggage, you first have to swap SIM cards, set up the network, unlock bank cards, and so on.</mark></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-800c-a981-ced720165b3d" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%209.png"><img style="width:1009.984375px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%209.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8072-b68a-d6c22b81cbcf"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8048-9999-c35fd1cdf800" class="">Let’s make a bold assumption: If Uber can extend its services from online to offline via physical hardware, could they penetrate these user groups?</p></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-801f-b1bb-d019b60a7830" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-806f-ac58-cff8066e465a" class="bulleted-list"><li style="list-style-type:disc"><strong>Those who haven&#x27;t set up their mobile network yet;</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8018-8eed-cbdb5efc72a1" class="bulleted-list"><li style="list-style-type:disc"><strong>Those without the Uber app;</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-801f-8d0c-d70d15f549dc" class="bulleted-list"><li style="list-style-type:disc"><strong>Those who need a ride on the spot;</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8015-b657-ceb26e8ec0b0" class="bulleted-list"><li style="list-style-type:disc"><strong>Those used to using physical cards or local wallets;</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-800e-bcd3-f95de5643e80" class="bulleted-list"><li style="list-style-type:disc"><strong>Even those not in the habit of paying for rides (preferring driving, free shuttles, or public transit)...</strong></li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8065-ab54-f70511d884f5" class="">For Uber, this offline &quot;Blue Ocean&quot; adds <strong>a high-order-value traffic entry point</strong>: <mark class="highlight-red">letting users use familiar and trusted payment methods outside the app to experience Uber’s mobility services, directly capturing pure offline traffic from private airport transportation.</mark></p></div><div style="display:contents" dir="auto"><p id="3225dc8c-3cb9-8025-9fe4-ff09c887adb7" class="">I looked up a set of taxi market size data and airport transferdata, which might explain <strong>the market shifts in &quot;digital payment impact on travel bookings.&quot;</strong></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-80d6-9366-ec9804e7bdb7" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%2010.png"><img style="width:1009.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%2010.png"/></a></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-802e-a5e9-f129e7dc9a8e" class="">（1）Taxi Market Size</h2></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-809d-a7dd-cee42442184f" class="column-list"><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80c9-8d64-cc1cf4f359f4" style="width:37.5%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-8098-9ad4-e90102d9f852"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80bb-96c4-d873d80a1d52" class="bulleted-list"><li style="list-style-type:disc"><strong>2021 Statistics:</strong></li></ul></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8068-b9e5-d210c3d3f2b4" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8034-ae25-c1d9b4a442e2" class="bulleted-list"><li style="list-style-type:disc">CAGR of 11.7% over the forecast period (2022-2028).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8028-93e7-c07d1aa10f2d" class="bulleted-list"><li style="list-style-type:disc">Global ride-hailing and taxi market size: $199.14 billion.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8056-94cb-e5280288d36f" class="bulleted-list"><li style="list-style-type:disc">The taxi market held the largest share in 2021 at over 75%.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80a2-857d-de7cc7c37d94" class="bulleted-list"><li style="list-style-type:disc">Offline booking dominated in 2021 with over 60% revenue share.</li></ul></div></blockquote></div></div></figure></div></div></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-8046-9ff9-c89cc9fc066f" style="width:62.5%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80ad-af1f-c356b1778bff"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-800e-8210-e09520be40ed" class="bulleted-list"><li style="list-style-type:disc"><strong>2025 Statistics:</strong></li></ul></div><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-808b-ac38-eb5e6c922967" class=""><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80b3-8193-d6401d8db395" class="bulleted-list"><li style="list-style-type:disc">CAGR of 7.62% over the forecast period (2026-2031).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80a7-8fc8-f16a99d5c1b2" class="bulleted-list"><li style="list-style-type:disc">Global taxi market size: $236.36 billion. - <em><mark class="highlight-red">Uber&#x27;s GMV this year is around $193.5 billion, with Mobility estimated at $98 billion</mark></em>).</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-807b-b873-e6ff91f664b2" class="bulleted-list"><li style="list-style-type:disc"><strong>By booking type, online channels held 63.78% of the taxi market share in 2025.</strong> - <em><mark class="highlight-red">At a $150 billion scale, Uber Mobility accounts for 65% of online bookings.</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8010-8f64-c474a11d563c" class="bulleted-list"><li style="list-style-type:disc"><strong>By service type, ride-hailing is estimated to account for 74.85% of the taxi market in 2025.</strong> - <em><mark class="highlight-red">At a $180 billion scale, Uber Mobility accounts for 54% of the ride-hailing market.</mark></em></li></ul></div></blockquote></div></div></figure></div></div></div></div></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80fa-ab94-c6b76a50c0c4"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8053-a950-c8cb7c3977a8" class="bulleted-list"><li style="list-style-type:disc"><em><strong>A quick note on Uber’s actual addressable market:</strong></em><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8048-93df-e202c8a38eb9" class="bulleted-list"><li style="list-style-type:circle"><em>Uber </em><em><strong>exited China</strong></em><em> in 2016 (sold to Didi).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8021-99b7-ef072394fee1" class="bulleted-list"><li style="list-style-type:circle"><em>Uber </em><em><strong>exited Southeast Asia</strong></em><em> in 2018 (sold to Grab).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80a7-a875-d0433ffb0f59" class="bulleted-list"><li style="list-style-type:circle"><em>Uber directly operates in </em><em><mark class="highlight-red">North America, Europe, Latin America, and Oceania.</mark></em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80d4-bcef-f20e6fad3bd3" class="bulleted-list"><li style="list-style-type:disc"><em><strong>Uber’s 2025 Mobility GMV was $98 billion. Let’s compare with competitors:</strong></em><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80fc-b6f4-d7dccfc565fc" class="bulleted-list"><li style="list-style-type:circle"><em><strong>Didi (China):</strong></em><em> 2024 core platform GTV was </em><em><strong>392.7 billion RMB (approx. $54.5 billion).</strong></em><em> </em><em><mark class="highlight-red">China contributes 76%+.</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80eb-916e-d235334f94ed" class="bulleted-list"><li style="list-style-type:circle"><em><strong>Lyft (North America):</strong></em><em> 2025 Gross Bookings were </em><em><strong>$18.5 billion.</strong></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8005-8e29-da035c9592aa" class="bulleted-list"><li style="list-style-type:circle"><em><strong>Grab (Southeast Asia):</strong></em><em> 2025 total on-demand GMV was $22.1 billion, with Mobility GMV at just </em><em><strong>$7.9 billion.</strong></em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80bc-b4ef-d70773e43dd6" class="bulleted-list"><li style="list-style-type:disc"><em><strong>Doing the math:</strong></em><em> </em><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80c2-afb0-ea4f9aa57b39" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red"><strong>Ride Hailing: </strong></mark></em><em><mark class="highlight-red">The Big Four global ride-hailing giants combined reach $178.9 billion. Against an $180 billion ride-hailing market, the industry is almost hitting a ceiling.</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80e8-94ab-cc725a4de239" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red"><strong>Offline Channels:</strong></mark></em><em><mark class="highlight-red"> There is still a 36% offline taxi booking market ($85 billion). Could this be a new blue ocean?</mark></em></li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="3225dc8c-3cb9-801b-9680-e2036869dd25" class="">（2）Airport Transfer Booking Data</h2></div><div style="display:contents" dir="ltr"><figure id="3225dc8c-3cb9-8077-b222-ef81640e53d4" class="image"><a href="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%2011.png"><img style="width:1009.9921875px" src="Payment_Uber%20Fintech%20From%20Platform%20Infra%20to%20a%20New%20/image%2011.png"/></a></figure></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80a8-b2c0-f29d9b12029d" class="column-list"><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-809a-a1ed-eba22e60b33a" style="width:56.25%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-801c-9341-d880d5381615"><div style="width:100%"><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-80ac-a779-ec3f05d74ab4" class="">The global airport transfer booking market is expected to grow from <strong>$10.9 billion in 2025 to about $51.5 billion by 2035.<br/></strong>The CAGR for the 2026-2035 period will reach 16.8%—<em><mark class="highlight-red">notably, this is much higher than the 7%-11% for general taxis and ride-hailing.</mark></em></blockquote></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-801b-80f5-f7063661a286" class="bulleted-list"><li style="list-style-type:disc">Among airport transfer types, private transportation (non-public transit) holds a <strong>78.3% share</strong>.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-800a-8f25-f73d63d0eb67" class="bulleted-list"><li style="list-style-type:disc">According to IATA, <strong>54% of travelers in 2025</strong> will prefer using mobile apps to manage travel, including booking and payment.</li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80b2-b66f-ec43ac2beb11" class="bulleted-list"><li style="list-style-type:disc">Between 2024 and 2025, the use of <strong>digital wallets in travel payments will grow from 20% to 28%.</strong><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80ca-bfba-dc2c06748013" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">Based on 2025 data, in the 36% offline taxi booking market ($85 billion), airport transfer accounts for 12.8% ($10.9 billion). </mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80f0-ab5f-e4a6a8b17d7d" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">Within that, the private transport market at airports ($8.5 billion) sees half booked online, leaving a 70%+ penetration space for digital payments.</mark></em></li></ul></div></li></ul></div></div></figure></div></div></div><div style="display:contents" dir="auto"><div id="3225dc8c-3cb9-80cb-b1c7-d29a1fd35757" style="width:43.74999999999999%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3225dc8c-3cb9-80d2-a153-f9168077bea1"><div style="width:100%"><div style="display:contents" dir="auto"><blockquote id="3225dc8c-3cb9-8049-a88e-c02ab36e35be" class="">In 2024, ride-hailing usage at LAX reached 28%; in 2025, it hit 35% at SFO.</blockquote></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80e1-9735-e9bfb8577909" class="bulleted-list"><li style="list-style-type:disc"><em>Look at earlier SFO transfer data (2017):</em><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-808f-b8db-d4663ce01978" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">28%</mark></em><em> relied on friends/family (Drop-off).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-80e7-9a39-c2f6c50f32ef" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">15%</mark></em><em> drove and parked overnight (Parking).</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-805b-a3bd-c591fb7d21ba" class="bulleted-list"><li style="list-style-type:circle"><em>10% rented cars (Rental); only 4% took taxis.</em></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-8090-98bc-e668afa8807c" class="bulleted-list"><li style="list-style-type:circle"><em>Public transit capture remains extremely stable: </em><em><mark class="highlight-red">8% - 13%</mark></em><em>.</em></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-806c-804e-f5297b06c5ff" class="bulleted-list"><li style="list-style-type:disc"><em>Assuming the status quo hasn&#x27;t shifted significantly, and given reasonable pricing, airport travel services still have at least </em><em><mark class="highlight-red"><strong>51% of the potential market left to develop and convert</strong></mark></em><em><mark class="highlight-red"> </mark></em><div style="display:contents" dir="auto"><ul id="3225dc8c-3cb9-802c-87b4-f3aedf0106c8" class="bulleted-list"><li style="list-style-type:circle"><em>43% private car market + 8% public transit.</em></li></ul></div></li></ul></div></div></figure></div></div></div></div></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
