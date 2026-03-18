@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>支付_Airbnb全球支付平台的使命-构建信任感</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="31b5dc8c-3cb9-80f4-ba64-dc623d28498e" class="page sans"><header><h1 class="page-title" dir="auto">支付_Airbnb全球支付平台的使命-构建信任感</h1><p class="page-description" dir="auto"></p><div class="elegant-properties" style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; color: #6b7280; padding: 1.25rem 0; border-bottom: 1px solid #f3f4f6; margin-bottom: 2rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                            
+                            <div class="prop-row-tags" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                <span class="prop-label" style="font-weight: 500; color: #4b5563;">标签:</span>
+                                <div class="prop-tags" style="display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;">
+                                    <span class="selected-value select-value-color-orange">案例分析</span><span class="selected-value select-value-color-default">精选热文</span>
+                                </div>
+                            </div>
+
+                            <div class="prop-row-times" style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+                                
+                                <div class="prop-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span class="prop-label" style="font-weight: 500; color: #4b5563;">创建时间:</span>
+                                    <span class="prop-value" style="color: #1f2937;">2026-03-06 22:07</span>
+                                </div>
+
+                                
+                                <div class="prop-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="prop-label" style="font-weight: 500; color: #4b5563;">上次更新时间:</span>
+                                    <span class="prop-value" style="color: #1f2937;">2026-03-13 18:57</span>
+                                </div>
+                            </div>
+                        </div></header><div class="page-body"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-80a0-b070-c32137d81229"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-803c-a54e-dfd4469c73e3" class=""><strong>Story</strong></p></div><div style="display:contents" dir="auto"><blockquote id="3215dc8c-3cb9-80b3-a03f-da59da69d5c5" class=""><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-8035-ab4e-c4bde086b8bf" class="">多年以前，我在日本北海道看雪，有一天很想吃拉面，于是就在小镇上四处溜达，找到了一家本地人开的小面馆。</p></div><div style="display:contents" dir="auto"><p id="3215dc8c-3cb9-8096-9301-e462550530b6" class="">推门的瞬间，屋内齐刷刷射出众多戒备的眼神，我咽下口水想要打退堂鼓，这时老板娘拿着有图的菜单给我，招呼我进去。</p></div><div style="display:contents" dir="auto"><p id="3215dc8c-3cb9-80f0-8fe2-ca5b0a43145a" class="">我当天只带了银行卡，就英文问”能不能刷卡，我没有现金“；老板娘似乎也听不懂，指指菜单让我点餐。</p></div><div style="display:contents" dir="auto"><p id="3215dc8c-3cb9-80c7-8fce-d2cd549e581a" class="">我掏出了银行卡，示意只能刷卡支付；<strong>老板娘终于点头接收了信号，转身去拿POS机，跟我比划了一个OK。</strong></p></div><div style="display:contents" dir="auto"><p id="3215dc8c-3cb9-8081-9fe0-cee211e37149" class="">于是我比划着完成了点餐，刷卡支付后，长吁一口气，默默等餐、安静吃饭，终于开始感受屋里洋溢着满是拉面香味的热气腾腾，这场完全Local的walk-in体验在这一刻才真正放松下来。</p></div></blockquote></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-802f-a4b9-ef457e75f607" class="">那是我第一次切身体会到——什么叫”<mark class="highlight-red"><strong>知道可以刷卡的一瞬间安全感就回来了</strong></mark>“。朴素的支付工具，往往是超越语言的最佳沟通信号。</p></div><div style="display:contents" dir="auto"><p id="3215dc8c-3cb9-8066-91c4-ea4a1e4e2ba9" class="">最近看到了Airbnb在支付领域十多年的深耕，创始人多次提到<mark class="highlight-red">便捷支付是构建陌生人交流的信任基石，尽力减少支付摩擦、建立全球支付体系，进而成为一家全球旅行公司。</mark></p></div><div style="display:contents" dir="auto"><ul id="3215dc8c-3cb9-80d2-be47-eb99ed72b810" class="bulleted-list"><li style="list-style-type:disc">它坚持这个目标，只为业务横向扩展和全球本土适配，那些鸡飞狗跳的日常和沉重的历史包袱竟然那么相似。</li></ul></div><div style="display:contents" dir="auto"><ul id="3215dc8c-3cb9-8012-bccb-e9b3f9b31edb" class="bulleted-list"><li style="list-style-type:disc">它的全球支付平台演进之路，<mark class="highlight-red">非常接近我曾在Proptech行业的实操经历，甚至我的经历要比这个更复杂（早年可选方案真不多）</mark>；</li></ul></div><div style="display:contents" dir="auto"><ul id="3215dc8c-3cb9-8008-a687-e5120b444250" class="bulleted-list"><li style="list-style-type:disc">在现实的产品工作中，边开飞机边换轮子是常态，历史包袱和数据迁移更是琐碎；</li></ul></div><div style="display:contents" dir="auto"><ul id="3215dc8c-3cb9-803d-9a2b-c591fb4ddf43" class="bulleted-list"><li style="list-style-type:disc">在纷繁的业务形态变革中，让”业财一体化“这个词扎扎实实落在”<mark class="highlight-red">Ledger/Reconcilement/Payment</mark>“这套平台管理产品体系中。</li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="31b5dc8c-3cb9-80c0-a1b5-ddbe53c7ef07" class="">1 Airbnb业务全景</h1></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-80bf-90a1-e4520dde7463" class="column-list"><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-80de-839e-fb9ab5a27746" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80e6-b420-d7e977a8f6af" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image.png"><img style="width:681.984375px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image.png"></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-805e-a58b-cf56a85b286c" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-8082-be34-d9dcbea01ea8" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 1.png"><img style="width:2880px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 1.png"></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-80a7-9eff-f2269753dc25" class="column-list"><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-80f3-b545-f0c947090c93" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-8093-844b-d31b3ecca862" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 2.png"><img style="width:2880px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 2.png"></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-8093-af3c-c20e15015631" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-8033-8e69-fe6976b83de5" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 3.png"><img style="width:709.9921875px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 3.png"></a></figure></div></div></div></div></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-80b9-8303-d2a2c078a3df"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8060-8842-cf3ccd588806" class="bulleted-list"><li style="list-style-type:disc">Airbnb延展了家的概念——旅途中的家，和你的家，都是居家，因此拓展了“居家”和”本地探索“的体验和服务。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8042-bcda-f2f0d7206bd3" class="bulleted-list"><li style="list-style-type:disc">从<a href="https://zh.airbnb.com/release">2025年夏季发布会</a>中能看出，Airbnb鼓励住客——无论”居家“还是”走出家门“——都能像当地人一样探索和发现。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8090-bfc8-fa17ab072002" class="bulleted-list"><li style="list-style-type:disc">这样做会增加两个维度的创收切入点：①Airbnb突破旅行限制，纳入本地人作为用户、从而进入本地O2O生活服务市场；②新业务作为住宿之外的体验和服务产品，本来就可以带来新的用户或订单，这是围绕当下流量池和供给链适配的最佳选择。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8032-8780-dec043ebdebf" class="bulleted-list"><li style="list-style-type:disc"><strong>但是Airbnb最初的支付平台，与住宿预订链路深度绑定，导致了其在新业务线中不得不经历的痛苦过渡期——重复造轮子也无法承接飞速发展的业务需求。</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80d8-8301-d1bb81707763" class="bulleted-list"><li style="list-style-type:disc">伴随业务的全球推广，面对五花八门的本土支付方式，让本就支离破碎的支付体系看起来更加不堪重负，这对拥有”便捷支付=构建信任“观念的Airbnb来说无疑是雪上加霜。</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-807d-b325-fc93b6387670" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 4.png"><img style="width:1010px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 4.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-807e-a116-d14d67b70113" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 5.png"><img style="width:1010px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 5.png"></a></figure></div><div style="display:contents" dir="auto"><h1 id="31b5dc8c-3cb9-8067-b1c4-f052b13bb714" class="">2 构建全球支付平台</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-80a0-a98f-d5cc155785fc"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-8097-96f1-cdd421325159" class="">Airbnb的联合创始人Brian讲过一个古早经历，让他意识到”支付作为一种沟通方式对于减少摩擦和构建信任“的重要性，之后支付一直都是Airbnb的核心业务，这为后来足够包容的全球支付体系奠定了基调。</p></div></div></figure></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-8086-ba0d-d73391b2805c" class="column-list"><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-806d-8c4b-c3918df1bac3" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80cd-b1e3-ccd6276c2aa0" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 6.png"><img style="width:710px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 6.png"></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-8043-a0e4-f12b34450a55" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80a7-8b4e-e0d2e5254f93" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 7.png"><img style="width:709.984375px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 7.png"></a></figure></div></div></div></div></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80e9-b37f-ff8b611eb7b0" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 8.png"><img style="width:709.9921875px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 8.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-803d-b7da-d731f0138fc1" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 9.png"><img style="width:1009.984375px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 9.png"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-806d-9dcf-ff467892b601"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-800c-b8b9-eb2d0def276d" class="bulleted-list"><li style="list-style-type:disc">从2008 年 Airbnb 刚起步的线下付款，到逐步接入信用卡并扩张到美国以外的市场，本地支付方式一直都是不容忽视的课题。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80b5-bc96-efde24300019" class="bulleted-list"><li style="list-style-type:disc">尤其是<mark class="highlight-red">2016年在巴西接入Boleto</mark>支持现金支付后大受欢迎，Airbnb开始逐渐在全球适配这种异步支付的模式。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8044-afa2-ce7947e90978" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red">2022年开始rebuilding payment orchestration</mark>,通过“领域驱动设计 (DDD)”和“事件驱动架构 (EDA)”，将一个僵化的单体支付流程，重构为一个可插拔、高容错、能快速响应业务创新的“支付中台”Payment Platform。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-806c-ba60-c1f9ce2415a8" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red">2026年，LPM(Local Payment Methods）</mark>作为Payments LTA (long-term architecture)的一大模块,终于有了<mark class="highlight-red">Pay as Local</mark>的一套全球可扩展的体系化方法论。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-803d-96df-e935a73d2b44" class="bulleted-list"><li style="list-style-type:disc">目前，Airbnb的业务已经覆盖到全球191个国家、支持70+货币、24+支付渠道；在完善支付领域深度架构的同时，还在其中提炼出了3种LPM的主流程，在全球适配和架构统一之间找到了完美的平衡点。</li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="31b5dc8c-3cb9-804d-ba3a-ec6007423fb4" class="">3 庞大灵活的新架构</h1></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-8001-8a11-c05c881142c9" class="column-list"><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-802c-b71a-e0b68ee38636" style="width:37.5%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-8051-8856-d5d2029fcc08"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-808c-b400-c8341475d9a4" class=""><strong>Before，住宿预订+支付的链路可能是单体耦合的：</strong></p></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-801f-953a-d751a8bb8978" class="bulleted-list"><li style="list-style-type:disc"><code>用户选房 -&gt; 算出价格 -&gt; 调用支付接口扣款 -&gt; 扣款成功 -&gt; 生成订单</code></li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8076-ae86-ef27e38b3c0c" class="bulleted-list"><li style="list-style-type:disc">在这个线性流程里，定价逻辑、支付动作、订单状态是死死绑在一起的。</li></ul></div></div></figure></div></div></div><div style="display:contents" dir="auto"><div id="31b5dc8c-3cb9-808c-b2cc-f088c24f5189" style="width:62.5%" class="column"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-8037-b2de-f3b7f0170319"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-80d5-ae91-f36bfa150767" class=""><strong>After，转型为中台化、服务化的支付引擎：</strong></p></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-803a-9c8f-c185fddba8fa" class="bulleted-list"><li style="list-style-type:disc">剥离算钱（Pricing Phase）的逻辑，抽象为一个独立计价引擎；</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8071-911e-c2a3ceef932b" class="bulleted-list"><li style="list-style-type:disc">引入支付编排（Payment Orchestrator），动态路由PSP；</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-802d-8cb1-c26213fbc95c" class="bulleted-list"><li style="list-style-type:disc">产品预订流程&amp;与支付流程解耦；在迁移过程中，保证新老系统双线运行；</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8060-9969-dfd1c163e76f" class="bulleted-list"><li style="list-style-type:disc">为最终的全球适配LPM Strategy打下了坚实的基础。</li></ul></div></div></figure></div></div></div></div></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-807f-97b8-d9b33ffee461" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 10.png"><img style="width:1009.9921875px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 10.png"></a></figure></div><div style="display:contents" dir="auto"><h1 id="31b5dc8c-3cb9-80f5-9b8e-f4f7231f913d" class="">4 LPM本地支付方式</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-808f-90e4-dd8a253d1969"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-8074-84b4-d5e4612f5314" class=""><strong>LPM: Local Payment Methods or LPMs：本地支付方式。</strong></p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-8090-889a-e254740a7a5e" class="">创始人的理念——<mark class="highlight-red">想成为一家全球旅行公司，他们必须建立一套全球支付体系</mark>。</p></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8033-9952-cbf27a25db41" class="bulleted-list"><li style="list-style-type:disc">欧洲的客人如果想预订美国的房源，会被收取美元，最终还得支付额外的货币转换费。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80a4-823d-cc5c69f94511" class="bulleted-list"><li style="list-style-type:disc">在德国等一些国家，信用卡并不普及，德国客人无法使用他们最信赖的支付方式。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-800f-95ce-e5fadedfbead" class="bulleted-list"><li style="list-style-type:disc">对于美国以外的房东来说，通过 PayPal 账户接收美元并不总是方便（甚至根本无法实现），而美国银行转账也无法使用。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-8059-85d1-f45157a21cb7" class="bulleted-list"><li style="list-style-type:disc">而在巴西，除了Pix主导的二维码异步支付之外，现金支付方式则非常流行。</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80ef-8b45-cbe16b3b057c" class="bulleted-list"><li style="list-style-type:disc">因此，让本土用户使用他们信赖的支付方式，成为Airbnb业务推进的一项重大</li></ul></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-801c-8da7-e66d4c8236ba" class="">我记得也有新闻稿质疑过，为什么Airbnb不直接与像Paypal/Stripe这样的支付巨头合作？</p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-8093-97e7-dd314219e6f2" class="">他们的回应也非常现实——<mark class="highlight-red">支付公司的市场拓展节奏，并不能总是时时与Airbnb匹配，所以自己干也是情理之中。</mark></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80ed-9166-d41089514bf5" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 11.png"><img style="width:1010px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 11.png"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-808c-bebc-ef743744c242"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-80b6-9f1c-c3d863679eb6" class="">Airbnb在全球扫描式调研和筛选后，总结了LPM的四大分类和三大流程，构建出LPM的标准化统一框架。</p></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80a4-90b0-e2eca1037500" class="bulleted-list"><li style="list-style-type:disc">像韩国的Naver Pay就是典型的重定向流程——外跳支付，再回Airbnb根据回调结果更新状态</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80a3-b4b6-cc97460066d0" class="bulleted-list"><li style="list-style-type:disc">像巴西的Pix就是典型的二维码扫码异步支付流程</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80da-ba7c-eed19e064279" class="bulleted-list"><li style="list-style-type:disc">这两种流程在国内和海外，都已非常普世<div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80d7-86f2-d91db6a22ec2" class="bulleted-list"><li style="list-style-type:circle">国内比如任何站外唤起支付宝/微信支付的流程、海外唤起Paypal的电商支付流程都是重定向</li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-80be-83d3-caa344923999" class="bulleted-list"><li style="list-style-type:circle">而手机扫描PC二维码在手机端支付的异步回调在PC端支付场景是必不可少的选择</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="31b5dc8c-3cb9-802c-b251-f448db9beff9" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red">如果未来要为多方支付结算的复杂业务平台做自研全球支付管理体系，那么Airbnb的这套LPM方法论就是极好的参考。</mark></li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-805f-8311-c0bed6741777" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 12.png"><img style="width:1009.9921875px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 12.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-8059-af82-d7b248010ed5" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 13.png"><img style="width:1009.984375px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 13.png"></a></figure></div><div style="display:contents" dir="auto"><h1 id="31b5dc8c-3cb9-80a3-9357-f250d73a1c24" class="">5 全球支付产品架构图</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="31b5dc8c-3cb9-8088-9a1c-c7f9e0e31b9c"><div style="width:100%"><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-803e-bcc8-fc4d32c500c8" class="">最后，根据已挖到的信息，我又脑补了一下，绘制了一张<mark class="highlight-red">我理解的Airbnb全球支付产品架构图</mark>。</p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-80df-b1ff-fc2515ce8754" class="">它对于我们理解多业务接入的复杂编排和全球本土适配的可落地方法论，都有很强的实操指导意义。</p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-804b-9b85-e2c329421fd9" class="">单从这张图来说，未来无论是增减业务、还是增减全球连接（PSP/LPM），都将有极大的灵活性和高效率保证。</p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-80ac-bdf6-c54788f07148" class="">此图背后，还有在新老架构切换和迁移过程中，从底层到应用层都面临长期双线并行，Legacy的数据一致性对产品来说也是门大学问。</p></div><div style="display:contents" dir="auto"><p id="31b5dc8c-3cb9-80b7-a6cc-ccce038c379f" class="">有一点缺憾的是，<strong>Airbnb的案例中没有看到详细的多方结算和内外对账的信息，我希望在Uber的案例中能够详细展开。</strong></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="31b5dc8c-3cb9-80a7-82e3-c0ad63c35810" class="image"><a href="/my_blogs/zh/case-studies/payment-airbnb/images/image 14.png"><img style="width:1009.984375px" src="/my_blogs/zh/case-studies/payment-airbnb/images/image 14.png"></a></figure></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
