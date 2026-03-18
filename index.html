@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Blogs | Thoughts & Insights</title>
     <style>
-        /* 保持原有的温婉燕麦配色 */
         :root {
             --bg-color: #FDFCF8;      
             --text-main: #4A4643;     
@@ -17,10 +16,7 @@
             --nav-hover: #F5F4EE;
         }
 
-        /* 开启平滑滚动 */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Helvetica Neue", sans-serif;
@@ -36,240 +32,52 @@
             line-height: 1.6;
         }
 
-        /* Header 居中 */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            width: 100%;
-            max-width: 900px;
-        }
+        .header { text-align: center; margin-bottom: 40px; width: 100%; max-width: 900px; }
+        .header h1 { font-size: 2.2rem; font-weight: 600; margin: 0 0 10px 0; letter-spacing: 1px; }
+        .header p { font-size: 1.05rem; color: var(--text-muted); font-weight: 300; margin-bottom: 25px; }
 
-        .header h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin: 0 0 10px 0;
-            letter-spacing: 1px;
-        }
+        .lang-toggle { display: inline-flex; background: var(--toggle-bg); border-radius: 30px; padding: 4px; }
+        .lang-btn { background: transparent; border: none; padding: 8px 20px; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-radius: 26px; transition: all 0.3s ease; font-weight: 500; }
+        .lang-btn.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        .header p {
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            font-weight: 300;
-            margin-bottom: 25px;
-        }
+        .layout-container { display: flex; width: 100%; max-width: 1000px; gap: 40px; align-items: flex-start; }
 
-        /* 中英文切换按钮 */
-        .lang-toggle {
-            display: inline-flex;
-            background: var(--toggle-bg);
-            border-radius: 30px;
-            padding: 4px;
-        }
+        /* 侧边栏 */
+        .sidebar { width: 220px; position: sticky; top: 40px; flex-shrink: 0; }
+        .nav-menu { display: none; flex-direction: column; gap: 8px; }
+        .nav-menu.active { display: flex; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-size: 0.95rem; padding: 10px 16px; border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
+        .nav-link:hover { background-color: var(--nav-hover); color: var(--text-main); }
 
-        .lang-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 20px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-radius: 26px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
+        /* 主内容区 */
+        .main-content { flex-grow: 1; min-width: 0; }
+        .content-lang-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .content-lang-section.active { display: block; }
 
-        .lang-btn.active {
-            background: var(--card-bg);
-            color: var(--text-main);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 核心布局：左右分栏 */
-        .layout-container {
-            display: flex;
-            width: 100%;
-            max-width: 1000px;
-            gap: 40px;
-            align-items: flex-start; /* 让侧边栏可以贴顶 */
-        }
+        /* 聚合分类区块 */
+        .anchor-section { scroll-margin-top: 40px; margin-bottom: 60px; }
+        .category-title { font-size: 1.2rem; color: var(--text-main); margin: 0 0 20px 0; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
 
-        /* 左侧边栏导航 */
-        .sidebar {
-            width: 220px;
-            position: sticky;
-            top: 40px; /* 页面往下滚时，距离顶部40px停住 */
-            flex-shrink: 0;
-        }
+        .blog-list { display: flex; flex-direction: column; gap: 16px; }
+        .blog-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
+        .blog-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.04); border-color: var(--accent-color); }
 
-        .nav-menu {
-            display: none; /* 默认隐藏，由JS控制语言切换 */
-            flex-direction: column;
-            gap: 8px;
-        }
+        .blog-info h3 { margin: 0 0 8px 0; font-size: 1.1rem; font-weight: 600; color: var(--text-main); line-height: 1.4; }
+        .blog-info p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-        .nav-menu.active {
-            display: flex;
-        }
+        .arrow { font-size: 1.2rem; color: var(--accent-color); margin-left: 20px; transition: transform 0.3s ease; }
+        .blog-card:hover .arrow { transform: translateX(4px); color: var(--text-main); }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            padding: 10px 16px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .footer { margin-top: 60px; padding: 40px 0; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); width: 100%; }
 
-        .nav-link:hover {
-            background-color: var(--nav-hover);
-            color: var(--text-main);
-        }
-
-        /* 右侧内容区 */
-        .main-content {
-            flex-grow: 1;
-            min-width: 0; /* 防止子元素撑破flex容器 */
-        }
-
-        .content-lang-section {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        .content-lang-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 锚点区块设置，防止被顶部遮挡 */
-        .anchor-section {
-            scroll-margin-top: 40px; 
-            margin-bottom: 50px;
-        }
-
-        .category-title {
-            font-size: 1.2rem;
-            color: var(--text-main);
-            margin: 0 0 20px 0;
-            font-weight: 600;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* 卡片样式继承 */
-        .blog-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .blog-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 24px;
-            text-decoration: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-color: var(--accent-color);
-        }
-
-        .blog-info h3 {
-            margin: 0 0 8px 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-main);
-            line-height: 1.4;
-        }
-
-        .blog-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .arrow {
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            margin-left: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .blog-card:hover .arrow {
-            transform: translateX(4px);
-            color: var(--text-main);
-        }
-
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            width: 100%;
-        }
-
-        /* 📱 移动端自适应 (魔法发生的地方) */
         @media (max-width: 768px) {
-            .layout-container {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .sidebar {
-                width: 100%;
-                position: sticky;
-                top: 0;
-                background-color: var(--bg-color); /* 防止透明露出底下的文字 */
-                z-index: 100;
-                padding: 10px 0;
-                margin-top: -10px;
-                border-bottom: 1px solid var(--border-color);
-            }
-
-            .nav-menu.active {
-                flex-direction: row;
-                overflow-x: auto; /* 允许横向滑动 */
-                white-space: nowrap; /* 文本不换行 */
-                padding-bottom: 5px; /* 给滚动条留点空间 */
-            }
-
-            .nav-link {
-                background: var(--card-bg);
-                border: 1px solid var(--border-color);
-                border-radius: 20px; /* 手机端变成圆角小标签 */
-                padding: 6px 16px;
-                font-size: 0.85rem;
-            }
-            
-            /* 隐藏移动端导航的原生滚动条以保持美观 */
-            .nav-menu::-webkit-scrollbar {
-                display: none;
-            }
-            
-            .anchor-section {
-                scroll-margin-top: 80px; /* 手机端顶部有导航，所以预留多一点空间 */
-            }
+            .layout-container { flex-direction: column; gap: 20px; }
+            .sidebar { width: 100%; position: sticky; top: 0; background-color: var(--bg-color); z-index: 100; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+            .nav-menu.active { flex-direction: row; overflow-x: auto; white-space: nowrap; }
+            .nav-link { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; }
+            .anchor-section { scroll-margin-top: 80px; }
         }
     </style>
 </head>
@@ -289,33 +97,18 @@
         
         <aside class="sidebar">
             <nav id="nav-en" class="nav-menu active">
-                <a href="#en-ai-insights" class="nav-link">💡 AI Insights</a>
                 <a href="#en-case-studies" class="nav-link">📂 Case Studies</a>
-                
-                </nav>
+                <a href="#en-ai-insights" class="nav-link">💡 AI Insights</a>
+            </nav>
             <nav id="nav-zh" class="nav-menu">
-                <a href="#zh-ai-insights" class="nav-link">💡 AI 观察</a>
                 <a href="#zh-case-studies" class="nav-link">📂 案例分析</a>
-                
+                <a href="#zh-ai-insights" class="nav-link">💡 AI 观察</a>
             </nav>
         </aside>
 
         <main class="main-content">
             
             <div id="content-en" class="content-lang-section active">
-                
-                <section id="en-ai-insights" class="anchor-section">
-                    <h2 class="category-title">💡 AI Insights</h2>
-                    <div class="blog-list">
-                        <a href="./en/AI/OpenClaw-Github/" class="blog-card" target="_blank" rel="noopener noreferrer">
-                            <div class="blog-info">
-                                <h3>OpenClaw-Raising a "Lobster" in GitHub Codespaces</h3>
-                                <p>A Product Manager’s lightweight guide to deploying OpenClaw on the cloud—zero local setup required.</p>
-                            </div>
-                            <div class="arrow">→</div>
-                        </a>
-                    </div>
-                </section>
                 
                 <section id="en-case-studies" class="anchor-section">
                     <h2 class="category-title">📂 Case Studies</h2>
@@ -327,12 +120,6 @@
                             </div>
                             <div class="arrow">→</div>
                         </a>
-                    </div>
-                </section>
-
-                <section id="en-case-studies" class="anchor-section">
-                    <h2 class="category-title">📂 Case Studies</h2>
-                    <div class="blog-list">
                         <a href="./en/case-studies/payment-airbnb/" class="blog-card" target="_blank" rel="noopener noreferrer">
                             <div class="blog-info">
                                 <h3>Payment_Evolution of Airbnb's Global Payment Platform</h3>
@@ -343,45 +130,50 @@
                     </div>
                 </section>
 
-                
-
-            </div>
-
-            <div id="content-zh" class="content-lang-section">
-                
-                <section id="zh-AI" class="anchor-section">
-                    <h2 class="category-title">📂 AI观察</h2>
+                <section id="en-ai-insights" class="anchor-section">
+                    <h2 class="category-title">💡 AI Insights</h2>
                     <div class="blog-list">
-                        <a href="./zh/AI/OpenClaw-Github/.html" class="blog-card" target="_blank" rel="noopener noreferrer">
+                        <a href="./en/AI/OpenClaw-Github/" class="blog-card" target="_blank" rel="noopener noreferrer">
                             <div class="blog-info">
-                                <h3>OpenClaw-GitHub虚拟机养一只龙虾</h3>
-                                <p>拒绝本地配置折磨，PM 也能上手的云端部署实录。涵盖 Codespaces 避坑指南与 Gemini 模型集成全过程。</p>
+                                <h3>OpenClaw-Raising a "Lobster" in GitHub Codespaces</h3>
+                                <p>A PM’s cloud-native guide to deploying OpenClaw on Codespaces—zero local setup, 100% cloud-based execution.</p>
                             </div>
                             <div class="arrow">→</div>
                         </a>
                     </div>
                 </section>
+
+            </div>
+
+            <div id="content-zh" class="content-lang-section">
                 
                 <section id="zh-case-studies" class="anchor-section">
                     <h2 class="category-title">📂 案例分析</h2>
                     <div class="blog-list">
-                        <a href="./zh/case-studies/payment-uber/.html" class="blog-card" target="_blank" rel="noopener noreferrer">
+                        <a href="./zh/case-studies/payment-uber/" class="blog-card" target="_blank" rel="noopener noreferrer">
                             <div class="blog-info">
                                 <h3>支付_Uber的Fintech生态-从平台化赋能到新流量入口</h3>
                                 <p>全面拆解 Uber 如何将底层支付基础设施，转化为驱动业务增长与构建生态闭环的全新流量网关。</p>
                             </div>
                             <div class="arrow">→</div>
                         </a>
+                        <a href="./zh/case-studies/payment-airbnb/" class="blog-card" target="_blank" rel="noopener noreferrer">
+                            <div class="blog-info">
+                                <h3>案例分析：支付_Airbnb全球支付平台的使命-构建信任感</h3>
+                                <p>拆解 190+ 国家跨境结算架构，看支付如何从“后台工具”进化为共享经济的“信任基石”。</p>
+                            </div>
+                            <div class="arrow">→</div>
+                        </a>
                     </div>
                 </section>
-                
-                <section id="zh-case-studies" class="anchor-section">
-                    <h2 class="category-title">📂 案例分析</h2>
+
+                <section id="zh-ai-insights" class="anchor-section">
+                    <h2 class="category-title">💡 AI 观察</h2>
                     <div class="blog-list">
-                        <a href="./zh/case-studies/payment-airbnb/.html" class="blog-card" target="_blank" rel="noopener noreferrer">
+                        <a href="./zh/AI/OpenClaw-Github/" class="blog-card" target="_blank" rel="noopener noreferrer">
                             <div class="blog-info">
-                                <h3>支付_Airbnb全球支付平台的使命-构建信任感</h3>
-                                <p>拆解 190+ 国家跨境结算架构，看支付如何从“后台工具”进化为共享经济的“信任基石”。</p>
+                                <h3>AI观察：OpenClaw-GitHub虚拟机养一只龙虾</h3>
+                                <p>拒绝本地配置折磨，PM 也能上手的云端部署实录。涵盖 Codespaces 避坑指南与 Gemini 模型集成全过程。</p>
                             </div>
                             <div class="arrow">→</div>
                         </a>
@@ -399,7 +191,6 @@
 
     <script>
         function switchLang(lang) {
-            // 获取需要操作的元素
             const contentEn = document.getElementById('content-en');
             const contentZh = document.getElementById('content-zh');
             const navEn = document.getElementById('nav-en');
