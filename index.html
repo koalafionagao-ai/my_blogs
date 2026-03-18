@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Blogs | Thoughts & Insights</title>
+    <title>My Blogs | Fiona Gao</title>
     <style>
         :root {
             --bg-color: #FDFCF8;      
@@ -14,6 +14,7 @@
             --border-color: #EBE8E0;  
             --toggle-bg: #F0EFE9;
             --nav-hover: #F5F4EE;
+            --success-color: #10b981;
         }
 
         html { scroll-behavior: smooth; }
@@ -32,8 +33,41 @@
             line-height: 1.6;
         }
 
-        .header { text-align: center; margin-bottom: 40px; width: 100%; max-width: 900px; }
-        .header h1 { font-size: 2.2rem; font-weight: 600; margin: 0 0 10px 0; letter-spacing: 1px; }
+        /* 页头样式优化 */
+        .header { text-align: center; margin-bottom: 50px; width: 100%; max-width: 900px; }
+        .header h1 { font-size: 2.4rem; font-weight: 600; margin: 0 0 12px 0; letter-spacing: 1px; }
+        
+        .contact-info { 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+        }
+        .email-copy {
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .email-copy:hover { color: var(--text-main); }
+        .copy-hint {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-main);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            display: none;
+            white-space: nowrap;
+        }
+
         .header p { font-size: 1.05rem; color: var(--text-muted); font-weight: 300; margin-bottom: 25px; }
 
         .lang-toggle { display: inline-flex; background: var(--toggle-bg); border-radius: 30px; padding: 4px; }
@@ -56,7 +90,6 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 聚合分类区块 */
         .anchor-section { scroll-margin-top: 40px; margin-bottom: 60px; }
         .category-title { font-size: 1.2rem; color: var(--text-main); margin: 0 0 20px 0; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
 
@@ -70,7 +103,26 @@
         .arrow { font-size: 1.2rem; color: var(--accent-color); margin-left: 20px; transition: transform 0.3s ease; }
         .blog-card:hover .arrow { transform: translateX(4px); color: var(--text-main); }
 
-        .footer { margin-top: 60px; padding: 40px 0; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); width: 100%; }
+        /* 页尾样式优化 */
+        .footer { 
+            margin-top: 80px; 
+            padding: 40px 0; 
+            text-align: center; 
+            font-size: 0.85rem; 
+            color: var(--text-muted); 
+            border-top: 1px solid var(--border-color); 
+            width: 100%; 
+            max-width: 1000px;
+        }
+        .footer-disclaimer { 
+            margin-top: 12px; 
+            font-size: 0.75rem; 
+            opacity: 0.8; 
+            max-width: 700px; 
+            margin-left: auto; 
+            margin-right: auto;
+            line-height: 1.4;
+        }
 
         @media (max-width: 768px) {
             .layout-container { flex-direction: column; gap: 20px; }
@@ -85,6 +137,14 @@
 
     <div class="header">
         <h1 id="page-title">My Blogs & Thoughts</h1>
+        <div class="contact-info">
+            <span style="font-weight: 500;">Fiona Gao</span>
+            <span>|</span>
+            <span class="email-copy" onclick="copyEmail(this)">
+                koala.fiona.gao@gmail.com
+                <span class="copy-hint" id="copy-hint">Copied!</span>
+            </span>
+        </div>
         <p id="page-desc">Documenting my journey and insights in AI, Fintech, and Product Management.</p>
         
         <div class="lang-toggle">
@@ -99,19 +159,16 @@
             <nav id="nav-en" class="nav-menu active">
                 <a href="#en-ai-insights" class="nav-link">💡 AI Insights</a>
                 <a href="#en-case-studies" class="nav-link">📂 Case Studies</a>
-                
             </nav>
             <nav id="nav-zh" class="nav-menu">
                 <a href="#zh-ai-insights" class="nav-link">💡 AI 观察</a>
                 <a href="#zh-case-studies" class="nav-link">📂 案例分析</a>
-                
             </nav>
         </aside>
 
         <main class="main-content">
             
             <div id="content-en" class="content-lang-section active">
-                
                 <section id="en-ai-insights" class="anchor-section">
                     <h2 class="category-title">💡 AI Insights</h2>
                     <div class="blog-list">
@@ -144,9 +201,6 @@
                         </a>
                     </div>
                 </section>
-
-            
-
             </div>
 
             <div id="content-zh" class="content-lang-section">
@@ -182,19 +236,38 @@
                         </a>
                     </div>
                 </section>
-
-                
-
             </div>
 
         </main>
     </div>
 
     <div class="footer">
-        <p>© 2026 Crafted with care. All rights reserved.</p>
+        <div id="footer-text">
+            © 2026 Fiona Gao. All Rights Reserved.
+            <div class="footer-disclaimer">
+                LEGAL DISCLAIMER: All content is original. Unauthorized reproduction or commercial use is strictly prohibited.
+            </div>
+        </div>
     </div>
 
     <script>
+        // 邮箱复制功能
+        function copyEmail(element) {
+            const email = "koala.fiona.gao@gmail.com";
+            const hint = document.getElementById('copy-hint');
+            
+            navigator.clipboard.writeText(email).then(() => {
+                hint.style.display = 'block';
+                element.style.color = 'var(--success-color)';
+                
+                setTimeout(() => {
+                    hint.style.display = 'none';
+                    element.style.color = '';
+                }, 2000);
+            });
+        }
+
+        // 语言切换功能
         function switchLang(lang) {
             const contentEn = document.getElementById('content-en');
             const contentZh = document.getElementById('content-zh');
@@ -204,6 +277,8 @@
             const btnZh = document.getElementById('btn-zh');
             const pageTitle = document.getElementById('page-title');
             const pageDesc = document.getElementById('page-desc');
+            const footerText = document.getElementById('footer-text');
+            const copyHint = document.getElementById('copy-hint');
 
             if (lang === 'zh') {
                 contentEn.classList.remove('active');
@@ -215,6 +290,14 @@
                 
                 pageTitle.textContent = "博客与思考";
                 pageDesc.textContent = "记录我在 AI、金融科技与产品管理领域的探索与复盘。";
+                copyHint.textContent = "已复制！";
+                
+                footerText.innerHTML = `
+                    © 2026 Fiona Gao. 原创文章，保留所有权利。
+                    <div class="footer-disclaimer">
+                        LEGAL DISCLAIMER: 本文为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。
+                    </div>
+                `;
             } else {
                 contentZh.classList.remove('active');
                 contentEn.classList.add('active');
@@ -225,6 +308,14 @@
                 
                 pageTitle.textContent = "My Blogs & Thoughts";
                 pageDesc.textContent = "Documenting my journey and insights in AI, Fintech, and Product Management.";
+                copyHint.textContent = "Copied!";
+                
+                footerText.innerHTML = `
+                    © 2026 Fiona Gao. All Rights Reserved.
+                    <div class="footer-disclaimer">
+                        LEGAL DISCLAIMER: All content is original. Unauthorized reproduction or commercial use is strictly prohibited.
+                    </div>
+                `;
             }
         }
     </script>
