@@ -723,9 +723,38 @@ blockquote.quote-large {
                     .custom-blog-footer { margin-top: 3.5rem; padding: 2rem 0; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.8125rem; font-family: ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
                     .footer-author-link { color: #3b82f6; text-decoration: none; font-weight: 500; }
                     .legal-row { font-size: 0.75rem; color: #9ca3af; margin: 0; line-height: 1.6; max-width: 100%; }
-                    pre.code { background: #1e1e1e !important; border-radius: 8px !important; padding: 2.5rem 1rem 1rem !important; position: relative !important; margin: 1.5rem 0 !important; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1) !important; white-space: pre !important; word-break: normal !important; }
-                    .code > code { color: #d4d4d4 !important; white-space: pre !important; word-break: normal !important; text-shadow: none !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; font-size: 0.875rem !important; -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; }
-                    pre.code span.highlight-default, pre.code span.block-color-default { color: #d4d4d4 !important; }
+                    
+                    /* 极客代码块精修版 - 彻底修复黑色模糊及ASCII图背景干扰 */
+                    pre.code { 
+                        background: #1e1e1e !important; 
+                        border-radius: 8px !important; 
+                        padding: 2.5rem 1rem 1.2rem !important; 
+                        position: relative !important; 
+                        margin: 1.5rem 0 !important; 
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; 
+                        white-space: pre !important; 
+                        word-break: normal !important; 
+                        overflow-x: auto !important;
+                    }
+                    /* 破解 Notion 强制继承色带来的全黑问题 */
+                    .code > code { 
+                        color: #e0e0e0 !important; 
+                        white-space: pre !important; 
+                        word-break: normal !important; 
+                        text-shadow: none !important; 
+                        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+                        font-size: 0.875rem !important;
+                        line-height: 1.5 !important;
+                        -webkit-font-smoothing: antialiased !important;
+                        -moz-osx-font-smoothing: grayscale !important;
+                    }
+                    /* 核心：彻底移除代码块内所有标签的背景色，防止流程图出现色块断裂 */
+                    pre.code span {
+                        background: transparent !important;
+                    }
+                    
+                    /* 颜色映射 - 仅文字变色 */
+                    pre.code span.highlight-default, pre.code span.block-color-default { color: #e0e0e0 !important; }
                     pre.code span.highlight-gray, pre.code span.block-color-gray { color: #9ca3af !important; }
                     pre.code span.highlight-brown, pre.code span.block-color-brown { color: #d6b49c !important; }
                     pre.code span.highlight-orange, pre.code span.block-color-orange { color: #fb923c !important; }
@@ -735,9 +764,11 @@ blockquote.quote-large {
                     pre.code span.highlight-purple, pre.code span.block-color-purple { color: #c084fc !important; }
                     pre.code span.highlight-pink, pre.code span.block-color-pink { color: #f472b6 !important; }
                     pre.code span.highlight-red, pre.code span.block-color-red { color: #f87171 !important; }
-                    .copy-code-btn { position: absolute; top: 8px; right: 8px; background: #374151; color: #d1d5db; padding: 4px 10px; font-size: 11px; border-radius: 6px; border: 1px solid #4b5563; cursor: pointer; }
+
+                    .copy-code-btn { position: absolute; top: 8px; right: 8px; background: #374151; color: #d1d5db; padding: 4px 10px; font-size: 11px; border-radius: 6px; border: 1px solid #4b5563; cursor: pointer; transition: all 0.2s; z-index: 10; }
                     .copy-code-btn:hover { background: #4b5563; color: #fff; }
-                    .code-lang-label { position: absolute; top: 10px; left: 12px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600; }
+                    .code-lang-label { position: absolute; top: 10px; left: 12px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600; z-index: 10; pointer-events: none; }
+                    
                     @media (max-width: 640px) { .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; } .meta-right { width: 100%; justify-content: flex-start; margin-top: 0.25rem; } }
                 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"></head><body><article id="3225dc8c-3cb9-80f4-94d3-e769e94a99a1" class="page sans"><header><h1 class="page-title" dir="auto" style="margin-bottom: 0.5rem;">OpenClaw-GitHub虚拟机养一只龙虾</h1><div class="custom-blog-meta">
                     <div class="meta-row">
