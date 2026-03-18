@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>OpenClaw-Raising a "Lobster" in GitHub Codespaces</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3225dc8c-3cb9-80d5-9c10-e4a57497673a" class="page sans"><header><h1 class="page-title" dir="auto">OpenClaw-Raising a "Lobster" in GitHub Codespaces</h1><p class="page-description" dir="auto"></p><div class="elegant-properties" style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; color: #6b7280; padding: 1.25rem 0; border-bottom: 1px solid #f3f4f6; margin-bottom: 2rem; font-family: ui-sans-serif, system-ui, sans-serif;">
+                            
+                            <div class="prop-row-tags" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                <span class="prop-label" style="font-weight: 500; color: #4b5563;">Tags:</span>
+                                <div class="prop-tags" style="display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;">
+                                    <span class="selected-value select-value-color-brown">AI Insights</span><span class="selected-value select-value-color-default">Get Hands Dirty</span>
+                                </div>
+                            </div>
+
+                            <div class="prop-row-times" style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+                                
+                                <div class="prop-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span class="prop-label" style="font-weight: 500; color: #4b5563;">Created:</span>
+                                    <span class="prop-value" style="color: #1f2937;">2026-03-13 18:37</span>
+                                </div>
+
+                                
+                                <div class="prop-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 16px; height: 16px; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="prop-label" style="font-weight: 500; color: #4b5563;">Updated:</span>
+                                    <span class="prop-value" style="color: #1f2937;">2026-03-18 17:49</span>
+                                </div>
+                            </div>
+                        </div></header><div class="page-body"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8082-8a81-f6c7699bab75"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8031-8dc9-db80450b5356" class=""><strong>Story</strong></p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8094-82e7-cf93f968ad62" class="">I’m a Product Manager. I don’t really code (though I’ll call on my AI Friends for help whenever I need to).</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8035-a8cd-f0225b8b4626" class="">I’m obsessed with learning AI. I’ve read lots of OpenClaw document, blog post, podcast, and even the forums, but it just wasn't enough. </p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8065-8316-ca6f0779c2ac" class=""><mark class="highlight-red">I have decent hands-on skills, but I’ve never been brave enough to install OpenClaw on my own laptop</mark>, and I don't have a spare laptop lying around either.</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8059-842b-cb7b2a91010a" class="">Then I noticed the official OpenClaw docs seemed to support Docker. It got me thinking—could I just set up a virtual machine in the cloud?</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-800e-973f-e7b0fba2702b" class="">Since I used to build my own Laptop systems back in the day and have read documentation to set up jump servers and VMs for work, I figured: "Installing a piece of software shouldn't be that much harder, right?"</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-807e-885a-df5e2d3cbd7f" class="">So, I headed over to GitHub and opened <strong>Codespaces</strong>—a fantastic platform that provides Linux VMs. Hahaha, and guess what? I actually made it work!!!</p></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="3275dc8c-3cb9-8087-bb6f-fae886de3f68" class="">1 Security Reminders</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8021-92e1-c4cb46ec86e4"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8084-b275-c5299039b21f" class=""><strong>Codespaces(VM Instances) are Private</strong></p></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-808c-9db4-cb66afedc535" class="bulleted-list"><li style="list-style-type:disc"><strong>Temporary Room Key</strong>: When you launch a Codespace, GitHub binds your personal token to that VM. Think of this token as the "temporary room key" for the machine.</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8087-9d50-ef76b8a93561" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Port 18789</strong></mark>: This is the official port provided by OpenClaw. If you run into any blocks while using it, set it to <strong>Public</strong>. However, once you’ve successfully connected, <strong>make sure to change it back to Private.</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80a9-b17d-ebebf7798455" class="bulleted-list"><li style="list-style-type:disc"><strong>Keep it Secret</strong>: That URL<mark class="highlight-red"> (</mark><mark class="highlight-red"><a href="https://...-18789.app.github.dev/">https://...-18789.app.github.dev</a></mark><mark class="highlight-red">) </mark>should stay under wraps. Do not expose or share it publicly.</li></ul></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-800b-aac0-cf9f5ed780f9" class=""><strong>If you chose a Public Repository</strong></p></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80ba-95ec-c3cd8b555d90" class="bulleted-list"><li style="list-style-type:disc"><strong>Repo Files</strong>: The whole world can see these (anyone can view your GitHub repo code or even fork your project).</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-805a-839d-c0b972305563" class="bulleted-list"><li style="list-style-type:disc"><strong>Codespaces Files</strong>: Only <strong>you</strong> can see the files inside the virtual machine itself.</li></ul></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-804b-bcb9-e09150766cef" class=""><strong>Configuring Model APIs in your "Cloud Lobster"</strong></p></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8072-b0fe-e226aa11fd92" class="bulleted-list"><li style="list-style-type:disc"><strong>Avoid Paid APIs</strong>: Do not configure your main paid API keys here.</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8007-b310-d3bf08ba3bec" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Use a Dedicated Free Key</strong></mark><mark class="highlight-red">: Create a separate, free API key specifically for OpenClaw. For research and testing, it’s more than enough.</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8090-9c53-c66e75207d53" class="bulleted-list"><li style="list-style-type:disc"><strong>Risk Control</strong>: If anything goes wrong with a free key, you can deactivate or revoke it instantly—one click to remove all risk.</li></ul></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80be-a446-c6792a1d12d0" class="">Before taking any action, always maintain a <strong>"Question → Verify"</strong> mindset and consult the official OpenClaw guidance:</p></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-801b-a48f-f3d5b9f7f3f1" class="bulleted-list"><li style="list-style-type:disc"><a href="https://docs.openclaw.ai/install">OpenClaw Installation Docs</a>  |  <a href="https://github.com/openclaw/openclaw/issues">OpenClaw GitHub Community</a>  |  <a href="https://openclaw.ai/">OpenClaw Website</a></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="3275dc8c-3cb9-80ff-870f-fd192047412a" class="">2 Installation Steps</h1></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-8017-b9b9-ea7c7a36bd83" class="code code-wrap"><code class="language-YAML" style="white-space:pre-wrap;word-break:break-all"># OpenClaw Installation Framework for GitHub Codespaces
+
+├── Phase 1: Preparation
+│   ├── Step 1: Create a new folder
+│   │   └── Location: [Inside your chosen GitHub repository]
+│   └── Step 2: Create a new codespace
+│       └── Action: [Launch the cloud VM linked to that folder]
+│
+├── Phase 2: Installation
+│   └── Step 3: Open the VM and install the OpenClaw
+│       └── Execution: [Run the Bash install script in the terminal]
+│
+├── Phase 3: Device Authorization
+│   ├── Step 4: Allow running with missing configs
+│   │   └── Strategy: [Ignore Initial Config to force-start]
+│   └── Step 5: Secure Pairing Required
+│       ├── Block: [System prompts for a Pairing Code to connect]
+│       └── Action: [Check Pending devices -&gt; Approve -&gt; Pair -&gt; Login successful]
+│
+├── Phase 4: Model Setup
+│   └── Step 6: Run Bash commands in the terminal to configure the model
+│
+└── Phase 5: Maintenance
+    └── Step 7: Future awakening steps
+        ├── [Open GitHub]
+        ├── [Find your Codespace for OpenClaw]
+        ├── [Run Bash commands to start the gateway]
+        └── [Web UI connection]</code></pre></div><div style="display:contents" dir="auto"><h2 id="3275dc8c-3cb9-8020-9769-e1a92f890eae" class="">Step 1: Create a new folder</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-80d3-b7e5-e2325282848d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80a9-991b-c4c57ee3dc0a" class="">Select a repository -&gt; Create a folder -&gt; Inside this folder, create a random <strong>placeholder file</strong>. This is a "dummy-proof" step for the VM (sometimes it fails to index empty folders).</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80b6-ac80-ec49a65cd9d3" class=""><em><mark class="highlight-gray">If you want to save time, just creating a brand-new repository.</mark></em></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-808c-b4b8-efe46afcf5c8" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image.png"><img style="width:1009.9921875px" src="/my_blogs/en/AI/OpenClaw-Github/images/image.png"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-805c-8fa3-ce8fe1a2f12d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80a6-ac72-f09a35c50e80" class="">
+</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-807a-995d-f62a556b9e99" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 1.png"><img style="width:1009.96875px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 1.png"></a></figure></div><div style="display:contents" dir="auto"><h2 id="3275dc8c-3cb9-8064-9d42-e7d5d63cd47c" class=""><strong>Step 2: Create a new codespace</strong></h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8023-b942-c239fb40b7ee"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80af-93b4-f9474b899197" class="bulleted-list"><li style="list-style-type:disc">Go back to the homepage of the repository where you just made the folder. Find the <strong>"Code"</strong> button, switch to the <strong>"Codespaces"</strong> tab, click the <strong>[+]</strong> icon, and create a new codespace.</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80f4-8e30-c00499c4de57" class="bulleted-list"><li style="list-style-type:disc">If your browser asks you to download any plugins or apps, you can skip them. Every step can be done directly in the browser; no local apps are needed.</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8047-9e4e-d23466ad8c97" class="bulleted-list"><li style="list-style-type:disc">Wait for the Codespaces to setup. Once finished, you’ll see the page loaded in your browser (a "Left-Middle-Right" layout, with the code area in the center).</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-8064-aacb-fcaf80958bad" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 2.png"><img style="width:1009.984375px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 2.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-8018-bfe7-e75e8731ef90" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 3.png"><img style="width:2366px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 3.png"></a></figure></div><div style="display:contents" dir="auto"><h2 id="3275dc8c-3cb9-80dd-9868-e1f2e33fafed" class=""><strong>Step 3: Install OpenClaw on this CodeSpace</strong></h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-808c-8b03-e668c8f28628"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80c4-ac68-c448a8b5d322" class="">On this page, find the <strong>"Terminal"</strong> in the middle section. Following the tips below, paste these command lines one by one after the blue cursor and hit <strong>Enter</strong>:</p></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-808d-8fbc-c5cb78ed6337" class="bulleted-list"><li style="list-style-type:disc">After executing the 3rd line, if there are no extra errors, you’ll see OpenClaw give you a cold by humorous response starting with the <strong>"🦞 emoji"</strong>. For example, "More integrations than your therapist’s intake form"—that’s it complaining about me, hahaha!</li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-8045-990a-df438c59ed11" class="bulleted-list"><li style="list-style-type:disc">Okay, now there’s an error saying "Missing config." Let’s move to the next step: "Allowing run with missing configs." </li></ul></div><div style="display:contents" dir="auto"><blockquote id="3275dc8c-3cb9-80ed-bfc6-f2c14753e156" class=""><em><mark class="highlight-red">This basically means: "I know nothing is configured yet, but let me into the page to look around first."</mark></em><br><em>(Pro users can run </em><em><code>setup</code></em><em> here directly; this covers some of what we’ll discuss later in the configuration section.)</em></blockquote></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8084-8c87-fefcd7dfd39d" class="">At this point, you'll only see something that looks like a login screen—<mark class="highlight-red">hahaha, we’re just one step away!</mark></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8099-a015-d1ff9e1385f5"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-800d-8d25-ef57836d90a4" class=""># Line 1: Enter the empty folder you just created (replace "openclaw" with your actual folder name)</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-8063-8375-ca716a1f3190" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">cd openclaw</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8039-beb9-d77c6c46a802" class=""># Line 2: Install OpenClaw globally (You’ll see a progress bar flying across the screen. Be patient until the $ cursor reappears)</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-807f-ad7f-e4f2fe4f97ef" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">npm install -g openclaw@latest</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8004-bfb9-d65cf1ded3e1" class=""># Line 3: Start the gateway</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-804b-9b51-f7e61f977a56" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw gateway --port 18789 </code></pre></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-806d-a5c9-f8c6597b03c7" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/cab5abe4-4d24-4f1d-8002-d0b24ac09c9f.png"><img style="width:1010px" src="/my_blogs/en/AI/OpenClaw-Github/images/cab5abe4-4d24-4f1d-8002-d0b24ac09c9f.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-80c7-b211-eea058545c59" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 4.png"><img style="width:1009.9921875px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 4.png"></a></figure></div><div style="display:contents" dir="auto"><h2 id="3275dc8c-3cb9-805c-a926-e94c439ee82b" class=""><strong>Step 4: Allow running with missing configs</strong></h2></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-8040-b548-e7086748cdde" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">## When you see that incredibly sassy intro ("More integrations than your therapist's intake form"), congrats! It has successfully descended into the cloud!
+
+"🦞 OpenClaw 2026.3.13 (61d171a) — More integrations than your therapist's intake form.
+08:36:56 Missing config. Run `openclaw setup` or set gateway.mode=local (or pass --allow-unconfigured)."
+
+The installation stopped due to missing configs. The reason:
+#Because you are using a brand-new cloud computer, it doesn't have any of those initialized "brain config files." For security reasons, it sassily refuses to open the gateway doors.</code></pre></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8067-9479-e06ec9543caa"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8090-8626-e158ad68fd4b" class=""># Step 1: Press <strong>Ctrl + C</strong> on your keyboard (works for both Windows and Mac).<br>--&gt; <em><mark class="highlight-red">This terminates the current process so we can start a new command. You’ll be doing this a lot later.</mark></em><br><mark class="highlight-default">You should see a line like "@xxx -&gt; /aaa/bbb/ccc……openclaw (main) $" with the cursor after the $.</mark><br><br># Step 2: Paste the following command at the cursor and hit Enter.<br>--&gt; <em><mark class="highlight-red">This means "allow running without config." You can use this for all future launches when unconfigured; it's worth remembering.</mark></em></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-8054-ac3c-ddbe5871a041" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw gateway --port 18789 --allow-unconfigured</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8013-b29b-d18fb9cd6465" class=""># Step 3: A popup will appear in the bottom-right of Chrome saying port 18789 is detected.<br>Select <strong>"Open in Browser,"</strong> and you will see the configuration page in a new tab.</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-808b-a1ad-dbf7845a19b2" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 5.png"><img style="width:1009.9609375px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 5.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-80e6-b954-c458f7e2cee7" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 6.png"><img style="width:2880px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 6.png"></a></figure></div><div style="display:contents" dir="auto"><h2 id="3275dc8c-3cb9-800e-9c19-dcf6da051ece" class=""><strong>Step 5: Secure Pairing Required — Success After "Almost Giving Up”</strong></h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-803a-b624-cca9165da3bc"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8029-8c2c-f6587781e8b4" class="">I was stuck here for over a dozen rounds. I burned through my Gemini Pro quota, and GPT was basically useless, just talking in circles...</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8025-9b10-c1fad17b13fc" class="">The VM access verification kept blocking me; this specific step in OpenClaw really stumped the AI.</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8037-9312-ec7247e32568" class="">Eventually, I found <a href="https://openclawlaunch.com/guides/openclaw-gateway-pairing](https://openclawlaunch.com/guides/openclaw-gateway-pairing)">a community article </a>on it.</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8071-9d34-c964352af85a" class="">After dinner, I gave it one last shot with zero expectations—and incredibly, it worked...</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-800e-8006-c080e4fd98a8" class="">The moment I finally saw the OpenClaw Web UI, I almost cried! 😭</p></div></div></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-809f-a1b6-f5617732eeff" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">Simply put: Gemini initially kept having me modify JSON files to bypass the token verification, but it was useless because OpenClaw has strict underlying validations.
+Later, I saw from the error logs that because I was forwarding ports from a VM, the "origin" address wasn't recognized as "local." OpenClaw flagged me as a potential hacker and locked the door. 
+
+Per Gemini:
+"Based on your article link and the deep logic of the Pairing Required (1008) error in the official docs, we finally found the 'official solution.' In a cloud environment like GitHub Codespaces, you’re blocked because OpenClaw uses a 'Trinity' of security: Token + TrustedProxies + Device Pairing. We had handled the first two, but got stuck on the last one: Device Pairing."</code></pre></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8014-9247-e3449e338904"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8090-9d83-ffc476fb8141" class=""># <mark class="highlight-red">Step 1: Open a new terminal (click the "+" on the right to see a new bash window) and run:</mark></p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8005-b479-d589453e397d" class=""><em><mark class="highlight-gray">--&gt; (This finds the list of requesting devices)</mark></em></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-807d-ad9f-c76ac99aa4f7" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw devices list</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-801d-b57b-e6b5435e9ddb" class=""># <mark class="highlight-red">Step 2: Approve the pending device by running:</mark></p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8081-b6be-db51ce77e06a" class=""><em><mark class="highlight-gray">--&gt; (This finds the list of requesting devices)</mark></em></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-80f7-a457-c3bd1c45f82a" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw devices approve $(openclaw devices list | grep pending | awk '{print $1}')</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80d0-b699-cb8c004b2642" class=""># <mark class="highlight-red">Step 3: Refresh the WEB UI , click connect, and you're in!!!</mark><br>--&gt; <em><mark class="highlight-gray">And now if you click on "Nodes" (Devices) on sidemenu bar, you’ll see your newly paired device in the list.</mark></em></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-808e-a472-c1812a3943e7" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 7.png"><img style="width:1009.9921875px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 7.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-8094-9bf7-f10c82c6b17d" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 8.png"><img style="width:2880px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 8.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-80d3-8835-cea9e0c6dace" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 9.png"><img style="width:2880px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 9.png"></a></figure></div><div style="display:contents" dir="auto"><h1 id="3275dc8c-3cb9-80b0-938c-d2048ae06864" class="">3 Configuring the Model</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-80bd-8073-f53e5a1a90bb"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80d1-96fa-d5715f75300a" class="">I explored every menu in the Web UI and read through the System Prompts (those 8 .md files). I felt this monitoring platform is just great for admins.</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8014-89b0-ce2cc12585ad" class="">So, I decided to configure a model to test the workflow; if successful, I might look into connecting a Telegram API later to simulate a Bot message flow.</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8008-80fc-e77d9e16826d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8067-9a74-c84276e56e7e" class="">Okay. It turns out there’s no place in the Web UI to do the initial setup, so I went back to the VM terminal.</p></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80bc-bf2c-fa9452b549ee" class=""><strong>#Step1 Run OpenClaw --&gt;All files under Agents are listed</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-805e-b0f2-e4a2f45e4aa6" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw agents</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8049-a13f-f8e4086aba1d" class="">The response looks like:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-806a-b2fe-c7b12e18dda1" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">Agents:
+- main (default)
+  Workspace: ~/.xx/yy
+  Agent dir: ~/.xx/yy/zzzzz</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8002-bacf-edb7146b50c0" class=""><strong>#Step 2 Trigger the configuration</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-80e2-a438-d6ef1451dbff" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw agents add main</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80bd-b276-ec435ed64d92" class="">You’ll see options with a little green dot in the terminal. <mark class="highlight-red"><strong>Use your arrow keys to navigate and Enter to select</strong></mark>:</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-803e-ae7e-e0b3c0db119f" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">🦞 OpenClaw 2026.3.13 (61d171a) — Your .zshrc wishes it could do what I do.
+
+┌  Add OpenClaw agent
+│
+◇  Agent "main" already exists. Update it?
+│  Yes
+│
+◇  Workspace directory
+│  /home/codespace/.openclaw/workspace
+│
+◇  Configure model/auth for this agent now?
+│  Yes
+│
+◇  Model/auth provider
+│  Google
+│
+◇  Google auth method
+│  Google Gemini API key
+│
+◇  How do you want to provide this API key?
+│  Paste API key now
+……(omitted from here)</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8058-b005-f6ab704036e0" class=""><strong>#Step 3: Finish the setup</strong></p></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-80e0-a71e-ca03a9621970"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8084-8b56-ef391bbccafa" class="">Once the API key is in, you can skip the remaining configs, but <strong>make sure to finish the process. </strong>You’ll see it run a bunch of commands to write files, then reply with <strong>"Model Configured." </strong><br>Now the OpenClaw has a "brain." Restart the gateway:</p></div></div></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-8016-8e9e-f3ded4e9b589" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw gateway --port 18789</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80e6-95ff-d105192e7ab5" class=""><strong>#Step 4: Re-enter the Web UI</strong></p></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-80e0-96a2-cb904b24beca"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8032-8492-fa984fd2ef8a" class="">You’ll see the model has changed to what you set (instead of the default Opus).<br>If the UI hasn't changed, the setup likely failed<br>—check the terminal to see if the command finished and if the OpenClaw confirmed it’s done!<br><br>If you notice the token consumption is scary, don't worry. Go to your model usage interface to see where it was spent. Currently, I've used 50k tokens for just three messages! 😭</p></div></div></figure></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-8072-aeb8-ca5c3f47a4f6" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 10.png"><img style="width:1009.9921875px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 10.png"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-808d-8837-fe4260d858b6" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 11.png"><img style="width:2880px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 11.png"></a></figure></div><div style="display:contents" dir="auto"><h1 id="3275dc8c-3cb9-80e1-91e5-e9db4cd83fb4" class="">4 Future Awakenings (The Routine)</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8036-b596-d82c4de857d6"><div style="width:100%"><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80a4-a197-ed00ebaf7232" class="bulleted-list"><li style="list-style-type:disc">Your GitHub Codespace VM <strong>will always be there unless you delete it (subject to GitHub’s current retention policies).</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-803d-8f97-cacb43d2af3c" class="bulleted-list"><li style="list-style-type:disc">If the machine stays inactive or you close the browser tab, GitHub will put it into <strong>"Sleep" mode</strong> after a certain period (default is 30 minutes) to save your quota. </li></ul></div><div style="display:contents" dir="auto"><ul id="3275dc8c-3cb9-80ce-9781-c06da01a15b5" class="bulleted-list"><li style="list-style-type:disc">Next time, you can just go to your <strong>GitHub Repo → click "Code" → select "Codespaces" → find your OpenClaw VM.</strong> Once it finishes setting up, you’re ready to go.</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-80dd-a687-f618b03b7a19"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80e6-ac83-d0ba9ad33c30" class=""><strong>#Step1: In the terminal of your freshly "awakened" OpenClaw Codespaces, run:</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><pre id="3275dc8c-3cb9-80a8-b028-c4c7cec4d7f7" class="code code-wrap"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">openclaw gateway --port 18789</code></pre></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8036-8a4e-c11a9744e539" class=""><strong>#Step 2: Wait for the popup in the bottom-right corner.</strong></p></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8036-8ef4-e7d52b3b8839"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-8038-8bd7-c9ddaad90c2a" class="">It will say: "Port 18789 detected." Select "Open in Browser." <br><em><mark class="highlight-gray">(Pro-tip: If you were smart enough to bookmark the Web UI login URL, you can just open that and refresh.)</mark></em></p></div></div></figure></div><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80f4-9a86-f210798a0752" class=""><strong>#Step 3: Wait a moment for it to auto-connect.</strong></p></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3275dc8c-3cb9-8071-afce-cf364c2c7fbc"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3275dc8c-3cb9-80b8-8963-c06cd34ef7d9" class="">Since you’ve already completed the Device Pairing, it should log you in automatically. <br>As long as you don't clear your browser cache or switch browsers, you're good to go. <br>Your configurations are saved, and your Token remains valid. (Unless you reinstall the system, your identity authentication is persistent!)</p></div></div></figure></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="3275dc8c-3cb9-805f-9b84-e4876488e2e6" class="image"><a href="/my_blogs/en/AI/OpenClaw-Github/images/image 12.png"><img style="width:2160px" src="/my_blogs/en/AI/OpenClaw-Github/images/image 12.png"></a></figure></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
