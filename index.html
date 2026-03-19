@@ -91,7 +91,9 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .anchor-section { scroll-margin-top: 40px; margin-bottom: 60px; }
-        .category-title { font-size: 1.2rem; color: var(--text-main); margin: 0 0 20px 0; font-weight: 600; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        
+        /* 核心修改：去掉了 border-bottom: 1px solid var(--border-color); 和 padding-bottom: 10px; */
+        .category-title { font-size: 1.2rem; color: var(--text-main); margin: 0 0 20px 0; font-weight: 600; }
 
         .blog-list { display: flex; flex-direction: column; gap: 16px; }
         .blog-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; }
@@ -295,7 +297,7 @@
                 footerText.innerHTML = `
                     © 2026 Fiona Gao. 原创文章，保留所有权利。
                     <div class="footer-disclaimer">
-                        LEGAL DISCLAIMER: 本文为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。
+                        LEGAL DISCLAIMER: 本站皆为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。
                     </div>
                 `;
             } else {
