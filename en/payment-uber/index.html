@@ -769,14 +769,14 @@ blockquote.quote-large {
                     @media (max-width: 640px) { .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; } .meta-right { width: 100%; justify-content: flex-start; margin-top: 0.25rem; } }
                 </style>
     <!-- SEO & Social Media Meta Tags Auto-Injected -->
-    <meta name="description" content="Discover insights and stories on Fiona Gao's technical blog.">
+    <meta name="description" content="An in-depth analysis of how Uber evolved its payment infrastructure into a strategic growth lever and ecosystem gateway.">
     <meta property="og:title" content="Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway">
-    <meta property="og:description" content="Discover insights and stories on Fiona Gao's technical blog.">
+    <meta property="og:description" content="An in-depth analysis of how Uber evolved its payment infrastructure into a strategic growth lever and ecosystem gateway.">
     <meta property="og:image" content="https://koalafionagao-ai.github.io/my_blogs/en/payment-uber/images/image%207.webp">
     <meta property="og:type" content="article">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway">
-    <meta name="twitter:description" content="Discover insights and stories on Fiona Gao's technical blog.">
+    <meta name="twitter:description" content="An in-depth analysis of how Uber evolved its payment infrastructure into a strategic growth lever and ecosystem gateway.">
     <meta name="twitter:image" content="https://koalafionagao-ai.github.io/my_blogs/en/payment-uber/images/image%207.webp"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"></head><body><article id="3225dc8c-3cb9-8018-8533-e0d5d00761d7" class="page sans"><header><h1 class="page-title" dir="auto" style="margin-bottom: 0.5rem;">Payment_Uber: Fintech From Platform Infra to a New Traffic Gateway</h1><div class="custom-blog-meta">
                     <div class="meta-row">
                         <div class="meta-left">
@@ -819,25 +819,34 @@ Corporate             |      Driver / Courier</code><button class="copy-code-btn
                     function copyCodeText(btn) { const code = btn.parentElement.querySelector('code'); navigator.clipboard.writeText(code.innerText).then(() => { const originalHtml = btn.innerHTML; btn.innerHTML = "✅"; btn.style.background = "transparent"; btn.style.border = "none"; setTimeout(() => { btn.innerHTML = originalHtml; btn.style.background = ""; btn.style.border = ""; }, 2000); }); } 
                     function togglePageLanguage() { let url = window.location.href; if (url.includes('/en/')) window.location.href = url.replace('/en/', '/zh/'); else if (url.includes('/zh/')) window.location.href = url.replace('/zh/', '/en/'); else alert("Language path not found."); }
                     
-                    // 🚀 智能地域网络分发引擎 (零延迟识别中国时区)
+                    // 🚀 智能地域网络分发引擎 (后台 CDN 竞速 + 严格容灾)
                     (function() {
                         try {
-                            var isChina = Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Shanghai';
+                            var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                            var isChina = ['Asia/Shanghai', 'Asia/Beijing', 'Asia/Chongqing', 'Asia/Urumqi'].indexOf(tz) !== -1;
                             if (isChina) {
                                 document.querySelectorAll('img[data-cdn]').forEach(function(img) {
-                                    // 仅对中国区用户：瞬间注入 Base64 模糊占位图防白屏
+                                    // 1. 缓存秒开防重叠：如果原生图片已经加载完成，直接跳过
+                                    if (img.complete && img.naturalHeight > 0) return;
+                                    
+                                    // 2. 瞬间注入 Base64 模糊占位图防白屏
                                     img.style.backgroundImage = "url('" + img.getAttribute('data-lqip') + "')";
                                     img.style.backgroundSize = 'cover';
                                     img.style.filter = 'blur(10px)';
                                     img.style.transition = 'filter 0.5s ease-out';
-                                    // 将图片请求切换为国内加速 CDN
-                                    img.src = img.getAttribute('data-cdn');
-                                    // CDN 失败则瞬间退回原生路径容灾
-                                    img.onerror = function() {
-                                        if (this.src !== this.getAttribute('data-native')) {
-                                            this.src = this.getAttribute('data-native');
-                                        }
+                                    
+                                    // 3. 后台 CDN 竞速 (带 3 秒严格防卡死超时)
+                                    var cdnUrl = img.getAttribute('data-cdn');
+                                    var tempImg = new Image();
+                                    var timer = setTimeout(function() {
+                                        tempImg.src = ''; // 超过 3 秒 CDN 未响应，直接掐断，任由原生路径继续完成加载
+                                    }, 3000);
+                                    
+                                    tempImg.onload = function() {
+                                        clearTimeout(timer);
+                                        img.src = cdnUrl; // CDN 速度更快且加载成功，无缝替换
                                     };
+                                    tempImg.src = cdnUrl;
                                 });
                             }
                         } catch(e) {}
