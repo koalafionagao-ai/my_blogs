@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>OpenClaw-AI Agent Theories &amp; Product Reflections (Deep Dive into First-hand Ref) </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>
+                    .custom-blog-meta { display: flex; flex-direction: column; gap: 0.65rem; padding: 0.5rem 0 1.25rem 0; margin: 0 0 2.5rem 0; border-bottom: 1px solid #e5e7eb; font-family: ui-sans-serif, system-ui, sans-serif; }
+                    .meta-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem; }
+                    .meta-left { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; flex: 1; }
+                    .meta-right { display: flex; justify-content: flex-end; flex-shrink: 0; min-width: 80px; }
+                    .meta-text-link { text-decoration: none !important; color: #6b7280 !important; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; }
+                    .meta-text-link:hover { color: #3b82f6 !important; }
+                    .author-badge { display: inline-flex; align-items: center; gap: 0.25rem; color: #111827; font-weight: 600; cursor: pointer; background: #f3f4f6; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8125rem; transition: background 0.2s; }
+                    .author-badge:hover { background: #eff6ff; color: #3b82f6; }
+                    .custom-blog-footer { margin-top: 3.5rem; padding: 2rem 0; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.8125rem; font-family: ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
+                    .footer-author-link { color: #3b82f6; text-decoration: none; font-weight: 500; }
+                    .legal-row { font-size: 0.75rem; color: #9ca3af; margin: 0; line-height: 1.6; max-width: 100%; }
+                    
+                    /* 🌟 修复：代码块防穿模，按需分离滚动域 🌟 */
+                    .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; background: #1e1e1e; box-shadow: 0 4px 12px rgba(0,0,0,0.3); overflow: hidden; }
+                    pre.code { background: transparent !important; border-radius: 0 !important; padding: 2.5rem 1rem 1.2rem !important; margin: 0 !important; box-shadow: none !important; white-space: pre !important; word-break: normal !important; overflow-x: auto !important; position: static !important; }
+                    .code > code { color: #e0e0e0 !important; white-space: pre !important; word-break: normal !important; text-shadow: none !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; font-size: 0.875rem !important; line-height: 1.5 !important; }
+                    pre.code span { background: transparent !important; }
+                    pre.code span.highlight-default { color: #e0e0e0 !important; } pre.code span.highlight-gray { color: #9ca3af !important; } pre.code span.highlight-brown { color: #d6b49c !important; } pre.code span.highlight-orange { color: #fb923c !important; } pre.code span.highlight-yellow { color: #fcd34d !important; } pre.code span.highlight-teal { color: #4ade80 !important; } pre.code span.highlight-blue { color: #60a5fa !important; } pre.code span.highlight-purple { color: #c084fc !important; } pre.code span.highlight-pink { color: #f472b6 !important; } pre.code span.highlight-red { color: #f87171 !important; }
+                    
+                    /* 🌟 优化：代码块右上角极简纯净 Copy 按钮 🌟 */
+                    .copy-code-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: #6b7280; padding: 4px; border: none; cursor: pointer; transition: color 0.2s; z-index: 10; display: flex; align-items: center; justify-content: center; }
+                    .copy-code-btn:hover { color: #d1d5db; background: transparent; }
+                    
+                    .code-lang-label { position: absolute; top: 10px; left: 12px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px; z-index: 10; pointer-events: none; text-shadow: none !important; }
+                    @media (max-width: 640px) { .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; } .meta-right { width: 100%; justify-content: flex-start; margin-top: 0.25rem; } }
+                    
+                    /* 🌟 修复与重构：悬浮目录大纲 (TOC) 样式 (纯PC端优雅版) 🌟 */
+                    .toc-wrapper { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; width: 36px; transition: width 0.3s ease; }
+                    /* 防闪烁透明热区：极其宽大的检测层，鼠标稍微移动也不会掉落状态 */
+                    .toc-wrapper::after { content: ''; position: absolute; top: -40px; bottom: -40px; left: -60px; right: -20px; z-index: -1; }
+                    .toc-wrapper:hover { width: 280px; }
+                    
+                    .toc-content { background: transparent; width: 100%; max-height: 60vh; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid transparent; padding: 0.5rem 0; position: relative; z-index: 1; }
+                    .toc-content::-webkit-scrollbar { display: none; }
+                    
+                    .toc-wrapper:hover .toc-content { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border-color: #f3f4f6; padding: 1.25rem; max-height: calc(100vh - 120px); }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar { display: block; width: 4px; }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+                    
+                    /* 统一重置列表基础样式，彻底清除 tocbot 默认烦人的左侧边框与竖线 */
+                    .toc-list { list-style: none; padding: 0; margin: 0; border: none !important; }
+                    .toc-list .toc-list { border: none !important; padding-left: 0; }
+                    
+                    /* 状态 A：未悬浮（横线地图模式） */
+                    .toc-wrapper:not(:hover) .toc-list-item { display: flex; justify-content: flex-end; margin-bottom: 8px; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-link { display: block; width: 16px; height: 4px; background-color: #e5e7eb; border-radius: 2px; color: transparent !important; font-size: 0; padding: 0; margin: 0; transition: all 0.2s ease; overflow: hidden; white-space: nowrap; user-select: none; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list { margin-top: 8px; width: 100%; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list .toc-link { width: 10px; }
+                    /* 高亮当前阅读进度 (绿薯条) */
+                    .toc-wrapper:not(:hover) .is-active-link { background-color: #55b685 !important; width: 24px !important; }
+                    /* 彻底隐藏可能自带的伪元素竖线 */
+                    .toc-wrapper:not(:hover) .toc-link::before { display: none !important; }
+                    
+                    /* 状态 B：悬浮展开（完整目录模式） */
+                    .toc-wrapper:hover .toc-list-item { margin-bottom: 0; display: block; text-align: left; }
+                    .toc-wrapper:hover .toc-list .toc-list { padding-left: 1rem; margin-top: 0.2rem; }
+                    .toc-wrapper:hover .toc-link { display: block; width: auto; height: auto; background-color: transparent; color: #4b5563; margin: 0; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.875rem; white-space: normal; word-break: break-word; line-height: 1.5; transition: all 0.2s; }
+                    .toc-wrapper:hover .toc-link:hover { background: #f3f4f6; color: #111827; }
+                    /* 高亮当前阅读进度 */
+                    .toc-wrapper:hover .is-active-link { color: #111827; font-weight: 600; background: #f9fafb; position: relative; }
+                    .toc-wrapper:hover .is-active-link::before { content: ''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 3px; border-radius: 2px; background: #55b685; }
+                    
+                    /* 禁用 Tocbot 的原生折叠隐藏，保持所有层级全展开 */
+                    .is-collapsible { max-height: none !important; overflow: visible !important; }
+                    .is-collapsed { max-height: none !important; }
+                
+                    /* 移动端强制隐藏 */
+                    @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
+                </style>
+<meta name="description" content="Deconstructing OpenClaw principles, attempting to map out a viable GTM roadmap for a highly capable—yet currently uncontrollable—AI Agent, with the vision of being next-gen OS-level infra.">
+<meta property="og:title" content="OpenClaw-AI Agent Theories &amp; Product Reflections (Deep Dive into First-hand Ref)">
+<meta property="og:description" content="Deconstructing OpenClaw principles, attempting to map out a viable GTM roadmap for a highly capable—yet currently uncontrollable—AI Agent, with the vision of being next-gen OS-level infra.">
+<meta property="og:image" content="https://koalafionagao-ai.github.io/my_blogs/en/openclaw-theory/images/image%204.webp">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenClaw-AI Agent Theories &amp; Product Reflections (Deep Dive into First-hand Ref)">
+<meta name="twitter:description" content="Deconstructing OpenClaw principles, attempting to map out a viable GTM roadmap for a highly capable—yet currently uncontrollable—AI Agent, with the vision of being next-gen OS-level infra.">
+<meta name="twitter:image" content="https://koalafionagao-ai.github.io/my_blogs/en/openclaw-theory/images/image%204.webp"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css"></head><body><div style="width: 0px; height: 0px; position: absolute; overflow: hidden;"><img src="https://koalafionagao-ai.github.io/my_blogs/en/openclaw-theory/images/d31b5b74-927e-4158-834b-a72a730dbb5b.webp" alt="cover"></div><article id="3225dc8c-3cb9-8037-b6d9-d25a1ef444fd" class="page sans"><header><h1 class="page-title" dir="auto" id="openclaw-ai-agent-theories-&amp;-product-reflections-(deep-dive-into-first-hand-ref)-0" style="margin-bottom: 0.5rem;">OpenClaw-AI Agent Theories &amp; Product Reflections (Deep Dive into First-hand Ref) </h1><div class="custom-blog-meta"><div class="meta-row"><div class="meta-left"><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg><span style="font-weight:600;color:#4b5563;font-size:0.8125rem;">Tags:</span><div class="meta-tags-value" style="display:flex;gap:0.3rem;"><span class="selected-value select-value-color-brown">AI Insights</span><span class="selected-value select-value-color-red">Foundations &amp; Signals</span></div></div><div class="author-badge" onclick="copyAuthorEmail(this)" title="koala.fiona.gao@gmail.com"><svg style="width:14px;height:14px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span class="author-text">Fiona Gao</span></div></div><div class="meta-right"><a href="https://koalafionagao-ai.github.io/my_blogs/" target="_blank" class="meta-text-link" style="display:flex;align-items:center;gap:4px;"><svg style="width:15px;height:15px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Home</a></div></div><div class="meta-row" style="color: #6b7280; font-size: 0.8125rem;"><div class="meta-left" style="gap: 1.25rem;"><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span style="font-weight:600;color:#4b5563;">Created:</span> <span class="meta-ctime-value" style="color: #1f2937;">2026-03-13 18:54</span></div><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span style="font-weight:600;color:#4b5563;">Updated:</span> <span class="meta-utime-value" style="color: #1f2937;">2026-03-24 19:05</span></div></div><div class="meta-right"><span class="meta-text-link" onclick="togglePageLanguage()"><svg style="width:14px;height:14px;opacity:0.7;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg> 中文</span></div></div></div></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="32d5dc8c-3cb9-80e9-83fa-fd4fb2eae308" class=""><strong>Quick Highlights</strong></h1></div><div style="display:contents" dir="ltr"><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8093-a158-ee3a97f81680"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80ea-a8fb-fa0b796903b5" class=""><strong>Who/What</strong>：OpenClaw</p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80b5-a0b0-fbdca7f33b6a" class=""><strong>Why</strong>：Understand AI Agent theories, identify its architectural capability boundaries and limitations, and explore the feasibility of productization investment</p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-809e-b6ea-c32929b84234" class=""><strong>Question</strong>：Should a highly capable but less controllable AI agent with high-level granted permissions delivered directly  to users?</p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80b3-9a86-d5f9b3e9ac69" class=""><strong>Answers</strong>：</p></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80ed-8695-e4eb713f9b1f" class="bulleted-list"><li style="list-style-type:disc"><strong>Positioning:</strong> An executable local AI Agent prototype, providing a high-privilege local human-AI collaboration mode for indie developers</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8064-b19b-f3cd3dc92ac7" class="bulleted-list"><li style="list-style-type:disc"><strong>Competitors:</strong> <div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8048-83cf-fe71828ff52d" class="bulleted-list"><li style="list-style-type:circle">Manus → Cloud + Local (Desktop client), strong controllability, fits enterprises</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80f8-8604-f284669d4247" class="bulleted-list"><li style="list-style-type:circle">OpenClaw → Local, high privilege, highly explorable</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80c3-a54f-e70db56b7ef6" class="bulleted-list"><li style="list-style-type:circle">On control, Manus is conservative; on flexibility, OpenClaw wins</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8093-b2cb-df33ac7d9cc9" class="bulleted-list"><li style="list-style-type:circle">Route-wise, Manus leans toward control-first; OpenClaw leans toward capability-first</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80e7-91cd-e3e565a1507a" class="bulleted-list"><li style="list-style-type:disc"><strong>Architecture:</strong> Low cost × complex tasks, keeping Agent behavior within controllable bounds <div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8033-8ca4-f1d770880452" class="bulleted-list"><li style="list-style-type:circle">Gateway Orchestration → Cross-app integration, multi-Agent </li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8068-a0bb-ca3cb12e0913" class="bulleted-list"><li style="list-style-type:circle">Pi Agent Framework → Agent Loop, cross-model context switching, supports abort-and-resume </li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8011-88e1-dc02af552333" class="bulleted-list"><li style="list-style-type:circle">Brain-Body Separation → Frontend scheduling + backend work + data stays absolutely local</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8075-b322-dfbb671c0ee0" class="bulleted-list"><li style="list-style-type:disc"><strong>Highlights:</strong> Light&amp;local, supports temporary Subagents to avoid context pollution, introduces Human-in-the-Loop workflow "Lobster" to reduce out-of-control and hallucination risks</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8099-8739-e7ccd42d6717" class="bulleted-list"><li style="list-style-type:disc"><strong>Limitations:</strong> Bottom-layer security is fragile and stability is poor (hard to enter enterprise scenarios), local deployment is complex (tough for average users to adopt) → Not fit for direct scaling </li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80c2-981a-ce64eca02ec9" class="bulleted-list"><li style="list-style-type:disc"><strong>Decisions</strong>：<div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80f2-a018-c4bf6e01018b" class="bulleted-list"><li style="list-style-type:circle">OpenClaw is more like a "capability experimental platform," fit for verifying agent abilities in isolated environments; it's not a ready-to-use product and isn't fit for direct C-end user release.<div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-802c-b147-c18d1b4729b2" class="bulleted-list"><li style="list-style-type:square"><strong>Prerequisites for OpenClaw productization:</strong> ① Solve security and privilege control (refer to Manus desktop client), ② Solve user entry barriers (refer to QClaw-style packaging) </li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80ed-b061-d1a3c14021cf" class="bulleted-list"><li style="list-style-type:square"><strong>Manus is a closed ecosystem</strong>, cloud + local is complete, security strategy is steady; OpenClaw must face the security pressure of the open-source community, yet still holds irreplaceable high customization power (models, tools, skills, etc.) </li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-802d-95e2-cc64ebd8ce67" class="bulleted-list"><li style="list-style-type:square"><strong>QClaw made user-friendly adaptations for China</strong>, embedded in the WeChat ecosystem; OpenClaw should aim for the global market, breaking out of "local" in a customized ecosystem to find niche markets as personal assistants in vertical commercial scenarios </li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ab-a116-f17dd53761d3" class="bulleted-list"><li style="list-style-type:square"><strong>Hypothesis</strong>: If I were to lead the GTM, <mark class="highlight-red"><strong>a viable roadmap would be like: establishing prerequisites for launching an MVP → leveraging competitive advantages to lock in customers → seeking vertical growth opportunities to achieve PMF → commercialization on ecosystem→  the ultimate vision of becoming an OS Agent Infra.</strong></mark></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-800a-bf0b-e3d82bc793a2" class="bulleted-list"><li style="list-style-type:circle"><strong>Product Inspiration:</strong> Fieldwork/Remote work cases → Boosting omni-channel customer reception for retail stores, enabling lead management and deal conversion in full-link CRM </li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="32c5dc8c-3cb9-8047-9b73-ee1ca31eb95c" class="">1 Who is using OpenClaw?</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-80ed-98f2-dd20f7d60818"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80cb-bbf4-e581af8b481b" class="">Perhaps people are already unsatisfied with the Chatbot "chat + collaboration" mode, and many (including companies) are unwilling to put core assets into any cloud sandbox. </p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8083-b558-ea351d042bac" class="">OpenClaw makes local personal Agents a new choice. </p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-80f6-a0db-dad2a0c859ef" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80da-a876-dc1ad2bcde89" class=""><em>If you want a personal, single-user assistant that feels local, fast, and always-on, this is it.</em></p></div></blockquote></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8073-a450-e1e10e574774" class="">A large number of indie developers and efficiency-seeking pioneers are flocking in. Even knowing the security risks and deployment barriers, they are still more than happy to invite this digital employee to be their teammate.</p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-8038-86c5-c5d9bdd5e700" class="">Imagine how smooth this flow is:<em><mark class="highlight-gray"><br>- You just need to open WeChat (or WhatsApp, etc.),<br>- Assign a few tasks to your bound Agent,<br>- It can then read/write files on your paired computer device, and after finishing the work, send the results back to you via that same chat app. <br></mark></em><br>Who wouldn't like this division of labor and collaboration mode:<em><mark class="highlight-gray"><br>- After all, you don't need to find files and send them to the Agent yourself,<br>- Nor do you need to write long prompts (just install Skills and set up the Lobster workflow),<br>- It uses a connected brain (LLM) and grown hands/feet (Skills + Tools),<br>- Combines context (.md files in system prompts + memory storage + session history),<br>- And thinks-acts-corrects-delivers in its own exclusive workspace,<br>- While you can free up your energy to do other things that actually need you.<br></mark></em></blockquote></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8058-8cc9-f81adeb94348" class="">I'm not quite confident about handling local security issues properly yet, so I’m <a href="https://koalafionagao-ai.github.io/my_blogs/en/openclaw-on-github/">"raising a lobster" in a GitHub Codespaces VM</a>, tracking and experimenting under sandbox isolation. </p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-8067-ac72-e8e7587a68ee" class="image"><a href="/my_blogs/en/openclaw-theory/images/image.webp"><img style="width: 1231.99px; background-image: url(&quot;data:image/webp;base64,UklGRjoCAABXRUJQVlA4WAoAAAAgAAAAEwAABgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggTAAAAHADAJ0BKhQABwA+0VSjS6gkoyGwCAEAGglpAAPhIhI+m2ggsAD+yYS9sDeYcrfaTS4SY9m+8MK2FsScxBzEulke/aJQW4AAP9RAAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/image.webp" data-native="/my_blogs/en/openclaw-theory/images/image.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/image.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-80cb-be34-f978b565c159"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80a2-8caa-f36b15ccf15d" class="">Peter is a casual developer; OpenClaw is his creation, and his GitHub bio says, "Came back from retirement to mess with AI." </p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80a0-9869-cfdd84899e2d" class="">Mario Zechner is a rigorous engineer; the Pi Agent framework used by OpenClaw is his work. </p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80b2-ac9b-c457e19ce37f" class="">Both of their blogs have a clear minimalist style, so their development philosophy for personal AI Agents continues this vibe—<strong>simple abstraction, minimal cost, and restrained innovation. </strong></p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-80a9-9188-d8ffc99e4145" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-802d-8a7d-e803581a19e3" class=""><em><mark class="highlight-gray">My philosophy in all of this was: if I don't need it, it won't be built. And I don't need a lot of things.<br></mark></em><em><mark class="highlight-gray"><strong>——Mario Zechner</strong></mark></em></p></div></blockquote></div><div style="display:contents" dir="auto"><hr id="32c5dc8c-3cb9-80f8-b5d0-f79e0ca71acc"></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80b2-a5cc-e71b45b01fef" class="">OpenClaw started as a hobby project, <strong>evolving from personal scripts to an Agent OS in just 60 days. </strong></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80f6-b79e-e2b0e4bd3be9" class="">As of now, OpenClaw is still an immature AI Agent prototype, but it hasn't died in a GitHub lab. </p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8037-b044-c75deae21446" class="">With an open-source stance, it welcomes everyone to co-build this playground in the real world—<mark class="highlight-red"><strong>after all, the charm of a prototype lies in its endless possibilities for modification 😎. </strong></mark></p></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-806c-930b-dc601db1bf34" class="image"><a href="/my_blogs/en/openclaw-theory/images/image 1.webp"><img style="width: 1231.99px; background-image: url(&quot;data:image/webp;base64,UklGRpwCAABXRUJQVlA4WAoAAAAgAAAAEwAADAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggrgAAANAEAJ0BKhQADQA+0VakS6gko6GwCAEAGgllAMTZivfwDyABosi6zCoL/d1WDjJwAP7wS+x0vUp5NuL0rOr28aFfqwc0xSUyvffdCo8xW6/1H2+pFnEdBlG2d8frwejqL0vvM+S+JiLvAvvga/4l8GdFO/13GiRjCq+zyqUGS69A4hXRr23uIUbnKGgQ8HrFzb+n74kfaprNa7YUUgYLc8DXjWHhOkHILyQAcQAAAA==&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/image 1.webp" data-native="/my_blogs/en/openclaw-theory/images/image 1.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/image%201.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h1 id="32c5dc8c-3cb9-8018-a18e-fa98f3dd6597" class="">2 Understanding OpenClaw’s Architecture</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-80e2-9df3-d76d4564f760"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80ee-a145-cd176c8e2a84" class=""><mark class="highlight-gray">→ </mark><a href="https://docs.openclaw.ai/">Official Documentation</a><mark class="highlight-gray">  </mark></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80e5-a89b-e51ca70ab39c" class="">Minimalist style can look truly elegant sometimes, but high abstraction is super painful for learners.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8048-80a3-c5f173bc2c95" class="">If you haven't installed "the lobster" or played around with it, this diagram looks like this:</p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-809f-a4b5-f9236ae37f50" class=""><em><mark class="highlight-red">Gateway</mark></em><em><mark class="highlight-gray">: The gateway is the single source of truth for sessions, routing, and channel connections.<br>Chat apps connect to the core components of OpenClaw through this Gateway to send and receive messages.<br>After Gateway orchestration, some messages reach </mark></em><em><mark class="highlight-red">the Pi Agent</mark></em><em><mark class="highlight-gray"> to execute tasks.<br>Where the LLM integrates is currently unclear.<br>As for what the other parts are for, I can't figure them out yet 😭.</mark></em></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-8002-a973-fca91be8108d" class="image"><a href="/my_blogs/en/openclaw-theory/images/d31b5b74-927e-4158-834b-a72a730dbb5b.webp"><img style="width: 457.357px; background-image: url(&quot;data:image/webp;base64,UklGRj4CAABXRUJQVlA4WAoAAAAgAAAAEwAADQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggUAAAAJADAJ0BKhQADgA+0VSjS6gkoyGwCAEAGglpAABb6qypfHuhOgAA/vYHnFdXJ7kNOjkavXyJ1pv93AY+7kpbo8Qi9KG7vgYXTznio3J0KAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/d31b5b74-927e-4158-834b-a72a730dbb5b.webp" data-native="/my_blogs/en/openclaw-theory/images/d31b5b74-927e-4158-834b-a72a730dbb5b.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/d31b5b74-927e-4158-834b-a72a730dbb5b.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8094-a9cd-f816553b340d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8012-94d0-e07200700e4d" class=""><mark class="highlight-gray">→ </mark><a href="https://www.youtube.com/watch?v=aFQJYaornJ4">Youtube URL</a></p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8063-a37a-dad4836f06ea" class="">So, a tech blogger (<strong>Akshay Pachaar</strong>) put up a very easy-to-understand diagram in the video<em>"Master OpenClaw in 30 minutes (how i created 3 AI employees)," </em>which basically cleared up my confusion. Through this architecture diagram, at least the core boundaries of each capability module are clear:</p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-80a3-9772-dd92d1d70716" class=""><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8020-b68d-c6a7bd927e29" class=""><em><mark class="highlight-gray"><strong>Inputs:</strong></mark></em><em><mark class="highlight-gray"> from different chat software or scheduled tasks.<br></mark></em><em><mark class="highlight-red"><strong>Gateway Core</strong></mark></em><em><mark class="highlight-gray"><strong>:</strong></mark></em><em><mark class="highlight-gray"> Mainly manages messages, sessions, scheduled tasks, and the WebSocket API.<br></mark></em><em><mark class="highlight-red"><strong>PI Agent</strong></mark></em><em><mark class="highlight-gray"><strong>:</strong></mark></em><em><mark class="highlight-gray"> After messages orchestrated by the Gateway, they reach the designated Agent to execute tasks; once completed, they return to the input side via the Gateway.<br></mark></em><em><mark class="highlight-gray"><strong>WorkSpace:</strong></mark></em><em><mark class="highlight-gray"> Where the Agent works (including instructions and data) → the system prompts and memory </mark></em><em><mark class="highlight-gray"><code>.md</code></mark></em><em><mark class="highlight-gray"> files are physically stored here.<br></mark></em><em><mark class="highlight-gray"><strong>LLM:</strong></mark></em><em><mark class="highlight-gray"> The large models the Agent uses to execute tasks, for content generation &amp; interacting with users.<br></mark></em><em><mark class="highlight-gray"><strong>Skills:</strong></mark></em><em><mark class="highlight-gray"> The skills the Agent uses to execute tasks.<br></mark></em><em><mark class="highlight-gray"><strong>Tools:</strong></mark></em><em><mark class="highlight-gray"> The tools the Agent uses to execute tasks.</mark></em></p></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-8097-82c2-c545c5dca74f" class="image"><a href="/my_blogs/en/openclaw-theory/images/image 2.webp"><img style="width: 704px; background-image: url(&quot;data:image/webp;base64,UklGRlwCAABXRUJQVlA4WAoAAAAgAAAAEwAACwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggbgAAANADAJ0BKhQADAA+0VSjS6gkoyGwCAEAGglnAAPjAdlFLjWgbfKgAAD+88lbVUkfH3F23kKaBKCRn88KPP9uha2BDXLaSTqHzrkg3S/soKMmQy8rzHr/F0oJ1qVlzIUqT5teNInccLvw7YkzXQAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/image 2.webp" data-native="/my_blogs/en/openclaw-theory/images/image 2.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/image%202.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-802a-bbe5-e4579258c944"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-807f-91da-cc33555d7b39" class=""><mark class="highlight-gray">—&gt; </mark><mark class="highlight-gray"><a href="https://lilianweng.github.io/posts/2023-06-23-agent/">LLM Powered Autonomous Agents</a></mark></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80b2-9e3e-f9f1de0236da" class="">In the AI Agent field, there's a "primitive" diagram from the personal blog of Lilian Weng (former OpenAI Chinese scientist) titled<em>"LLM Powered Autonomous Agents"</em>.<br>This is a 2023 article with so many details; this diagram was later taken as the forefather of AI Agent architecture:</p></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8094-886f-fbf0ed6580d3" class="bulleted-list"><li style="list-style-type:disc"><em><mark class="highlight-gray">LLM-Powered Agent=(Memory+Planning+Action+Tools) × LLM</mark></em></li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-8009-898a-e1559472052f" class="image"><a href="/my_blogs/en/openclaw-theory/images/image 3.webp"><img style="width: 1232px; background-image: url(&quot;data:image/webp;base64,UklGRkYCAABXRUJQVlA4WAoAAAAgAAAAEwAACAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggWAAAADADAJ0BKhQACQA+0VajS6gkoyGwCAEAGglpAABacft6ZAAA/vPwdeVyCBhIx3A/vZIvQObj1L8YL975zgdJWYe+BKEX45qe1+qSsHndB/rEXRsFScAAAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/image 3.webp" data-native="/my_blogs/en/openclaw-theory/images/image 3.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/image%203.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-806a-8542-e40daea9392d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-808d-93e8-ed65280dbbd5" class="">Today's OpenClaw's core components completely echo the early LLM-Agent architecture.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80d7-9fa5-ceda0fcec694" class="">But in specific implementation, OpenClaw has integrated <strong>more pragmatic engineering practices that link the Agent with external software:</strong></p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80f7-ba4a-e2e632db85af" class="bulleted-list"><li style="list-style-type:disc"><strong>Frontend Scheduling + Backend Work:</strong> <mark class="highlight-red">Gateway handles orchestration, responsible for Multi-Agent routing, sessions, and message management; the PI Agent framework provides the Agent's Loop execution capability.</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ee-b855-cbac04283949" class="bulleted-list"><li style="list-style-type:disc"><strong>Persistent State Management:</strong> Agent's memory and system prompts are explicitly recorded and updated through engineering; memory and context are even physically stored on the disk via the workspace.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8065-9b62-dc6540ac72c6" class="bulleted-list"><li style="list-style-type:disc"><strong>Brain-Body Separation:</strong> PI Agent itself doesn't have Planning capabilities, but OpenClaw seems to let the Agent collaborate with the LLM on its own.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8022-af51-c1fe682c3113" class="bulleted-list"><li style="list-style-type:disc"><strong>Reducing Context Pollution:</strong> When facing complex tasks, the Main Agent is allowed to generate temporary Subagents at the isolated Session to do the work.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8062-b92f-d86e6419380c" class="bulleted-list"><li style="list-style-type:disc"><strong>Lowering Out-of-Control and Hallucination Risks:</strong> Now a "Lobster" approval flow is added to restrict the LLM's multi-step pipeline management, making Agent execution more controllable.</li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="32c5dc8c-3cb9-80af-95f7-ee283e0d6a46" class="">3 The Elegant PI Agent Framework</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-80bd-9a71-eafa01a2e7a8"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-806e-9b14-f38e711b9b54" class="">→ <a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/">Mario Zechner : </a><strong><a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/">What I learned building an opinionated and minimal coding agent</a></strong></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-806c-925d-f4db9b278e67" class="">The design framework of PI Agent also follows a minimalist style; <mark class="highlight-red"><strong>I summarize it with 3 keywords: Restraint, Innovation, and Experience. </strong></mark></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8024-81d9-d166257f0f0d" class="">Below are some excerpts of important notes and supplementary thoughts. </p></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-80c6-bab6-ca9398a638d7" class="">Keyword 1: Restraint</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8086-bad4-df7cd681baec"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8073-ac5e-fd3578d2160f" class="">Pi Agent has 4 core modules: </p></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80d2-b377-d6e35f1463c5" class="bulleted-list"><li style="list-style-type:disc">pi-tui：Terminal UI</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80e5-8157-cf0b8e10632c" class="bulleted-list"><li style="list-style-type:disc">pi-coding-agent: Application CLI, manages sessions &amp; context, wires logic &amp; custom tools</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8051-b24e-ca6249f362e9" class="bulleted-list"><li style="list-style-type:disc">pi-agent-core：Agent Engine, executes the Agent Loop</li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80da-96bb-ce2455f523a3" class="bulleted-list"><li style="list-style-type:disc">pi-ai：LLM Foundation, unifies multi-providers &amp; supports cross-provider handoff </li></ul></div></div></figure></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-805d-9273-d5a77742e8c1" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8095-8460-cfb813fe534a" class="">My philosophy in all of this was: if I don't need it, it won't be built. And I don't need a lot of things.</p></div></blockquote></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-803a-8df5-f26d22b7e1a3" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8016-87fd-f7ab846fa688" class="">Then just talk to pi. By default, pi gives the model four tools: read, write, edit, and bash. The model uses these to fulfill your requests. Add capabilities via <a href="https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#skills"><span style="border-bottom:0.05em solid">skills</span></a>, <a href="https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#prompt-templates"><span style="border-bottom:0.05em solid">prompt templates</span></a>, <a href="https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#extensions"><span style="border-bottom:0.05em solid">extensions</span></a>, or <a href="https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent#pi-packages"><span style="border-bottom:0.05em solid">pi packages</span></a>.</p></div></blockquote></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-8063-8f7c-dba6bbd2d53d" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-809e-bd0d-dff8a471a63d" class="">As it turns out, these four tools are all you need for an effective coding agent. Models know how to use bash and have been trained on the read, write, and edit tools with similar input schemas.</p></div></blockquote></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-8005-a2b3-f134e1ecaba4" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80bc-80da-f3a860167b52" class="">pi's system prompt and tool definitions together come in below 1000 tokens.</p></div></blockquote></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-801b-89d6-df96d5719125" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">┌──────────────────────────────────────────────────────────────┐
+│ Layer 4: Terminal UI                                         │
+├──────────────────────────────────────────────────────────────┤
+│ 【 pi-tui 】                                                  │
+│ • Minimal TUI rendering                                      │
+│ • Flicker-free updates                                       │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Input &amp; Events
+┌──────────────────────────────▼───────────────────────────────┐
+│ Layer 3: Application CLI                                     │
+├──────────────────────────────────────────────────────────────┤
+│ 【 pi-coding-agent 】                                         │
+│ • Session &amp; context management                               │
+│ • Wiring logic &amp; custom tools                                │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Tool Injection
+┌──────────────────────────────▼───────────────────────────────┐
+│ Layer 2: Agent Engine                                        │
+├──────────────────────────────────────────────────────────────┤
+│ 【 pi-agent-core 】                                           │
+│ • Agent loop execution                                       │
+│ • Tool validation &amp; run                                      │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ Command &amp; Stream
+┌──────────────────────────────▼───────────────────────────────┐
+│ Layer 1: LLM Foundation                                      │
+├──────────────────────────────────────────────────────────────┤
+│ 【 pi-ai 】                                                   │
+│ • Multi-provider API wrapper)                                │
+│ • Seamless cross-provider handoff)                           │
+└──────────────────────────────────────────────────────────────┘</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-80ef-8f41-dfb3cbe4155d" class="">Keyword 2: Innovation</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8058-bd16-e15ecd912edf"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80dc-8b28-fc17f5baab8d" class="">✅&nbsp;Pi-ai supports cross-provider context handoff</p></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-8060-839e-d4332cd0f9f1" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Approach</strong></mark><mark class="highlight-red">: Convert thinking traces into the content block of an assistant message</mark></li></ul></div><div style="display:contents" dir="auto"><ul id="32c5dc8c-3cb9-80d7-b029-d0155f97d910" class="bulleted-list"><li style="list-style-type:disc"><strong>Author's Note</strong>: The conversion might not be perfectly accurate because each provider's internal representation is different </li></ul></div><div style="display:contents" dir="auto"><hr id="32c5dc8c-3cb9-8021-9d2d-e6949800991f"></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8000-b97f-d14696bbd5da" class="">It solves the <mark class="highlight-red"><strong>Multi-Agent handoff challenge</strong></mark>: </p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8031-8835-d757c0e4bfb3" class="bulleted-list"><li style="list-style-type:disc">When multiple models collaborate and transfer, it’s like they share a brain memory that they can all understand</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8086-b8f3-db8616dfdf52" class="bulleted-list"><li style="list-style-type:disc">In multi-turn conversations, if the model is switched midway, it can reduce Performance Drift when the loss in context alignment is small<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8044-abf8-d29e86f2c621" class="bulleted-list"><li style="list-style-type:circle">If switching between high and low versions of a model (e.g., Pro for decision-making, Flash for execution), it saves costs while ensuring a certain degree of handoff stability</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8016-a49a-e063eac3c983" class="bulleted-list"><li style="list-style-type:circle">If switching between models of different providers (e.g., Anthropic → OpenAI), it allows the session and state to continue running while providing disaster recovery, feeling almost seamless to the user</li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-801a-90f7-d777b606c861" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-807b-9efe-e5455156b6d9" class="">Context handoff between providers was a feature pi-ai was designed for from the start.</p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80c2-b465-c7e52511b6dc" class="">I'm happy to report that cross-provider context handoff and context serialization/deserialization work pretty well in pi-ai:</p></div></blockquote></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-80c9-a760-ffc16205449d" class="">Keyword 3: Experience</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8061-ac4a-debe866b3111"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80a2-a0e2-e50384fdfa33" class="">✅&nbsp;Pi-AI supports process abortion——<mark class="highlight-red"><strong>This is a demand ignored by most Agent frameworks; it ensures the continuity of state and memory through lossless context truncation (Context Integrity). </strong></mark></p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8077-9a05-d21fe2950afc" class="bulleted-list"><li style="list-style-type:disc">In real human-AI collaboration scenarios, AI doesn't always accurately identify human intent, especially for long-chain complex tasks</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80d9-982d-ecc7afbe0bdc" class="bulleted-list"><li style="list-style-type:disc">During the AI output process, if humans can interrupt to abort the Agent's behavior &amp; correct course in real-time, an extremely natural human-AI collaboration mode evolves<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-802d-a3ff-e29cf2390477" class="bulleted-list"><li style="list-style-type:circle">The aborted content is collected and can then be written into the Agent's memory, effectively saving the "error process" of the large model as an extremely precious context asset</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8097-bf59-d0d2e0858c45" class="bulleted-list"><li style="list-style-type:circle">This way, the interrupted Agent won't lose its memory or black out; it will adjust from the point of interruption according to the user's new instructions</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="32c5dc8c-3cb9-80ef-9fc5-f16a0417d9b8"></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80e9-9470-cf1c799696d6" class=""><strong>Scenario</strong>: A user makes a request (letting the LLM generate long text) and <strong>might need to stop the generation midway </strong>(e.g., the user feels the direction is off, the content is too long, or it's timing out). </p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8077-bfda-d33ef7784add" class="">The system needs to: </p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ac-b3c8-ceb075158020" class="bulleted-list"><li style="list-style-type:disc">Stop subsequent LLM streaming output </li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8029-a68d-f2ea636e5cdc" class="bulleted-list"><li style="list-style-type:disc">Collect the already generated partial content </li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8062-9e02-f13d76be0641" class="bulleted-list"><li style="list-style-type:disc">Return a status indicating it's an "abort" rather than normal completion </li></ul></div></div></figure></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-8052-855c-e90a727900ea" class=""><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-803c-bd79-eae378173e60" class="">Many unified LLM APIs completely ignore providing a way to abort requests.<br>pi-ai was designed from the beginning to support aborts throughout the entire pipeline, including tool calls.</p></div></blockquote></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-8082-a371-da753d489d2d" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">┌───────────────────────────────────────────┐
+│          **User Interface (UI)**          │
+│  - Input request (generate story)         │
+│  - Display generated content &amp; abort tips │
+│  - "Abort" button / "Continue" button     │
+└────────────────┬──────────────────────────┘
+                 │ User Ops: Start / Abort / Continue
+                 ▼
+┌───────────────────────────────────────────┐
+│   **App &amp; Business Orchestration Layer**  │
+│        **(pi-coding-agent)**              │
+│  - Manage session &amp; project context       │
+│  - Inject tools / configure context       │
+│  - Listen for abort signal                │
+│  - If continue → Re-inject context        │
+└────────────────┬──────────────────────────┘
+                 │ Instructions + Context (includes partial content)
+                 ▼
+┌───────────────────────────────────────────┐
+│          **Agent Core Layer**             │
+│         **(pi-agent-core)**               │
+│  - Start loop generation process          │
+│  - Call LLM / execute tools               │
+│  - Listen for AbortController signal      │
+│      └── If triggered → Stop generation   │
+│  - Collect generated partial content      │
+│  - If continue → Resume from partial content
+└────────────────┬──────────────────────────┘
+                 │ Generated content / status return
+                 ▼
+┌───────────────────────────────────────────┐
+│    **LLM Comm &amp; Execution Layer**         │
+│            **(pi-ai)**                    │
+│  - Receive generation request             │
+│  - Stream output text                     │
+│  - Stop output on Abort signal            │
+│  - Return partial content + stopReason    │
+│  - If continue → Receive resume request   │
+└───────────────────────────────────────────┘
+
+**💡 Flow Highlights:**
+- **When aborting:** Abort → Agent stops → Save partial content → UI prompt.
+- **When resuming:** UI triggers "Continue" → Inject partial content → Agent resumes → LLM outputs.
+- **Final content for user:** Complete text (Pre-abort + Post-resume).
+- **Clear layer duties:** UI handles interaction, App layer manages context, Agent controls the loop, and LLM executes text generation.</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><h1 id="32c5dc8c-3cb9-8048-bb2e-e96e856cf6af" class="">4 OpenClaw Gateway Design Highlights</h1></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-809a-ac85-f57d62dfbc03" class="">Highlight 1: Multi-Agent is Multi-Tenancy</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-807b-9d67-e2c554e28e23"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-801c-bfdb-d64df801ecfa" class=""><strong>Multi-Agent allows bulky input/output data to flow securely within a "cross-application, multi-account" system. This opens up huge commercial imagination for complex enterprise-level automated workflows.</strong></p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80e2-8ae0-d89bf96c989c" class="">You can simply understand it like this:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8042-9eb9-cc83cdcb6aee" class="bulleted-list"><li style="list-style-type:disc"><strong>Multiple Agents:</strong> Each Agent interacts with a single client (or group) in an isolated session, so there's no crosstalk.<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80a6-83b3-f7d0538ebbb7" class="bulleted-list"><li style="list-style-type:circle"><strong>1 Agent:</strong> Has its own independent workspace, independent data (persona, sessions, memory, etc.), and configuration (auth, models, etc.).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8069-a3c5-cf40b02d2ed8" class="bulleted-list"><li style="list-style-type:circle"><strong>Multiple Agents:</strong> Each Agent interacts with a single client (or group) in an isolated session, so there's no crosstalk. </li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-804e-90d6-d878deecf261" class="bulleted-list"><li style="list-style-type:circle">The essence of multiple Agents running concurrently is session isolation, which is the multi-tenancy mode.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80b6-98e9-e6a24f213860" class="bulleted-list"><li style="list-style-type:disc"><strong>Business Scenario Example:</strong> <em><mark class="highlight-red">Boosting lead management and deal conversion in retail CRM.</mark></em><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80e0-bd29-ebebae760a63" class="bulleted-list"><li style="list-style-type:circle">Imagine you are a customer sales assistant at a car store, facing 100+ customers with different needs every day; most are online inquiries, while some are in-store services.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8091-aa99-e06e858b6835" class="bulleted-list"><li style="list-style-type:circle">Now the company has deployed OpenClaw and assigned you a "lobster squad" (e.g., Agent 1 = Lead Reception, Agent 2 = Pre-sales Consulting, Agent 3 = Mid-sales Follow-up).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80bd-a4bc-f79f7dc6bfee" class="bulleted-list"><li style="list-style-type:circle"><strong>Input:</strong> The upstream corresponds to multiple channels; a large number of customers send messages from the official website IM, social media leads (TikTok), Enterprise WeChat (or WhatsApp), etc.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80e9-a4bb-d35582e15e77" class="bulleted-list"><li style="list-style-type:circle"><strong>Orchestration:</strong> Based on the channel or intent, messages are routed to the corresponding Agent; each Agent serves one independent session at a time (could be a peer or a group).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-807c-9bfd-db8a09722bec" class="bulleted-list"><li style="list-style-type:circle"><strong>At this moment:</strong> You might be receiving an in-store customer. When you hear the "lobster call," it means it needs HITL (Human-in-the-Loop) takeover and approval; after getting your confirmation, it continues working.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80f1-9e89-e051fe7b12ca" class="bulleted-list"><li style="list-style-type:circle"><strong>Daily Closing:</strong> Before clocking out, you just need to review the customer reception logs of all Agents (to spot anomalies and key conversion targets), make decisions based on dashboard data and AI suggestions, and then set the next day's work plan.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-804c-91a6-f99628f24857" class="bulleted-list"><li style="list-style-type:circle"><strong>Tip:</strong> Think of it like the Teams (or Lark) you use every day. The company deploys and configures it uniformly, assigns you account permissions and an Agent squad;<strong> the company ensures absolute flexibility, and employees have almost no cognitive burden.</strong></li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="32c5dc8c-3cb9-8048-a45d-ca354e8d25ce" class="image"><a href="/my_blogs/en/openclaw-theory/images/image 4.webp"><img style="width: 1231.98px; background-image: url(&quot;data:image/webp;base64,UklGRvICAABXRUJQVlA4WAoAAAAgAAAAEwAACgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggBAEAANAFAJ0BKhQACwA+0VSjS6gkoyGwCAEAGglsAJ0ygtQLsBdgBO1q9zyEpkA5p72njRgUkyFMqgAA/sXN7GSIMpH60ywJvZgaJl6CUp85zcw9Rz/rcoCpmYJ/HpHo+mOSMyca6jLO+K4/Cu6KI3IgfsMPsXony2aoS8k9Wo+jG2Jk9MznkW0ZQFaPpg98g6ck3hojEoMmkPAabUfWp1Hyfimvh1g06DARH35w8SBidzIBCic76CG1SF/qr7dG2FaIv86t75nemiD1RWbdaPmBw/iQT7mRy3W1b4X6OoPe4IXIKQf+e/Hav/k3+fnqf4OTFR+j3h39HJioNwKI+ItJMds5HUAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/en/openclaw-theory/images/image 4.webp" data-native="/my_blogs/en/openclaw-theory/images/image 4.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/en/openclaw-theory/images/image%204.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-80f6-bfdb-feeffaff74f3" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">[ Layer 1: Touchpoints (Inputs) ]
+ (Official Web Chat)   (WhatsApp Client)    (Enterprise WeChat Sales)  (CRON Triggers)
+          |                     |                    |                   |
+==========|=====================|====================|===================|======
+[ Layer 2: Gateway Control (Gateway Core) ] 
+  -&gt; [Node Auth]: Authentication Block
+  -&gt; [Router]:    Hard Routing by Channel ID
+          |                     |                    |                   |
+==========|=====================|====================|===================|======
+[ Layer 3: Session Context (Session) ]
+     [Session 1]           [Session 2]          [Session 3]         [后台 Session]
+      (active)            (active)              (active)    (Silent Execution Flow)
+          |                     |                    |                   |
+==========|=====================|====================|===================|======
+[ Layer 4: OpenClaw Agent Orchestration (Multi-Agent Runtime) ]
+
+     【Agent 1】             【Agent 2】          【Agent 3】
+  (Customer Reception)  (Quote Buildup)      (Loan Contract)
+
+  [Exclusive Workspace]  [Exclusive Workspace] [Exclusive Workspace]
+  (read Identity.md)       (read Prices.csv)       (read Template.docx)
+          |                     |                    |
+  [LLM 
+  Intent &amp; Planning]    [LLM Intent &amp; Planning]  [LLM Intent &amp; Planning]
+          |                     |                    |
+    +-----+-----+         +-----+-----+        +-----+-----+
+    |           |         |           |        |           |
+ [Skill]   [Heartbeat]  [Tool]      [Tool]   [Tool]    [Sub-Agent]
+ (Script)  (Recovery)   (DB Query)  (Cal)   (Rewrite)  (OpenClaw Spawn)
+    |           |         |           |        |       (e.g., Compliance Auditor)
+    |           |         |           |        |       [Destroyed after result]
+    |           |         |           |        |           |
+ [Output]    [Output]  [Output]    [Output] [Output]    [Output]
+    |           |         |           |        |           |
+----+-----------+---------+-----------+--------+-----------+--------------------
+    |
+[ Layer 1Full-link bi-directional WebSocket streaming (Event Streaming), returning same way to Layer 1 ]</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-809d-adec-cc99d708c71b" class="">Highlight 2: SubAgent is a Session Tool </h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8022-84ca-d6ef7d8bdfcd"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8082-8974-c5612554481d" class=""><strong>SubAgents are generated via the session tool </strong><code><strong>sessions_spawn</strong></code><strong>. The main Agent spawns sub-agents to run in isolated sessions as needed, which works great to prevent context pollution and reduce out-of-control risks or hallucinations.</strong></p></div><div style="display:contents" dir="auto"><blockquote id="32d5dc8c-3cb9-80b5-974e-cf84565ec480" class=""><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8016-ba8b-ee79182c9aa7" class="bulleted-list"><li style="list-style-type:disc">When the main Agent gets a complex task (e.g., many steps, needs to read massive files), it generates temporary sub-agents to run independently in isolated sessions, then the main Agent keeps doing other things. </li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-806e-9c70-ccc5edb6007a" class="bulleted-list"><li style="list-style-type:disc">Sub-agents do trial-and-error in independent sandboxes, so the main Agent's context isn't polluted, and its attention isn't distracted.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-807d-858e-df769fdeb029" class="bulleted-list"><li style="list-style-type:disc">The main Agent doesn't need to wait for sub-agents; its process and state are unaffected.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80f8-99c6-fe8df0c64852" class="bulleted-list"><li style="list-style-type:disc">Once a sub-agent finishes its task, it pushes the delivery result directly into the user's chat channel as a message bubble. Its temporary session is reclaimed, and process files are auto-archived (logical deletion).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8066-b6ef-fd25bc77d072" class="bulleted-list"><li style="list-style-type:disc">If the main Agent needs the sub-agent's research data later, it must actively call <code>sessions_history</code> to check the transcripts left by the sub-agent on the disk.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8008-9715-e2babfb59697" class="bulleted-list"><li style="list-style-type:disc">When multiple sub-agents run, it relies on the LLM and OpenClaw to handle underlying concurrency and conflicts. Generally, if capabilities are sufficient, reads allow concurrency, while write operations remain serial to avoid conflicts.</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-804b-85b1-c9c4d16ba0e8" class="">If considering cost and efficiency for model orchestration logic, you can also do high/low version switching here:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8011-9bdf-e29310ceb15a" class="bulleted-list"><li style="list-style-type:disc"><strong>Complex/High-end models:</strong> Strong reasoning, handles main Agent tasks, responsible for frontend generation, orchestration, and global supervision.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80e2-a559-edbffcec7fce" class="bulleted-list"><li style="list-style-type:disc"><strong>Light/Low-end models:</strong> Strong instruction following, handles sub-agent tasks, responsible for backend research, data organizing, and drafting.<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ef-8e30-f6aeb7c85969" class="bulleted-list"><li style="list-style-type:circle">If you stack the Lobster workflow here, you can maximize the controllability of Agent behavior.</li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-8019-9418-e67c03e9c83f" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">[ Frontend: Your Telegram/Web Window ]
+       |
+       v
++-----------------------------------------------------------------------------+
+|               Main Agent                                                    |
+|  [Active Session]                                                           |
+|  User: "Help me parallel check financial reports for companies A, B, and C" |
++------------------------+----------------------------------------------------+
+                         |
+      (Call tools.sessions_spawn to instantly dispatch 3 tasks)
+                         |
+      +------------------+------------------+
+      |                  |                  |
+   (return runId_1)     (return runId_2)     (return runId_3) 
+      |                  |                  |
+      v                  v                  v
+[ Main Agent keeps working; you can keep chatting with it, it won't freeze ]
+
+================================================================================
+[ Backend: Subagent Concurrency Queue (Default maxConcurrent: 8) ]
+
+ [Sub-Agent A]      [Sub-Agent B]      [Sub-Agent C]
+ (Indep Session)     (Indep Session)     (Indep Session)
+                          |                  
+           Perform time-consuming research        
+       |                  |                  |
+       v                  v                  v
++------------------------------------------------------------------------------+
+|               Announce Step)                                                 |
++------------------------------------------------------------------------------+
+       |                  |                  |
++------------------------------------------------------------------------------+
+                          |
+     (Directly push 3 result bubbles to your Telegram chat window)
+     "Status: success | Result: A公司营收..."
+     "Status: success | Result: B公司营收..."
+     "Status: success | Result: C公司营收..."</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-80e9-90ec-fc58c2fa45e1" class="">Highlight 3: Heartbeat+Cron Jobs+Lobster</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8055-9222-da3d9a2ef180"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8094-9d5d-c3c71ca95f83" class=""><strong>For standard/repetitive procedural work, OpenClaw provides cron jobs, heartbeats, and workflows/approval flows to limit the Agent's "free play," thereby increasing the controllability of overall delivery quality.</strong></p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8069-9578-f26cf686446d" class="bulleted-list"><li style="list-style-type:disc">Pure cron jobs have many uses, like requesting a daily news summary at a set time.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-800d-ac85-c268b81c1266" class="bulleted-list"><li style="list-style-type:disc">Pure heartbeat mechanisms aren't surprising either, like controlling the polling frequency to grasp the overall progress and status of a task.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8001-8860-f7e25a8ce127" class="bulleted-list"><li style="list-style-type:disc">Adding Lobster (workflow/approval flow) means, for example, writing an email but not sending it from the drafts; it needs your approval. The workflow will then pause to request a Human-in-the-Loop.</li></ul></div><div style="display:contents" dir="auto"><hr id="32c5dc8c-3cb9-805a-9020-c3b668adcb3b"></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80d6-9ad8-cdb027d3ad79" class="">In real scenarios, not every step of a task needs the LLM to think-reason-act-and-loop:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ac-b3a1-c19e0bad4fe6" class="bulleted-list"><li style="list-style-type:disc">In standardized processes, there's no need to bring in an LLM; a normal rule engine can do it.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-801d-8fc2-fe181940c089" class="bulleted-list"><li style="list-style-type:disc">In necessary scenarios, using the LLM for every step "by brute force" would also be a huge waste of tokens.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80cf-8902-cc00fecee98e" class="bulleted-list"><li style="list-style-type:disc">Plus, with a context full of overlapping correct and incorrect info, the LLM can easily lose focus, increase hallucinations, and lead to uncontrollable delivery quality.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8045-b3a2-d1a9bfcd14c6" class="bulleted-list"><li style="list-style-type:disc">So, breaking a task into multiple steps for comprehensive use is the only way to let Agent capabilities shine:<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-800b-902d-ebb537ee325b" class="bulleted-list"><li style="list-style-type:circle">→ Which steps need an LLM, which have fixed workflows, and which must have manual approval.</li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-8077-8102-fcb606678990" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">[ Layer 1: Trigger (Trigger / When) ]
+  (Cron: Every day 8:30 AM)  (Heartbeat: Backend every 4 hours)  (Isolated Cron: Every Monday 2:00 AM)
+           |                              |                              |
+===========|==============================|==============================|===========
+[ Layer 2: Lobster (Pipeline / How) ]
+           v                              v                              v
+【S1: Sales Email Processing】 【S2: CRM Dirty Data Cleaning】  【S3: Second Brain Knowledge Base】
+           |                              |                              |
+    [Step 1: Query Data]       [Step 1: Query Data]               [Step 1: Query Data]
+    Cmd: inbox list               Cmd: scan_crm_db              Cmd: scan_markdowns
+ (Pull last night's              (Scan recently                  (Scan local
+ new customer emails)          added customer files)            untagged notes)
+           |                              |                              |
+    [Step 2: Processing/LLM]  [Step 2: Logic Validation]    [Step 2: Processing/LLM]
+    Cmd: llm-task                 Cmd: check_rules              Cmd: llm-task
+    (identify intent            (Compare rules,                (Extract core summary
+ and generate reply draft)    find 15 abnormal data entries)        and auto-tag)
+           |                              |                              |
+===========|==============================|==============================|===========
+[ Layer 3: Approval (Human-in-the-loop / Gatekeeper) ] 
+      (The pipeline auto-suspends here, releasing computing resources, 
+          and pushes a JSON summary and resumeToken to your phone/computer)
+
+     [pending:                         [pending:                       [pending: 
+ Confirm sending 5 emails?]    Confirm fixing 15 files?]     Confirm updating 20 notes?]
+           |                              |                              |
+ (Drink Coffee，click ✅ Approve)   (Take a glance，click ✅ Approve)   (Just wake up，click ✅ Approve)
+           |                              |                              |
+===========|==============================|==============================|===========
+[ Layer 4: Recovery and Final Execution (Side Effects / Execute) ]
+           v                              v                              v
+    [Step 3: Actual Write]       [Step 3: Actual Write]      [Step 3: Actual Write]
+    Cmd: inbox apply              Cmd: db_update                Cmd: git_sync
+    (Actually call                 (Actually write                (Execute git
+    email sending interface)    supplemented data to DB)          commit &amp; push)</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><h1 id="32c5dc8c-3cb9-80c7-8e73-ce71aca1bfab" class="">5 Two Challenges &amp; Breakout Ideas</h1></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-8081-98ba-ea171277113f" class="">Security Concerns: Benchmarking vs. Manus</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8031-af89-d541239af4ba"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80c4-95df-cc0457c52ee0" class="">Security issues always accompany every leap in AI capability. While OpenClaw’s high local privileges are convenient, they also cause security risks to be infinitely magnified.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8077-a685-c781fce3c4b5" class="">As we develop into the current Agent phase, here is the consensus in the industry:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ae-bc1c-dcd38a146f04" class="bulleted-list"><li style="list-style-type:disc">Let "Zero Trust Architecture" form a powerful protective shield in the Agent ecosystem.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8056-9ac7-e32bd89883c2" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>The "Defense-in-depth" route</strong></mark>: <strong>Hardware-level sandboxing + Principle of Least Privilege + HITL manual approval.</strong></li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><div style="display:contents" dir="ltr"></div><div style="display:contents" dir="ltr"></div><div style="display:contents" dir="ltr"></div><div style="display:contents" dir="ltr"></div><table id="32c5dc8c-3cb9-8035-b941-d1ca619ac9e1" class="simple-table"><thead class="simple-table-header"><tr id="32c5dc8c-3cb9-801f-b5a8-dc90c106c6b8"><th id="vS:]" class="block-color-gray_background simple-table-header" style="width:159.6640625px"><strong>Product Phases</strong></th><th id="dft\" class="block-color-gray_background simple-table-header" style="width:172.6640625px"><strong>Interface Features</strong></th><th id="&gt;mcu" class="block-color-gray_background simple-table-header" style="width:283.6640625px"><strong>Security Issues</strong></th><th id="]N]?" class="block-color-gray_background simple-table-header" style="width:363px"><strong>Strategies</strong></th></tr></thead><tbody><tr id="32c5dc8c-3cb9-8042-bac9-da1fa1921fbb"><td id="vS:]" class="" style="width:159.6640625px">ChatBot<br>2022-2023</td><td id="dft\" class="" style="width:172.6640625px">Text dialog box <br><br>(No web search, no Function Call yet)</td><td id="&gt;mcu" class="" style="width:283.6640625px"><strong>Model has a "Brain":<br></strong>Direct Prompt Injection <br>Jailbreak<br>  • Mainly attacks the dialog box <br>  • Outputs harmful speech, writes malicious code text <br>  • But <mark class="highlight-red"><strong>lacks physical destructive power.</strong></mark></td><td id="]N]?" class="" style="width:363px"><strong>Model:</strong> Fine-tuning and alignment (RLHF), "Ad-hoc Filtering" <br><strong>Ports:</strong> Security auditing and rule interception for input and output</td></tr><tr id="32c5dc8c-3cb9-80fb-bc62-e7c59fe49d46"><td id="vS:]" class="" style="width:159.6640625px">Copilot<br>2024-2025</td><td id="dft\" class="" style="width:172.6640625px">RAG Retrieval-Augmented Generation <br><br>(Reading PDFs, summarizing webpages, querying databases, etc.)</td><td id="&gt;mcu" class="" style="width:283.6640625px"><strong>Model grew "Eyes":<br></strong>Indirect &amp; Zero-Click Injection <br>  • Malicious instructions embedded in external content <br>  • Attackers inject harmful prompts into databases or knowledge bases the AI frequently visits <br>  • Traditional filters fail because legal content and malicious instructions are mixed<br>  • When AI reads data, it hits a hidden command and is instantly "flipped”.</td><td id="]N]?" class="" style="width:363px">"Input Sanitization"<br> "Data Loss Prevention (DLP)" <br>  • Restrict AI access to sensitive databases (Principle of Least Privilege) <br>  • Or perform manual desensitization before AI returns results.</td></tr><tr id="32c5dc8c-3cb9-8019-ba82-e52540ea72d0"><td id="vS:]" class="block-color-orange_background" style="width:159.6640625px">Agent<br>2025-till now（2026）<br><br><mark class="highlight-red">→This is where OpenClaw stands today.</mark></td><td id="dft\" class="block-color-orange_background" style="width:172.6640625px">Cross-app scheduling and local code execution capability <br><br>(Reading local files, operating terminal CLI, deleting/writing emails, modifying code, etc.)</td><td id="&gt;mcu" class="block-color-orange_background" style="width:283.6640625px"><strong>Model grew "Hands and Feet":<br>  • </strong>Semantic privilege escalation <br>  • RCE (Remote Code Execution) <br>  • Promptware <br>  • <mark class="highlight-red"><strong>Security threats officially upgrade from "text pollution" to "system-level control takeover".</strong></mark></td><td id="]N]?" class="block-color-orange_background" style="width:363px">"Letting the LLM do security reviews itself" → Nested defense is useless .<br>Security deployment shifts fully toward "Architectural-level hard isolation" .<br>  • <strong>Sandboxing:</strong> Locking the Agent in a cloud container or local restricted Docker .<br>  • <strong>Plugin supply chain review</strong>: Real-time monitoring for ToxicSkills in the Agent tool library .<br>  • <strong>Human-in-the-loop (HITL)</strong>: Forcing a cut to the Agent's silent write permissions; any system call must have a human click to authorize.</td></tr></tbody></table></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8011-a978-e955131fd2b1"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8022-bef9-c72d4e8268ef" class=""><mark class="highlight-red"><strong>Defense-in-depth route</strong></mark><strong> → A simple breakdown from the Agent's running chain:</strong></p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8030-871e-f37452c7e0af" class="bulleted-list"><li style="list-style-type:disc">If the model side has done RLHF forced alignment.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-808e-86bc-d63feef6bd3b" class="bulleted-list"><li style="list-style-type:disc">Input and output have engineered forced rule validation and security auditing.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-802b-8c31-ce3744664db1" class="bulleted-list"><li style="list-style-type:disc">Source data accessed and used by the AI has undergone cleaning and desensitization.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ad-91f4-d1c90c3577e3" class="bulleted-list"><li style="list-style-type:disc">Then, how should the skills and tools—these external, almost open capabilities—be controlled and defended? This is a hot topic in the security field right now:<div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8053-9ce0-eab577781dbe" class="bulleted-list"><li style="list-style-type:circle">How to eliminate supply chain poisoning?—&gt;  Provide an official Skills Marketplace?</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8086-a748-f248772fd1e2" class="bulleted-list"><li style="list-style-type:circle">How to perform strong verification on tools and capabilities called by the Agent—&gt; Real-time scanning?</li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32c5dc8c-3cb9-805d-a5dc-d7271b35501c" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">┌─────────────────────────────────────────────────────────────────────────┐
+│               [ External Input / Channel Trigger ]                      │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│ 【Node 1：Input &amp; Intent Guardrails】                                    │
+│ • Product Strategy:                                                     │
+│   - Boundary Defense. Block malicious probing and non-business          │
+│   requests before instructions enter the LLM for processing.            │
+│ • Product Actions:                                                      │
+│   - Deploy Prompt Injection interception rules.                         │
+│   - Build business intent classifiers (route non-core requests          │ 
+│     to a canned response library).                                      │
+│   - Pre-process and standardize the format of input source data.        │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│ 【Node 2：Model Reasoning &amp; Alignment】                                  │
+│ • Product Strategy:                                                     │
+│   - Internalized Rules. Ensure the LLM strictly follows predefined      │
+│   business guardrails during the reasoning process.                     │
+│ • Product Actions:                                                      │
+│   - Hardcode System Prompts to define high-priority, non-negotiable     │
+│     business red lines.                                                 │
+│   - Introduce RLHF to align output values for specific scenarios.       │
+│   - Implement runtime multi-agent cross-verification                    │ 
+│     (to prevent hallucinations and logic drift).                        │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│ 【Node 3：Skills &amp; Supply Chain Control】                                │
+│ • Product Strategy:                                                     │
+│   - Principle of Least Privilege. Cut off unknown dependencies to       │
+│   prevent supply chain poisoning from third-party toolkits.             │
+│ • Product Actions:                                                      │
+│   - Establish a closed-loop official Skills Marketplace                 │
+│   - Enforce strict Manifest privilege declarations for tool integration │
+│      (define clear network and R/W boundaries).                         │
+│   - Implement API-level OAuth resource binding (ensure tools run under  │
+│     user identity rather than system identity).                         │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│ 【Node 4：Execution &amp; Sandbox Isolation】                                │
+│ • Product Strategy:                                                     │
+│   - Blast Radius Containment. Default to distrusting the runtime        │
+│   state of any tool; block high-risk actions.                           │
+│ • Product Actions:                                                      │
+│   - Read/Write Separation                                               │
+│   - Execute third-party code/tools in "burn-after-reading" sandboxes.   │
+│   - Mandate HITL approval cards to intercept critical write operations. │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│ 【Node 5：Output &amp; Data Egress Sanitization】                            │
+│ • Product Strategy:                                                     │
+│   - Data Leakage Prevention. Sanitize and ensure compliance of          │
+│   final results before they are returned to users or external systems.  │
+│ • Product Actions:                                                      │
+│   - Deploy DLP (Data Loss Prevention) policies to block accidental      │
+│     exposure of business secrets or floor prices.                       │
+│   - Implement automated PII (Personally Identifiable Information)       │
+│     masking and de-identification.                                      │
+│   - Standardized assembly of final output structures (e.g., force       │
+│     conversion to compliant JSON or approved scripts).                  │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│               [ Business Loop / Final Touchpoint ]                      │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8042-af33-d38fabe1bd5d"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-80d9-8c3e-facb4d55f12a" class=""><mark class="highlight-gray">→</mark><mark class="highlight-gray"><a href="https://manus.im/zh-cn/blog/manus-my-computer-desktop">Introducing My Computer</a></mark></p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8032-823c-c5f118c18055" class="">On March 16, just as OpenClaw was sweeping the globe, Manus also pulled its Agent from the cloud sandbox down to the user's desktop.</p></div><div style="display:contents" dir="auto"><blockquote id="32c5dc8c-3cb9-80da-a3a8-c57478332d13" class=""><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-807d-8533-e578977dab8e" class=""><em><mark class="highlight-gray">Until today, Manus has been running entirely in the cloud. The cloud sandbox provided good support for Manus...<br>But there has always been a fundamental limitation: your most important work happens on your own computer...<br>Meet "My Computer," the core feature of the all-new Manus desktop application. It brings Manus from the cloud to your computer, enabling it to work directly with your local files, tools, and apps.</mark></em></p></div></blockquote></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8065-9f64-c008b2359e96" class="">So, how does the Manus desktop client solve security issues? Here is what the official info says:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-809e-9c0f-f8e3e075f720" class="bulleted-list"><li style="list-style-type:disc"><strong>Limited &amp; Isolated Folders:</strong> Manus does not have full disk access; you must add a local folder (very similar to GitHub client authorization).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-809f-bca5-e3f08d317362" class="bulleted-list"><li style="list-style-type:disc"><strong>Mandatory HITL Approval:</strong> Manus promises that "every terminal command requires your explicit approval to execute." You can choose to allow it once or always (very similar to iOS permission logic).</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80c7-811b-ce1173d9ff49" class="bulleted-list"><li style="list-style-type:disc"><strong>Explicitly Traceable CLI:</strong> "Manus executes command-line instructions (CLI) in your computer's terminal," without using RPA (Robotic Process Automation), making the Agent execution process transparent and auditable (consistent with OpenClaw on this point).</li></ul></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8077-9272-fc523774603f" class="">It looks very simple and basically fits the full-link monitoring mentioned before, but it has unique ecosystem requirements:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8043-b8c2-e1c7359d32b6" class="bulleted-list"><li style="list-style-type:disc">First, <strong>Manus is a closed ecosystem</strong>. It doesn't have an open Skills Marketplace, so there's simply no such thing as "supply chain poisoning" at the source.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80f8-b36e-f68d828f7dfe" class="bulleted-list"><li style="list-style-type:disc">Second, the <strong>cloud sandbox is its stable ecosystem for enterprise deployment</strong>, meaning Manus chose a steady and controllable product from the start; the desktop client is a strategic ecosystem supplement, and the target audience ≠ the final paying group.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8015-9389-e1d68cc3a43e" class="bulleted-list"><li style="list-style-type:disc">In short, <strong>Manus has ecosystem conditions that OpenClaw does not</strong>—while OpenClaw enjoys the contributions of open-source co-building, it is destined to face surging hacker attacks and risks from the open community.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ef-a0a8-d77043e26fc7" class="bulleted-list"><li style="list-style-type:disc"><em><mark class="highlight-red">Tip: Hey, does this look familiar? Closed-source iOS ecosystem vs. Open-source Android ecosystem?</mark></em><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8067-95bc-c3d7221a5f6a" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">Manus → Closed-source, secure, good experience, but with a low ceiling and limited room for play → </mark></em><em><mark class="highlight-red"><strong>Suitable for enterprises and individuals with high security requirements who seek "security liability exemption".</strong></mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8091-8728-f44ce4e07775" class="bulleted-list"><li style="list-style-type:circle"><em><mark class="highlight-red">OpenClaw → Open-source, flexible, prosperous ecosystem, but high risk, relying on solid underlying security infra → </mark></em><em><mark class="highlight-red"><strong>Suitable for organizations and individuals who require high customization and have resources to build supporting security systems.</strong></mark></em></li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="32c5dc8c-3cb9-8066-a815-f4efd62edf9e" class="">Productization Barriers: Benchmarking vs. QClaw</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-80d4-929a-da1ed7a75c4b"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8054-bde5-e7fc045b756c" class="">In March, Tencent launched the public beta of QClaw in China, stuffing OpenClaw into the Chinese-national App, WeChat, and handling the "lowering of entry barriers" very user-friendly:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8029-8105-da92a0626917" class="bulleted-list"><li style="list-style-type:disc"><strong>Smoothly integrated into WeChat</strong>, one-click PC client installation, WeChat account login + mobile WeChat scan to bind → <em><strong>OpenClaw originally supported access to major IM software; this solves the setup and configuration puzzle for ordinary people.</strong></em></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8034-8abf-debe247f2520" class="bulleted-list"><li style="list-style-type:disc"><strong>Launched Inspiration Square</strong>, no need to write complex prompts or Skills, one-click run → <em><strong>OpenClaw's flexible calling relies on the community's rich Skills and tools; this solves the puzzle for ordinary people who don't want to write prompts or Skills.</strong></em></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8055-92d0-eedb3748cc3b" class="bulleted-list"><li style="list-style-type:disc"><strong>Launched a comic-style Workspace</strong>, visually showing the "Lobster" in working and resting states; users feel less bored while waiting, <em><strong>which is also a way to explicitly penetrate the "digital employee" mindset.</strong></em></li></ul></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80dd-803c-c7e640bac65a" class="">While these basic experience improvements show QClaw's very fit adaptation for the Chinese market around its account system, I want to talk about a few <mark class="highlight-red"><strong>productization improvement points</strong></mark> I'm more focused on:</p></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8067-88c3-cdaef59dcb68" class="bulleted-list"><li style="list-style-type:disc"><strong>Private social tools are not suitable for accessing commercial work Agents</strong> → OpenClaw was initially designed to leverage existing touchpoints and positioned as a personal Agent; in commercial scenarios, this touchpoint must and can only be Enterprise IM (like Teams, Lark, etc.), not WeChat or WhatsApp. If breaking through IM, a better choice might be <strong>a cross-app, OS-level Agent dispatch station that visuals as headless (perhaps as simple as waking up Siri).</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-809a-9430-e36f3ffb994a" class="bulleted-list"><li style="list-style-type:disc"><strong>Balance security and cost to keep potential paying customers</strong> → Open-source ≈ Free. For indie developers and small startup teams, OpenClaw's ecosystem diversity and ultra-low cost bring extremely high returns. As the security system gradually improves, the data, assets, tools, and continuous SOPs left by users will become considerations with very high migration costs. Keeping them with "acceptable cost + manageable security" makes deep users a huge paying group in the future.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-808b-aefe-cb2195617043" class="bulleted-list"><li style="list-style-type:disc"><strong>Expand the concept of remote work and accurately target the audience</strong> → For office work, remote work is an ideal scenario extending outside the office. It can be expanded to <strong>"Fieldwork" → such as those often not at their desks / needing to visit customers / frequently traveling for work (like sales, real estate agents, financial insurance consultants, exhibition/event operations, etc.), whose workflows are complex, often cross-system, and require intensive communication and coordination</strong>.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80d5-b37d-d77fd66dabe2" class="bulleted-list"><li style="list-style-type:disc"><strong>Is it possible to break through "local" and head to the cloud?</strong> → Manus's cloud sandbox has already run a successful commercial path, with market-recognized efficiency and security; OpenClaw's advantage is precisely flexibility and customization (e.g., configuring and routing LLMs yourself, assembling Skills/Tools/Lobsters yourself). For SMEs and individuals leveraging AI R&amp;D capabilities, the PMF (Product-Market Fit) actually has more room for imagination.</li></ul></div><div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-80ef-97a5-f736dfae1b14" class="bulleted-list"><li style="list-style-type:disc"><strong>The general expectation for Agents is the ability to solve and deliver complex tasks</strong> →<mark class="highlight-red"> This should be the killer weapon for OpenClaw's evolution into an AgentOS.</mark> <div style="display:contents" dir="auto"><ul id="32d5dc8c-3cb9-8036-89d8-cd98e222a60b" class="bulleted-list"><li style="list-style-type:circle"><strong>Scenario example:</strong> After a sales visits a customer in the field, the true pain point isn't "using AI to write an email," but: <strong>"Recognize business card -&gt; create new lead in CRM (Salesforce) -&gt; distill fragments of recordings from today's group chat into follow-up notes -&gt; auto-generate calendar reminders for next week -&gt; send an email with the company intro PDF to the customer after approval."</strong> This kind of cross-system, long-chain operation cannot be carried by IM chat boxes and simple preset prompts; it requires commercial-grade workflow configuration and authorization for key data.</li></ul></div></li></ul></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="32d5dc8c-3cb9-8018-85dd-ebe550124883" class="">6 A Feasible GTM Roadmap</h1></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="32d5dc8c-3cb9-8005-af44-f9c169628ab1" class="code code-wrap"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">┌─────────────────────────────────────────────────────────────────────────┐
+│              [ Phase 1: Survival &amp; Foundation Building ]                │
+│ Core Goal: Survive first, complete the closed loop, provide minimal     │
+│            deliverables.                                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ • Action 1: Solve security issues first, introduce a global security    │
+│             risk control system (defense-in-depth).                     │
+│ • Action 2: Package the MVP finished product (can have UI, can be       │
+│             UI-less CLI, or directly bind to the OpenAI entry point,    │
+│             lowering the entry barrier).                                │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │ (MVP loop completed, acquire first batch of seed users)
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│              [ Phase 2: User Retention &amp; Cost Control ]                 │
+│ Core Goal: Stabilize the base, convert current traffic into future      │
+│            assets.                                                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│ • Action 1: Stabilize costs (e.g., via model routing optimization),     │
+│             ease early operational pressure.                            │
+│ • Action 2: Retain current seed users, let their accumulated tools and  │
+│             SOPs become a high migration cost, treating them as the     │
+│             future core paying audience.                                │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │ (Users become sticky, forming a geek barrier)
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│              [ Phase 3: Finding Vertical PMF ]                          │
+│ Core Goal: Avoid the sharp edges of giants, make To-B money in the      │
+│            incremental market.                                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│ • Action 1: Target the global personal Agent market, focus on small     │
+│             teams with certain R&amp;D abilities who value flexibility.     │
+│ • Action 2: Find audiences in the incremental market needing "complex   │
+│             links" and "intensive communication" (like CRM customer     │
+│             sales), providing deep customization capabilities.          │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │ (To-B business model proven, generating cash flow)
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│              [ Phase 4: Ecosystem Harvesting ]                          │
+│ Core Goal: Upgrade from selling tools to building a platform, reserving │
+│            for a large-scale paid model.                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│ • Action 1: Build ecosystem-related products, establish an official     │
+│             Marketplace.                                                │
+│ • Action 2: Open-source basic capabilities, start charging cuts for     │
+│             mature, high-level Skills and Tools.                        │
+└───────────────────────────────────┬─────────────────────────────────────┘
+                                    │ (Moat built, ecosystem prospers)
+┌───────────────────────────────────▼─────────────────────────────────────┐
+│              [ Phase 5: The Ultimate Vision ]                           │
+│ Core Goal: Establish the next-generation                                │
+│            human-machine collaboration infrastructure standard.         │
+├─────────────────────────────────────────────────────────────────────────┤
+│ • Ultimate Form: Break through single touchpoints, become an OS-level   │
+│                  Agent open-source system.                              │
+└─────────────────────────────────────────────────────────────────────────┘</code></pre><button class="copy-code-btn" title="Copy code" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">JavaScript</div></div></div><div style="display:contents" dir="auto"><hr id="32c5dc8c-3cb9-8057-87c4-c2d68d3d71cf"></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="32c5dc8c-3cb9-8055-a9eb-f7fe6cd39608"><div style="width:100%"><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8070-9beb-cdc6171e1f3c" class=""><strong>Story</strong></p></div><div style="display:contents" dir="auto"><p id="32c5dc8c-3cb9-8067-a651-ec5b2732d30b" class="">As a lifelong learner, I always believe in long-term value and the compound interest of time.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80d2-8c1e-cdd1f057b392" class="">I am a Product Manager. In today's explosion of AI productivity, the sense of critical thinking and decision-making is very important.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8096-ad07-eb293758e549" class="">There is too much noise in the media's voice; I only want to dig into first-hand info to see the basic principles of OpenClaw clearly.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-8016-ad30-f1fa24363437" class="">Like all articles on LLM fundamentals—it's not that interesting, but principles must be the key to building a solid foundation.</p></div><div style="display:contents" dir="auto"><p id="32d5dc8c-3cb9-80e3-be11-d12626fcac2a" class="">I am Fiona, and I hope my work is helpful to you.</p></div></div></figure></div><footer class="custom-blog-footer"><div class="copyright-row">© 2026 <a href="mailto:koala.fiona.gao@gmail.com" class="footer-author-link">Fiona Gao</a>. All Rights Reserved.</div><div class="legal-row"><strong>LEGAL DISCLAIMER:</strong> All content is original. Unauthorized reproduction or commercial use is strictly prohibited.</div></footer></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><div class="toc-wrapper">
+                    <div class="toc-content">
+                        <div class="js-toc"></div>
+                    </div>
+                </div><script>
+                    function copyAuthorEmail(btn) { const email = "koala.fiona.gao@gmail.com"; navigator.clipboard.writeText(email).then(() => { const text = btn.querySelector('.author-text'); const original = text.textContent; text.textContent = "Copied!"; btn.style.color = "#10b981"; setTimeout(() => { text.textContent = original; btn.style.color = ""; }, 2000); }); } 
+                    function copyCodeText(btn) { const code = btn.parentElement.querySelector('code'); navigator.clipboard.writeText(code.innerText).then(() => { const originalHtml = btn.innerHTML; btn.innerHTML = "✅"; btn.style.background = "transparent"; btn.style.border = "none"; setTimeout(() => { btn.innerHTML = originalHtml; btn.style.background = ""; btn.style.border = ""; }, 2000); }); } 
+                    function togglePageLanguage() { let url = window.location.href; if (url.includes('/en/')) window.location.href = url.replace('/en/', '/zh/'); else if (url.includes('/zh/')) window.location.href = url.replace('/zh/', '/en/'); else alert("Language path not found."); }
+                    
+                    // 🚀 智能地域网络分发引擎
+                    (function() {
+                        try {
+                            var isUTC8 = new Date().getTimezoneOffset() === -480;
+                            if (isUTC8) {
+                                document.querySelectorAll('img[data-cdn]').forEach(function(img) {
+                                    img.src = img.getAttribute('data-cdn');
+                                    img.onerror = function() { if (this.src !== this.getAttribute('data-native')) this.src = this.getAttribute('data-native'); };
+                                });
+                            }
+                        } catch(e) {}
+                    })();
+                    
+                    // 🌟 新增：初始化悬浮目录 (Tocbot)
+                    window.addEventListener('DOMContentLoaded', function() {
+                        if (typeof tocbot !== 'undefined') {
+                            tocbot.init({
+                                tocSelector: '.js-toc',
+                                contentSelector: document.querySelector('.page-body') ? '.page-body' : 'body',
+                                headingSelector: 'h1, h2, h3',
+                                hasInnerContainers: true,
+                                scrollSmooth: true,
+                                scrollSmoothOffset: -40,
+                                headingsOffset: 40,
+                                collapseDepth: 6 
+                            });
+                        }
+                    });
+                </script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script></body></html>
