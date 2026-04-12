@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Video Shopping→Agentic Commerce视频电商AI重构</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>
+                    .custom-blog-meta { display: flex; flex-direction: column; gap: 0.65rem; padding: 0.5rem 0 1.25rem 0; margin: 0 0 2.5rem 0; border-bottom: 1px solid #e5e7eb; font-family: ui-sans-serif, system-ui, sans-serif; }
+                    .meta-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem; }
+                    .meta-left { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; flex: 1; }
+                    .meta-right { display: flex; justify-content: flex-end; flex-shrink: 0; min-width: 80px; }
+                    .meta-text-link { text-decoration: none !important; color: #6b7280 !important; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; }
+                    .meta-text-link:hover { color: #3b82f6 !important; }
+                    .author-badge { display: inline-flex; align-items: center; gap: 0.25rem; color: #111827; font-weight: 600; cursor: pointer; background: #f3f4f6; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8125rem; transition: background 0.2s; }
+                    .author-badge:hover { background: #eff6ff; color: #3b82f6; }
+                    .custom-blog-footer { margin-top: 3.5rem; padding: 2rem 0; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.8125rem; font-family: ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
+                    .footer-author-link { color: #3b82f6; text-decoration: none; font-weight: 500; }
+                    .legal-row { font-size: 0.75rem; color: #9ca3af; margin: 0; line-height: 1.6; max-width: 100%; }
+                    
+                    /* 🌟 修复：代码块防穿模，按需分离滚动域 🌟 */
+                    .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; background: #1e1e1e; box-shadow: 0 4px 12px rgba(0,0,0,0.3); overflow: hidden; }
+                    pre.code { background: transparent !important; border-radius: 0 !important; padding: 2.5rem 1rem 1.2rem !important; margin: 0 !important; box-shadow: none !important; white-space: pre !important; word-break: normal !important; overflow-x: auto !important; position: static !important; }
+                    .code > code { color: #e0e0e0 !important; white-space: pre !important; word-break: normal !important; text-shadow: none !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; font-size: 0.875rem !important; line-height: 1.5 !important; }
+                    pre.code span { background: transparent !important; }
+                    pre.code span.highlight-default { color: #e0e0e0 !important; } pre.code span.highlight-gray { color: #9ca3af !important; } pre.code span.highlight-brown { color: #d6b49c !important; } pre.code span.highlight-orange { color: #fb923c !important; } pre.code span.highlight-yellow { color: #fcd34d !important; } pre.code span.highlight-teal { color: #4ade80 !important; } pre.code span.highlight-blue { color: #60a5fa !important; } pre.code span.highlight-purple { color: #c084fc !important; } pre.code span.highlight-pink { color: #f472b6 !important; } pre.code span.highlight-red { color: #f87171 !important; }
+                    
+                    /* 🌟 优化：代码块右上角极简纯净 Copy 按钮 🌟 */
+                    .copy-code-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: #6b7280; padding: 4px; border: none; cursor: pointer; transition: color 0.2s; z-index: 10; display: flex; align-items: center; justify-content: center; }
+                    .copy-code-btn:hover { color: #d1d5db; background: transparent; }
+                    
+                    .code-lang-label { position: absolute; top: 10px; left: 12px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px; z-index: 10; pointer-events: none; text-shadow: none !important; }
+                    @media (max-width: 640px) { .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; } .meta-right { width: 100%; justify-content: flex-start; margin-top: 0.25rem; } }
+                    
+                    /* 🌟 修复与重构：悬浮目录大纲 (TOC) 样式 (纯PC端优雅版) 🌟 */
+                    .toc-wrapper { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; width: 36px; transition: width 0.3s ease; }
+                    /* 防闪烁透明热区：极其宽大的检测层，鼠标稍微移动也不会掉落状态 */
+                    .toc-wrapper::after { content: ''; position: absolute; top: -40px; bottom: -40px; left: -60px; right: -20px; z-index: -1; }
+                    .toc-wrapper:hover { width: 280px; }
+                    
+                    .toc-content { background: transparent; width: 100%; max-height: 60vh; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid transparent; padding: 0.5rem 0; position: relative; z-index: 1; }
+                    .toc-content::-webkit-scrollbar { display: none; }
+                    
+                    .toc-wrapper:hover .toc-content { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border-color: #f3f4f6; padding: 1.25rem; max-height: calc(100vh - 120px); }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar { display: block; width: 4px; }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+                    
+                    /* 统一重置列表基础样式，彻底清除 tocbot 默认烦人的左侧边框与竖线 */
+                    .toc-list { list-style: none; padding: 0; margin: 0; border: none !important; }
+                    .toc-list .toc-list { border: none !important; padding-left: 0; }
+                    
+                    /* 状态 A：未悬浮（横线地图模式） */
+                    .toc-wrapper:not(:hover) .toc-list-item { display: flex; justify-content: flex-end; margin-bottom: 8px; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-link { display: block; width: 16px; height: 4px; background-color: #e5e7eb; border-radius: 2px; color: transparent !important; font-size: 0; padding: 0; margin: 0; transition: all 0.2s ease; overflow: hidden; white-space: nowrap; user-select: none; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list { margin-top: 8px; width: 100%; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list .toc-link { width: 10px; }
+                    /* 高亮当前阅读进度 (绿薯条) */
+                    .toc-wrapper:not(:hover) .is-active-link { background-color: #55b685 !important; width: 24px !important; }
+                    /* 彻底隐藏可能自带的伪元素竖线 */
+                    .toc-wrapper:not(:hover) .toc-link::before { display: none !important; }
+                    
+                    /* 状态 B：悬浮展开（完整目录模式） */
+                    .toc-wrapper:hover .toc-list-item { margin-bottom: 0; display: block; text-align: left; }
+                    .toc-wrapper:hover .toc-list .toc-list { padding-left: 1rem; margin-top: 0.2rem; }
+                    .toc-wrapper:hover .toc-link { display: block; width: auto; height: auto; background-color: transparent; color: #4b5563; margin: 0; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.875rem; white-space: normal; word-break: break-word; line-height: 1.5; transition: all 0.2s; }
+                    .toc-wrapper:hover .toc-link:hover { background: #f3f4f6; color: #111827; }
+                    /* 高亮当前阅读进度 */
+                    .toc-wrapper:hover .is-active-link { color: #111827; font-weight: 600; background: #f9fafb; position: relative; }
+                    .toc-wrapper:hover .is-active-link::before { content: ''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 3px; border-radius: 2px; background: #55b685; }
+                    
+                    /* 禁用 Tocbot 的原生折叠隐藏，保持所有层级全展开 */
+                    .is-collapsible { max-height: none !important; overflow: visible !important; }
+                    .is-collapsed { max-height: none !important; }
+                
+                    /* 移动端强制隐藏 */
+                    @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
+                </style>
+<meta name="description" content="探索 Fiona Gao 的技术博客，获取最新洞察与分享。">
+<meta property="og:title" content="Video-Shopping→Agentic Commerce视频电商AI重构">
+<meta property="og:description" content="探索 Fiona Gao 的技术博客，获取最新洞察与分享。">
+<meta property="og:image" content="https://koalafionagao-ai.github.io/my_blogs/zh/video-shopping-agent/image%204.webp">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Video-Shopping→Agentic Commerce视频电商AI重构">
+<meta name="twitter:description" content="探索 Fiona Gao 的技术博客，获取最新洞察与分享。">
+<meta name="twitter:image" content="https://koalafionagao-ai.github.io/my_blogs/zh/video-shopping-agent/image%204.webp"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css"></head><body><div style="width: 0px; height: 0px; position: absolute; overflow: hidden;"><img src="https://koalafionagao-ai.github.io/my_blogs/zh/video-shopping-agent/image%204.webp" alt="cover"></div><article id="3225dc8c-3cb9-8030-bed2-c7cf6d8f1435" class="page sans"><header><h1 class="page-title" dir="auto" id="video-shopping→agentic-commerce视频电商ai重构-0" style="margin-bottom: 0.5rem;">Video-Shopping→Agentic Commerce视频电商AI重构</h1><div class="custom-blog-meta"><div class="meta-row"><div class="meta-left"><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg><span style="font-weight:600;color:#4b5563;font-size:0.8125rem;">标签:</span><div class="meta-tags-value" style="display:flex;gap:0.3rem;"><span class="selected-value select-value-color-purple">AI观察</span><span class="selected-value select-value-color-blue">实践工坊</span></div></div><div class="author-badge" onclick="copyAuthorEmail(this)" title="koala.fiona.gao@gmail.com"><svg style="width:14px;height:14px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span class="author-text">Fiona Gao</span></div></div><div class="meta-right"><a href="https://koalafionagao-ai.github.io/my_blogs/" target="_blank" class="meta-text-link" style="display:flex;align-items:center;gap:4px;"><svg style="width:15px;height:15px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>首页</a></div></div><div class="meta-row" style="color: #6b7280; font-size: 0.8125rem;"><div class="meta-left" style="gap: 1.25rem;"><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><span style="font-weight:600;color:#4b5563;">创建时间:</span> <span class="meta-ctime-value" style="color: #1f2937;">2026-03-13 18:54</span></div><div style="display:flex;align-items:center;gap:0.35rem;"><svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span style="font-weight:600;color:#4b5563;">更新时间:</span> <span class="meta-utime-value" style="color: #1f2937;">2026-04-12 20:05</span></div></div><div class="meta-right"><span class="meta-text-link" onclick="togglePageLanguage()"><svg style="width:14px;height:14px;opacity:0.7;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg> English</span></div></div></div></header><div class="page-body"><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3405dc8c-3cb9-807a-a42c-c36267112d24"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3405dc8c-3cb9-80d3-8a80-e1898b2d593f" class="">相关阅读：<a href="https://koalafionagao-ai.github.io/my_demos/videoshopping/">Full Demo</a> | Cases-全球电商调研 | 创作者挂货机制</p></div></div></figure></div><div style="display:contents" dir="auto"><h1 id="33a5dc8c-3cb9-801d-9665-c16608a976e8" class="">Quick Highlight | 速览</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33a5dc8c-3cb9-806e-8b47-ccb21f9bbfff"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33a5dc8c-3cb9-80ec-9c4b-f9c1db265d3b" class=""><strong>问题</strong>：</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-800a-ad29-df5d2eaa431c" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-804b-b1b6-cc656f3aaceb" class="bulleted-list"><li style="list-style-type:disc">如何在不打断用户极度沉浸的视频心流的前提下，完成极短链路的电商交易闭环？</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8060-99df-fe46a0f02ac7" class="bulleted-list"><li style="list-style-type:disc">当跨平台的AI Agent开始自动替用户“花钱”时，该如何建立硅基与碳基之间牢不可破的授权信任、又该如何约束和管控Agent行为可能带来的风险？</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="33a5dc8c-3cb9-8002-8de9-d776b7ad964e" class=""><strong>回答</strong>：</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-80ed-b894-d8939bfa469b" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-806a-aa3f-f2fb7dbdc699" class="bulleted-list"><li style="list-style-type:disc">传统的“搜索-加购-支付”长漏斗，在视频电商中链条长、流失极高</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8048-af62-d11cd3fdb794" class="bulleted-list"><li style="list-style-type:disc">隔离购物车（Shadow Cart）和应用内下单（In-App Checkout），是上个时代已经验证过的基础流程，不跳出是电商平台对视频APP的妥协，但它冗长的流程依然会扰乱用户沉浸视频流的体验</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8017-a062-cac90b3bdd3d" class="bulleted-list"><li style="list-style-type:disc">引入AI Agent架构，2.0版本的隔离购物车（Shadow Cart）和离场统一结算 (Session-end Checkout)，有望将视频电商转向“意图即交易（Intention is Transaction）”的零点击新范式</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8019-aace-fcfa4e3c09f4" class="bulleted-list"><li style="list-style-type:disc">通过KYA（Know Your Agent）配置面板赋予用户绝对的感知与动作边界定义权，配合缓冲期与<strong>三级风控接管（Manual Override）</strong>，确保资金与操作的绝对安全</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="33b5dc8c-3cb9-8010-b1bc-c7cb1cc8def3" class="">The Vision | 新范式</h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33b5dc8c-3cb9-80b0-ab29-ceeb2ddd5b4f"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33b5dc8c-3cb9-8054-9be5-f5899d611f3f" class=""><mark class="highlight-red">核心在于：</mark><mark class="highlight-red"><strong>意图即交易 (Intention is Transaction)</strong></mark><mark class="highlight-red">，</mark><mark class="highlight-default">让沉浸内容体验时的购买决策和行为都更加丝滑。</mark></p></div><div style="display:contents" dir="auto"><p id="3405dc8c-3cb9-80fe-8b45-d80f9e38077b" class=""><mark class="highlight-default">先决条件：如何建立</mark><mark class="highlight-red"><span style="border-bottom:0.05em solid">碳基与硅基之间的授权信任、操作可撤销、后置付款、安全接管策略</span></mark><mark class="highlight-default">等。</mark></p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-80f9-a36f-f4234cd286e2" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80cd-adfd-d283dae7a989" class="bulleted-list"><li style="list-style-type:disc"><strong>Before</strong>：传统的购物体验建立在长漏斗模型上，用户必须经历“搜索 -&gt; 发现 -&gt; 详情页(PDP) -&gt; 购物车 -&gt; 支付”五个步骤，摩擦成本极高 。</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8023-a700-f7783f371572" class="bulleted-list"><li style="list-style-type:disc"><strong>Now：</strong>用户在观看视频时，在发现感兴趣的商品时可以手动加入隔离购物车（Shadow Cart），也不需要跳出App就可以完成下单，但是观影体验仍有打断。</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8058-9ce0-e0a6d59743bb" class="bulleted-list"><li style="list-style-type:disc"><strong>Later：新范式 (Zero-click)</strong>：AI 重构后的视频电商引入了“零点击”的全新范式 。用户只需沉浸于视频内容（Content Immersion），即可自然触发购物意图（Intent Trigger） 。</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33b5dc8c-3cb9-8068-a844-fb6f4cb85d68" class="image"><a href="/my_blogs/zh/video-shopping-agent/image.webp"><img style="width: 2274px; background-image: url(&quot;data:image/webp;base64,UklGRiwCAABXRUJQVlA4WAoAAAAgAAAAEwAACAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggPgAAAFADAJ0BKhQACQA+0VSjS6gkoyGwCAEAGglpAFMACiCC8qAAAP7ykbVtgnxCWDQkIhyByuQENUiBFtuAAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image.webp" data-native="/my_blogs/zh/video-shopping-agent/image.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h2 id="33a5dc8c-3cb9-8019-a5f3-fe35229e6951" class="">Shadow Cart | 隔离购物车</h2></div><div style="display:contents" dir="auto"><h3 id="33b5dc8c-3cb9-80af-b08d-c32a17e855fe" class="">Shipped: Live Demo | 已落地</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33b5dc8c-3cb9-8036-93f6-c09ead0b05ef"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33b5dc8c-3cb9-8062-b3a3-e0bcaaeeceba" class="">Shadow Cart v1.0：敲开用户心智，不跳出的轻购体验是平衡内容和交易的关键</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-80e9-922d-c56861c20b5b" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8005-8488-c75c30a44819" class="bulleted-list"><li style="list-style-type:disc"><strong>交互路径</strong>：手动触发 -&gt; 应用内浮窗 (PDP) -&gt; 隔离购物车</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80c9-862d-f2597f6bb0c6" class="bulleted-list"><li style="list-style-type:disc"><strong>产品逻辑</strong>：这是“Now”阶段的形态，将跨 App 的跳转动作压缩为<strong>应用内浮窗</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80cd-9fb8-cbae1f690e4c" class="bulleted-list"><li style="list-style-type:disc"><strong>体验改进</strong>：用户仍需手动点击加购，但不跳出解决了流量流失率最高的“跳转中断”问题，保持了App内观影的视觉连续性。</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-80fd-a73f-ec4f4760296b" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 1.webp"><img style="width: 2068px; background-image: url(&quot;data:image/webp;base64,UklGRoQCAABXRUJQVlA4WAoAAAAgAAAAEwAACQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgglgAAAFAEAJ0BKhQACgA+0VSjS6gkoyGwCAEAGglAE6ZQBLSit+EGfyqsY/ceJbAA/KyMjaLWnUW8NUA8emHc3U2In+9TpcvcsyTSnPRYF0xYkej+neLPSMH1B3HFamEcBJ0TOaPWziUsdZkYvL9nee04qI7k8BtGfBK8Z/f//aNFY397Cw0b2xgWzdUVnlQkwW56JzrmlvzAAA==&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 1.webp" data-native="/my_blogs/zh/video-shopping-agent/image 1.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%201.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h3 id="33b5dc8c-3cb9-8062-8cad-e78f34e14faa" class="">Next: Deep Dive | 深度拆解</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33b5dc8c-3cb9-8005-823d-ca4934e9463e"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33b5dc8c-3cb9-80f6-96dc-da22766f4963" class="">Shadow Cart v2.0：用户沉浸于内容，代理静默执行购物决策和行为，提供零点击电商体验</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-8078-8ca5-e70e31ed901a" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-808d-9cb8-e21cdf6f1251" class="bulleted-list"><li style="list-style-type:disc">运行机制：Agent 依靠屏幕语义理解和行为观察，静默捕捉用户的潜在兴趣</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80d8-a381-f744c6f589e1" class="bulleted-list"><li style="list-style-type:disc">关键步骤：AI 捕获的意图，会在 Shadow Cart 进行缓冲，预留出人类变更的空间</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80d9-aeb6-dad0ec7cfbd4" class="bulleted-list"><li style="list-style-type:disc"><strong>离场统一结算 (Session-end Checkout)：</strong>彻底剥离“边看边买”的打断式体验，在用户准备退出 App 时，Agent 发起一次性的汇总确认，将交易环节后置</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-8054-8849-d11b2e658d53" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 2.webp"><img style="width: 703.984px; background-image: url(&quot;data:image/webp;base64,UklGRnQCAABXRUJQVlA4WAoAAAAgAAAAEwAACQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgghgAAADAEAJ0BKhQACgA+0VSjS6gkoyGwCAEAGgljALboJcKvJdCQnuWCKLij4AD+88fls6cCGCCKcAKcGxmCzOkliCiaEJLAXrQThFuxMtK6YOsZV4nzpq3YxFimnA/kfgH+h72xEbu/hrjqE2P4JTu//dZKeudYv8tGQG+82c1HD81U7WRNAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 2.webp" data-native="/my_blogs/zh/video-shopping-agent/image 2.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%202.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h2 id="33a5dc8c-3cb9-8057-9d48-d5e45f852c40" class="">应用内下单/In-App Checkout</h2></div><div style="display:contents" dir="auto"><h3 id="33c5dc8c-3cb9-80ad-bdd1-fe8c9ede47d9" class="">Shipped: Live Demo | 已落地</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33c5dc8c-3cb9-8040-acd7-c6522d484955"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33c5dc8c-3cb9-8012-bd21-d08dc375aa0b" class="">应用内下单（In-App Checkout）：无缝闭环，打通内容到交易的最后一环 </p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-8054-9b02-df74ec350ff9" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-802e-ad82-cba6a94c21a1" class="bulleted-list"><li style="list-style-type:disc"><strong>交互路径：</strong> 隔离购物车 (Shadow Cart) -&gt; 勾选商品 -&gt; 购物车汇总 (Shopping Cart) -&gt; 结算所选项 (Checkout Selected Items) </li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8026-999d-e24fe42a24b3" class="bulleted-list"><li style="list-style-type:disc"><strong>产品逻辑：</strong> 支持直接“在应用内购买 (Buy in App)”，实现流量的应用内直接转化</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8011-b74b-fb4bcfe086dc" class="bulleted-list"><li style="list-style-type:disc"><strong>体验改进：</strong> 统一结算时直观透出创作者折扣 (Creator discount) 的有效倒计时，用最短路径促成“立即购买 (Buy Now)”</li></ul></div></blockquote></div><div style="display:contents" dir="auto"><p id="33c5dc8c-3cb9-80ea-8619-f0b88d92c045" class="">若视频App和合作的电商平台允许打通：（<em><mark class="highlight-red">适用于极度不愿意达成App内交易的合作模式</mark></em>）</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-803c-9313-ff31e2436973" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80b8-a56c-ff273aaf1ac7" class="bulleted-list"><li style="list-style-type:disc">隔离购物车 (Shadow Cart)的数据，可以在账号打通的情况下，通过API同步</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80da-ac0f-f7f210ae1f64" class="bulleted-list"><li style="list-style-type:disc">用户可以在电商平台的隔离购物车 (Shadow Cart)，看到加购数据，并统一结算</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-80f1-99e7-c961a1a8df0e" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 3.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRqYCAABXRUJQVlA4WAoAAAAgAAAAEwAACgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgguAAAAJAEAJ0BKhQACwA+0VSjS6gkoyGwCAEAGglmAJ0ygCWb3YA5fgJreJXLU8Q0AAD+eTGlH0IZVZj7AtKm091h60zmvzlSnvT33A3uRnxPa/AzUrICJfx0kJ7liQURbY2+Pt1sgbq/RTDbbM3B13mM+ZZmrjN7zzRbn0U4FvZpqLXIr80u320s1KSuHHmZt3/R/i4MAVUivAr+Z1i8vtrpToAqmyUuoj8qziTDN3LHnDrs5h3j3UiqAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 3.webp" data-native="/my_blogs/zh/video-shopping-agent/image 3.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%203.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h3 id="33c5dc8c-3cb9-8042-ad1b-d6614a02741c" class="">Next: Deep Dive | 深度拆解</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33c5dc8c-3cb9-80ef-8e57-e22015e99ecf"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33c5dc8c-3cb9-80c3-be5f-c4efba754835" class=""><strong>Session-end Checkout: 离场统一结算 </strong><mark class="highlight-red">- 本质是处理一切用户已授权的变更，处理好产品细节、才能让用户有勇气来尝试授权Agent处理交易履约行为。</mark></p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-800e-8fb6-ee6f9fb213a1" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80b7-9c3e-c0cb0e25a9c9" class="bulleted-list"><li style="list-style-type:disc"><strong>核心逻辑：</strong> Agent 授权下单 (Agentic Checkout) 后，并不立刻执行支付或进入发货流程，而是进入缓冲期</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80fd-ac66-f385d1e92ae0" class="bulleted-list"><li style="list-style-type:disc"><strong>12小时撤回缓冲 (12H undo buffer)：</strong> 订单初始状态锁定为 Pending ，12小时内若用户反悔，Agent 将静默执行自动撤单 (Agent Auto-Cancel) 。</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80c7-af13-c4018aaa9b35" class="bulleted-list"><li style="list-style-type:disc"><strong>智能履约编排 (Fulfillment Orchestration)：</strong> 缓冲期结束后，系统根据用户信用评估 (Credit Approved) 分流支付路径 - 先用后付，或先付后发；进入正常交易履约流程后，Agent也需要接管和处理用户发起的变更。</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-80c2-8292-d4ae345d84a0" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 4.webp"><img style="width: 703.984px; background-image: url(&quot;data:image/webp;base64,UklGRlYCAABXRUJQVlA4WAoAAAAgAAAAEwAADgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggaAAAANADAJ0BKhQADwA+0VSjS6gkoyGwCAEAGgllAMiZi0DcSmMWMzTPgAD+85Y0TiRsR7JbtD4m6Xis2GkMrfnOhKz9VYN5IXlWVErzXDUTxf9L3fPJ04g8xslp72uZNcWiBGERIQBRAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 4.webp" data-native="/my_blogs/zh/video-shopping-agent/image 4.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%204.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h2 id="33b5dc8c-3cb9-8048-ac64-c896a7febf68" class=""><strong>KYA (Know Your Agent) &amp; Manual Override</strong></h2></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3405dc8c-3cb9-80f4-aa6e-f66bc9a39cbf"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3405dc8c-3cb9-80c9-9d9f-cdcea0f9f07e" class="">前文交代了用户视角的旅程和体验，核心点在于<strong>是否能够设计出让用户勇敢尝试的Agentic Commerce行为模式</strong>。它的关键词应该是：<mark class="highlight-red">有授权、足够安全、过程透明、随时可退出</mark>。</p></div><div style="display:contents" dir="auto"><p id="3405dc8c-3cb9-80b0-be75-fb0d1e0b2698" class="">所以这里剖开Agent原理，从视频App的视角，回答一下Agent策略可行性的问题。</p></div></div></figure></div><div style="display:contents" dir="auto"><h3 id="33a5dc8c-3cb9-80d5-9b24-c755dd74e504" class=""><strong>KYA (Know Your Agent) | 导购Agent运行架构图</strong></h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33c5dc8c-3cb9-805a-b960-ead077e53fd2"><div style="width:100%"><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-8081-b92e-d94d67398c7d" class="">Video App 前台要保障稳定且不打断的视频流体验，后台要解析和执行复杂长链路的电商决策和行为。让导购Agent在有充分且安全的授权情况下，其整个过程必须要完全符合平台和用户的配置，也必须要给用户预留足够的接管空间。所以核心组件须包含：</blockquote></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-806f-8b14-e48b12fb8d5c" class="bulleted-list"><li style="list-style-type:disc"><strong>导购主智能体 (Master Agent) 角色：</strong> 实现生态连接/意图捕获/闭环执行</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8078-b6a7-e25499230851" class="bulleted-list"><li style="list-style-type:disc"><strong>用户侧配置规则 (User Configuration)：</strong> 定义 AI 的行为边界</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-801c-b8e0-cc663a712e3d" class="bulleted-list"><li style="list-style-type:disc"><strong>执行阈值逻辑 (Execution Thresholds)：</strong> 遵循 <strong>系统风控（基线） -&gt; Agent 规则（配置） -&gt; 人工接管（异常）</strong> 的三级过滤递进逻辑</li></ul></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-8033-9530-ecbde2fd9b5f" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 5.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRkoCAABXRUJQVlA4WAoAAAAgAAAAEwAADgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggXAAAADADAJ0BKhQADwA+0VSjS6gkoyGwCAEAGglnYeAAN0OfgQAA/vJYJsVBBBGwjnX9rnnptXUMNN3bomxTNNwOc8424olLZHwFBR/imtRGJbPd6P8bDKQ4ADSuAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 5.webp" data-native="/my_blogs/zh/video-shopping-agent/image 5.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%205.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h3 id="33c5dc8c-3cb9-8088-8ebb-c31bcafef081" class="">Agent Orchestration | AI 编排</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33c5dc8c-3cb9-80c3-9ccb-d2ce0d085cf3"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33c5dc8c-3cb9-80e6-a196-ce665cef0fcc" class="">电商决策→购买→履约链条很长，可以用主子Agent来把复杂任务包裹到后台任务：</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-8082-925c-d1d51b0fd1db" class=""><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-808b-92a0-c07d9e7500c7" class="bulleted-list"><li style="list-style-type:disc"><strong>主子编排架构</strong>：主 Agent (Master Agent) 作为核心决策大脑，负责解析用户的模糊意图，并将大任务拆解分发给特定的子 Agent (Sub-Agent)</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8087-9e35-dbdc7ab50524" class="bulleted-list"><li style="list-style-type:disc"><strong>后台串行与并行执行</strong>：Sub-Agent 作为“分身”，在后台静默排队执行离散任务</li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-809e-8225-faa3f19ffaf3" class="bulleted-list"><li style="list-style-type:disc"><strong>体验保障</strong>：复杂逻辑全部包裹在后台任务流中，用户视频沉浸流不被干扰/影响</li></ul></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-808b-9ac9-fc530f790e25" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 6.webp"><img style="width: 2446px; background-image: url(&quot;data:image/webp;base64,UklGRmICAABXRUJQVlA4WAoAAAAgAAAAEwAACQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggdAAAAHAEAJ0BKhQACgA+0VakS6gko6GwCAEAGglnAFMGZ/tv8WsYzXt0XZmJy5gAAP7zyJfwD91nh2RoiqI6+V/xtn0YgC4jFB6XkM6FSg2XTbGwY1iCZqk+2ABgwrGTlGH4k5Z1EP0g1+piWiatrFwait3aUgAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 6.webp" data-native="/my_blogs/zh/video-shopping-agent/image 6.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%206.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h3 id="33c5dc8c-3cb9-8011-9519-c5e5b37c6415" class="">Risk Control &amp; Manual Override | 风控与人工接管</h3></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="33c5dc8c-3cb9-8074-a159-db10d96862e3"><div style="width:100%"><div style="display:contents" dir="auto"><p id="33c5dc8c-3cb9-807c-9f0a-ddedfd09109d" class="">这里的本质，是通过体系化风控管理机制，让用户对于Agentic Commerce有信心授权。</p></div><div style="display:contents" dir="auto"><blockquote id="3405dc8c-3cb9-8098-a1d9-fffb949385de" class=""><div style="display:contents" dir="auto"><p id="3405dc8c-3cb9-8007-802b-ee9ac2e54548" class=""><strong>三级执行管线 (Execution Pipeline)</strong>：</p><div class="indented"><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8081-a391-e071b50508d4" class="bulleted-list"><li style="list-style-type:disc"><strong>系统风控 (System Risk Control)</strong>：底层基线防御，拦截黑产、系统错误和平台级的高危异常 - <em><mark class="highlight-gray">很多公司原本就有一套自己的防御体系</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-80af-bb38-e34368aeb793" class="bulleted-list"><li style="list-style-type:disc"><strong>Agent 配置基线 (Baseline Execution)</strong>：在用户配置的“动作边界”内顺畅代跑（比如允许自动加购、允许小额免密）- <em><mark class="highlight-gray">这里是Agent重点风控区</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3405dc8c-3cb9-8039-9326-f0344dd66da4" class="bulleted-list"><li style="list-style-type:disc"><strong>强制人工介入 (HITL Override)</strong>：一旦任务触碰高风险阈值（如大额支付、敏感信息读取）、或意图模棱两可时，Agent 自动悬停，将确认权弹回给用户。 - <em><mark class="highlight-gray">绝对接管权 (Absolute Override)：用户永远有一键刹车的最高权限</mark></em></li></ul></div></div><p></p></div></blockquote></div></div></figure></div><div style="display:contents" dir="ltr"><figure id="33c5dc8c-3cb9-8039-bf1a-c75366ee50ef" class="image"><a href="/my_blogs/zh/video-shopping-agent/image 7.webp"><img style="width: 2414px; background-image: url(&quot;data:image/webp;base64,UklGRloCAABXRUJQVlA4WAoAAAAgAAAAEwAACgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggbAAAANADAJ0BKhQACwA+0VSjS6gkoyGwCAEAGgllAL5IIdr5S/Q3zqGAAAD+88iYNmam3etXqvP9YiA++NDI3eDhrwmZWKHJELLm5rqmbH1KgTlyA1T/q3kJZ9tvsi1ZRK8/9Qv8LPyrHBN9QsKQAA==&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/video-shopping-agent/image 7.webp" data-native="/my_blogs/zh/video-shopping-agent/image 7.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/video-shopping-agent/image%207.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><footer class="custom-blog-footer"><div class="copyright-row">© 2026 <a href="mailto:koala.fiona.gao@gmail.com" class="footer-author-link">Fiona Gao</a>. 原创文章，保留所有权利。</div><div class="legal-row"><strong>法律声明：</strong> 本文为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。</div></footer></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><div class="toc-wrapper">
+                    <div class="toc-content">
+                        <div class="js-toc"></div>
+                    </div>
+                </div><script>
+                    function copyAuthorEmail(btn) { const email = "koala.fiona.gao@gmail.com"; navigator.clipboard.writeText(email).then(() => { const text = btn.querySelector('.author-text'); const original = text.textContent; text.textContent = "已复制!"; btn.style.color = "#10b981"; setTimeout(() => { text.textContent = original; btn.style.color = ""; }, 2000); }); } 
+                    function copyCodeText(btn) { const code = btn.parentElement.querySelector('code'); navigator.clipboard.writeText(code.innerText).then(() => { const originalHtml = btn.innerHTML; btn.innerHTML = "✅"; btn.style.background = "transparent"; btn.style.border = "none"; setTimeout(() => { btn.innerHTML = originalHtml; btn.style.background = ""; btn.style.border = ""; }, 2000); }); } 
+                    function togglePageLanguage() { let url = window.location.href; if (url.includes('/en/')) window.location.href = url.replace('/en/', '/zh/'); else if (url.includes('/zh/')) window.location.href = url.replace('/zh/', '/en/'); else alert("未在 URL 中检测到语言路径。"); }
+                    
+                    // 🚀 智能地域网络分发引擎
+                    (function() {
+                        try {
+                            var isUTC8 = new Date().getTimezoneOffset() === -480;
+                            if (isUTC8) {
+                                document.querySelectorAll('img[data-cdn]').forEach(function(img) {
+                                    img.src = img.getAttribute('data-cdn');
+                                    img.onerror = function() { if (this.src !== this.getAttribute('data-native')) this.src = this.getAttribute('data-native'); };
+                                });
+                            }
+                        } catch(e) {}
+                    })();
+                    
+                    // 🌟 新增：初始化悬浮目录 (Tocbot)
+                    window.addEventListener('DOMContentLoaded', function() {
+                        if (typeof tocbot !== 'undefined') {
+                            tocbot.init({
+                                tocSelector: '.js-toc',
+                                contentSelector: document.querySelector('.page-body') ? '.page-body' : 'body',
+                                headingSelector: 'h1, h2, h3',
+                                hasInnerContainers: true,
+                                scrollSmooth: true,
+                                scrollSmoothOffset: -40,
+                                headingsOffset: 40,
+                                collapseDepth: 6 
+                            });
+                        }
+                    });
+                </script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script></body></html>
