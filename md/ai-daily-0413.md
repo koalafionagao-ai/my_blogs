@@ -82,6 +82,7 @@
 > 生物计算公司使用活神经元构建AI芯片，种子轮融资2500万美元。
 *[A profile of the Biological Computing Company, which uses living neurons to build AI chips](https://www.thedeepview.com/articles/ai-s-next-big-chip-bet-may-be-biological)*
 
+> **AI Highlights
 > 这篇文章的核心判断——**“生物芯片将成为 AI 的下一个重大赌注”**，可信度**非常高**。这早已不是科幻概念，而是 2026 年正在真实加速的硬件范式转移（行业内通常称为 Bio-computing 或 Organoid Intelligence，类器官智能）。
 > 
 > 在处理海量大模型推理时，单纯依赖硅基芯片的扩张正面临极高的物理与电力成本壁垒。引入由活体神经细胞与硅基接口结合的“湿件（Wetware）”技术，正是为了打破这种算力瓶颈。事实上，这篇文章所探讨的趋势与近期的产业动作完全吻合：就在 2026 年 3 月，高速增长的数据中心运营商 DayOne 宣布计划在新加坡和墨尔本建设“生物数据中心（Bio Data Centers）”，大规模采用如 Cortical Labs 研发的 CL1 生物芯片（将培育的神经元部署在硅芯片上）。同期，加州大学圣克鲁斯分校（UCSC）的研究人员也成功训练大脑类器官解决了经典的工程学“倒立摆问题（cart-pole problem）”。
