@@ -55,7 +55,7 @@
     `;
     document.head.appendChild(style);
 
-    // 3. 🚀 获取页面数据（完美提取旧数据）
+    // 3. 🚀 获取页面数据
     let meta = window.PAGE_META || {};
     
     if (!window.PAGE_META) {
@@ -73,7 +73,7 @@
 
     const isEn = meta.isEn;
 
-    // 💡 恢复所有的精准原生图标
+    // 4. 💡 精准原生 SVG Icon 库
     const translateIcon = `<svg style="width:14px;height:14px;opacity:0.7;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>`;
     const homeIcon = `<svg style="width:15px;height:15px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`;
     const tagIcon = `<svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>`;
@@ -81,7 +81,8 @@
     const calendarIcon = `<svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`;
     const clockIcon = `<svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
-    // 4. 🏗️ 完美复原带 Icon 和 Flex 对齐的页头
+    // 5. 🏗️ 构建带有隐藏状态语言切换按钮的 HTML 
+    // 注意下面 id="lang-switch-btn" 默认加了 style="display: none;"
     const metaHtml = `
         <div class="meta-row">
             <div class="meta-left">
@@ -98,7 +99,7 @@
                 ${meta.uTime ? `<div style="display:flex;align-items:center;gap:0.35rem;">${clockIcon}<span style="font-weight:600;color:#4b5563;">${isEn?'Updated':'更新时间'}:</span> <span class="meta-utime-value" style="color: #1f2937;">${meta.uTime}</span></div>` : ''}
             </div>
             <div class="meta-right">
-                <span class="meta-text-link" onclick="togglePageLanguage()">${translateIcon} ${isEn?'中文':'English'}</span>
+                <span class="meta-text-link" id="lang-switch-btn" style="display:none;" onclick="togglePageLanguage()">${translateIcon} ${isEn?'中文':'English'}</span>
             </div>
         </div>`;
     
@@ -108,7 +109,7 @@
     const h1 = document.querySelector('h1.page-title') || document.querySelector('h1');
     if (h1) h1.after(metaContainer);
 
-    // 5. 🧱 复刻页脚
+    // 6. 🧱 复刻页脚
     const footer = document.createElement('footer');
     footer.className = 'custom-blog-footer';
     footer.innerHTML = `
@@ -116,13 +117,13 @@
         <div class="legal-row"><strong>${isEn ? 'LEGAL DISCLAIMER:' : '法律声明：'}</strong> ${isEn ? 'All content is original. Unauthorized reproduction or commercial use is strictly prohibited.' : '本文为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。'}</div>`;
     (document.querySelector('.page-body') || document.body).appendChild(footer);
 
-    // 6. 🧭 注入 TOC 容器
+    // 7. 🧭 注入 TOC 容器
     const tocContainer = document.createElement('div');
     tocContainer.className = 'toc-wrapper';
     tocContainer.innerHTML = `<div class="toc-content"><div class="js-toc"></div></div>`;
     document.body.appendChild(tocContainer);
 
-    // 7. 🔌 逻辑绑定
+    // 8. 🔌 交互逻辑绑定
     window.copyAuthorEmail = function(btn) { 
         navigator.clipboard.writeText("koala.fiona.gao@gmail.com").then(() => {
             const text = btn.querySelector('.author-text'); const old = text.textContent;
@@ -159,5 +160,32 @@
             setTimeout(() => { btn.innerHTML = originalHtml; btn.style.background = ""; btn.style.border = ""; }, 2000); 
         }); 
     };
+
+    // 💡 [方案A新增] 动态试探双语版本是否存在
+    const currentUrl = window.location.href;
+    let targetUrl = '';
+    
+    if (currentUrl.includes('/en/')) {
+        targetUrl = currentUrl.replace('/en/', '/zh/');
+    } else if (currentUrl.includes('/zh/')) {
+        targetUrl = currentUrl.replace('/zh/', '/en/');
+    }
+
+    // 只在正常线上环境且存在目标路径时试探
+    if (targetUrl && !currentUrl.startsWith('file://')) {
+        fetch(targetUrl, { method: 'HEAD' })
+            .then(response => {
+                // 如果发现对应的双语页面真实存在，就把按钮显示出来
+                if (response.ok) {
+                    const langBtn = document.getElementById('lang-switch-btn');
+                    if (langBtn) {
+                        langBtn.style.display = 'flex'; // 恢复原本的 flex 布局显示
+                    }
+                }
+            })
+            .catch(error => {
+                // 网络异常或跨域拦截时，保持默认的隐藏状态，不做任何处理
+            });
+    }
 
 })();
