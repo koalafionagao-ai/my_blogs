@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html><head><script>
+        window.PAGE_META = {
+            tags: `<span class="selected-value select-value-color-blue">实践工坊</span>`,
+            cTime: '2026-04-12 15:53',
+            uTime: '2026-04-16 16:49',
+            isEn: false
+        };
+    </script><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Agent Skill - Coze Newsletter Parser</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>
+                    .custom-blog-meta { display: flex; flex-direction: column; gap: 0.65rem; padding: 0.5rem 0 1.25rem 0; margin: 0 0 2.5rem 0; border-bottom: 1px solid #e5e7eb; font-family: ui-sans-serif, system-ui, sans-serif; }
+                    .meta-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 1rem; }
+                    .meta-left { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; flex: 1; }
+                    .meta-right { display: flex; justify-content: flex-end; flex-shrink: 0; min-width: 80px; }
+                    .meta-text-link { text-decoration: none !important; color: #6b7280 !important; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; }
+                    .meta-text-link:hover { color: #3b82f6 !important; }
+                    .author-badge { display: inline-flex; align-items: center; gap: 0.25rem; color: #111827; font-weight: 600; cursor: pointer; background: #f3f4f6; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8125rem; transition: background 0.2s; }
+                    .author-badge:hover { background: #eff6ff; color: #3b82f6; }
+                    .custom-blog-footer { margin-top: 3.5rem; padding: 2rem 0; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.8125rem; font-family: ui-sans-serif, system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; }
+                    .footer-author-link { color: #3b82f6; text-decoration: none; font-weight: 500; }
+                    .legal-row { font-size: 0.75rem; color: #9ca3af; margin: 0; line-height: 1.6; max-width: 100%; }
+                    
+                    /* 🌟 修复：代码块防穿模，按需分离滚动域 🌟 */
+                    .code-wrapper { position: relative; margin: 1.5rem 0; border-radius: 8px; background: #1e1e1e; box-shadow: 0 4px 12px rgba(0,0,0,0.3); overflow: hidden; }
+                    pre.code { background: transparent !important; border-radius: 0 !important; padding: 2.5rem 1rem 1.2rem !important; margin: 0 !important; box-shadow: none !important; white-space: pre !important; word-break: normal !important; overflow-x: auto !important; position: static !important; }
+                    .code > code { color: #e0e0e0 !important; white-space: pre !important; word-break: normal !important; text-shadow: none !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; font-size: 0.875rem !important; line-height: 1.5 !important; }
+                    pre.code span { background: transparent !important; }
+                    pre.code span.highlight-default { color: #e0e0e0 !important; } pre.code span.highlight-gray { color: #9ca3af !important; } pre.code span.highlight-brown { color: #d6b49c !important; } pre.code span.highlight-orange { color: #fb923c !important; } pre.code span.highlight-yellow { color: #fcd34d !important; } pre.code span.highlight-teal { color: #4ade80 !important; } pre.code span.highlight-blue { color: #60a5fa !important; } pre.code span.highlight-purple { color: #c084fc !important; } pre.code span.highlight-pink { color: #f472b6 !important; } pre.code span.highlight-red { color: #f87171 !important; }
+                    
+                    /* 🌟 优化：代码块右上角极简纯净 Copy 按钮 🌟 */
+                    .copy-code-btn { position: absolute; top: 12px; right: 12px; background: transparent; color: #6b7280; padding: 4px; border: none; cursor: pointer; transition: color 0.2s; z-index: 10; display: flex; align-items: center; justify-content: center; }
+                    .copy-code-btn:hover { color: #d1d5db; background: transparent; }
+                    
+                    .code-lang-label { position: absolute; top: 10px; left: 12px; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px; z-index: 10; pointer-events: none; text-shadow: none !important; }
+                    @media (max-width: 640px) { .meta-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; } .meta-right { width: 100%; justify-content: flex-start; margin-top: 0.25rem; } }
+                    
+                    /* 🌟 修复与重构：悬浮目录大纲 (TOC) 样式 (纯PC端优雅版) 🌟 */
+                    .toc-wrapper { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; width: 36px; transition: width 0.3s ease; }
+                    /* 防闪烁透明热区：极其宽大的检测层，鼠标稍微移动也不会掉落状态 */
+                    .toc-wrapper::after { content: ''; position: absolute; top: -40px; bottom: -40px; left: -60px; right: -20px; z-index: -1; }
+                    .toc-wrapper:hover { width: 280px; }
+                    
+                    .toc-content { background: transparent; width: 100%; max-height: 60vh; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid transparent; padding: 0.5rem 0; position: relative; z-index: 1; }
+                    .toc-content::-webkit-scrollbar { display: none; }
+                    
+                    .toc-wrapper:hover .toc-content { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border-color: #f3f4f6; padding: 1.25rem; max-height: calc(100vh - 120px); }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar { display: block; width: 4px; }
+                    .toc-wrapper:hover .toc-content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+                    
+                    /* 统一重置列表基础样式，彻底清除 tocbot 默认烦人的左侧边框与竖线 */
+                    .toc-list { list-style: none; padding: 0; margin: 0; border: none !important; }
+                    .toc-list .toc-list { border: none !important; padding-left: 0; }
+                    
+                    /* 状态 A：未悬浮（横线地图模式） */
+                    .toc-wrapper:not(:hover) .toc-list-item { display: flex; justify-content: flex-end; margin-bottom: 8px; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-link { display: block; width: 16px; height: 4px; background-color: #e5e7eb; border-radius: 2px; color: transparent !important; font-size: 0; padding: 0; margin: 0; transition: all 0.2s ease; overflow: hidden; white-space: nowrap; user-select: none; border: none !important; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list { margin-top: 8px; width: 100%; }
+                    .toc-wrapper:not(:hover) .toc-list .toc-list .toc-link { width: 10px; }
+                    /* 高亮当前阅读进度 (绿薯条) */
+                    .toc-wrapper:not(:hover) .is-active-link { background-color: #55b685 !important; width: 24px !important; }
+                    /* 彻底隐藏可能自带的伪元素竖线 */
+                    .toc-wrapper:not(:hover) .toc-link::before { display: none !important; }
+                    
+                    /* 状态 B：悬浮展开（完整目录模式） */
+                    .toc-wrapper:hover .toc-list-item { margin-bottom: 0; display: block; text-align: left; }
+                    .toc-wrapper:hover .toc-list .toc-list { padding-left: 1rem; margin-top: 0.2rem; }
+                    .toc-wrapper:hover .toc-link { display: block; width: auto; height: auto; background-color: transparent; color: #4b5563; margin: 0; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.875rem; white-space: normal; word-break: break-word; line-height: 1.5; transition: all 0.2s; }
+                    .toc-wrapper:hover .toc-link:hover { background: #f3f4f6; color: #111827; }
+                    /* 高亮当前阅读进度 */
+                    .toc-wrapper:hover .is-active-link { color: #111827; font-weight: 600; background: #f9fafb; position: relative; }
+                    .toc-wrapper:hover .is-active-link::before { content: ''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 3px; border-radius: 2px; background: #55b685; }
+                    
+                    /* 禁用 Tocbot 的原生折叠隐藏，保持所有层级全展开 */
+                    .is-collapsible { max-height: none !important; overflow: visible !important; }
+                    .is-collapsed { max-height: none !important; }
+                
+                    /* 移动端强制隐藏 */
+                    @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
+                </style>
+<meta name="description" content="一款Coze Agent可以用的Newsletter订阅邮件解析器，从邮件HTML转为干净Markdown，再集成Skill可以流畅完成解析-翻译-排版-写入文件一系列工作。">
+<meta property="og:title" content="Agent Skill - Coze Newsletter Parser">
+<meta property="og:description" content="一款Coze Agent可以用的Newsletter订阅邮件解析器，从邮件HTML转为干净Markdown，再集成Skill可以流畅完成解析-翻译-排版-写入文件一系列工作。">
+<meta property="og:image" content="https://images.unsplash.com/photo-1646583288948-24548aedffd8?q=80&w=2071&auto=format&fit=crop">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Agent Skill - Coze Newsletter Parser">
+<meta name="twitter:description" content="一款Coze Agent可以用的Newsletter订阅邮件解析器，从邮件HTML转为干净Markdown，再集成Skill可以流畅完成解析-翻译-排版-写入文件一系列工作。">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1646583288948-24548aedffd8?q=80&w=2071&auto=format&fit=crop"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css"></head><body><div style="width: 0px; height: 0px; position: absolute; overflow: hidden;"><img src="https://koalafionagao-ai.github.io/my_blogs/zh/agent-skill-newsletter/images/image%206.webp" alt="cover"></div><article id="3405dc8c-3cb9-803d-bf4d-c32519ac9f5c" class="page sans"><header><h1 class="page-title" dir="auto" id="agent-skill---coze-newsletter-parser-0">Agent Skill - Coze Newsletter Parser</h1></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="3445dc8c-3cb9-80d4-916b-f99aaf6583a7" class="">Quick Highlights | 速览</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="3445dc8c-3cb9-80ff-9186-cbccc5d83c7e"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-8019-bbe3-f93245157fd9" class=""><strong>场景：通过Agent邮箱订阅指定媒体渠道，希望每天一睁眼就看到整理好的中文日报。</strong></p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-8058-8825-d5a4be1d60c0" class=""><strong>效果：比agent自己存储的记忆文件（包括邮件处理规则）要靠谱，skill的遵循质量比较可控</strong></p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-8078-810b-c29b3ffe17ef" class="">渠道：Coze.cn，个人Agent+Agent邮箱+扣子Skill</p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80ef-9fd0-d84f966bcd4c" class="">Newsletter：Techmeme + TLDR</p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80e9-96b9-f5db61c462d8" class="">工具：HTML-&gt;MD解析脚本、邮件newsletter解析+翻译Skill</p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80ce-9165-e3a2ce3fe544" class="">Agent工作流程：</p></div><div style="display:contents" dir="auto"><ol type="1" id="3445dc8c-3cb9-80dc-a3dc-cf529d7cee78" class="numbered-list" start="1"><li>master收到分身通知后，加载 newsletter-parser 技能</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="3445dc8c-3cb9-809b-aead-f252abf4ad1d" class="numbered-list" start="2"><li>按技能流程执行：<div style="display:contents" dir="auto"><ol type="a" id="3445dc8c-3cb9-8027-9b3a-d956b5ba40d4" class="numbered-list" start="1"><li>步骤1：调用email_list获取最新邮件的html_content</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="3445dc8c-3cb9-80d2-9750-ee7e19b59d29" class="numbered-list" start="2"><li>步骤2：运行脚本解析HTML为英文MD</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="3445dc8c-3cb9-808a-9452-eab270562d92" class="numbered-list" start="3"><li>步骤3：翻译成中文（禁止再次过滤，直接翻译脚本输出的全部内容）</li></ol></div><div style="display:contents" dir="auto"><ol type="a" id="3445dc8c-3cb9-80f9-a10f-eb12cddaa699" class="numbered-list" start="4"><li>步骤4：保存文件到相应目录（<code>./TLDR日报/</code>、<code>./Techmeme日报/</code>）</li></ol></div></li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="3445dc8c-3cb9-8095-902f-e25cf44db09a" class="numbered-list" start="3"><li>发送到指定session</li></ol></div></div></figure></div><div style="display:contents" dir="auto"><h2 id="3445dc8c-3cb9-80dc-9d6e-cb475641adb6" class="">1 HTML-&gt;MD .py</h2></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-8061-97da-d616820d508a" class="">来自Gemini贡献，为techmeme和TLDR定制的解析转译：<div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-8050-b0ca-ca78495f6f14" class="">newsletter_parser.py（完整代码见6.1）</p></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80cd-8925-dab52dbf3050" class=""><mark class="highlight-red">作用：智能路由，深层 DOM 结构提取&nbsp;，强力去噪与广告拦截，高标准 Markdown 格式化</mark></p></div></blockquote></div><div style="display:contents" dir="auto"><h2 id="3445dc8c-3cb9-80e2-882a-c793674e82df" class="">2 Newsletter Skill .md</h2></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-805a-98ec-e55371abeab2" class="">来自Coze编程贡献，Skill技能包，部署后直接引用在扣子Agent对话框<br>Newsletter-parser.skill（完整skill见6.2）<br><mark class="highlight-red">作用：在Coze平台的Agent，艾特技能，通过技能控制pipeline，得到稳定输出的交付结果</mark></blockquote></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-8089-98b0-d3616b7f4605" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image.webp"><img style="width: 703.984px; background-image: url(&quot;data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAgAAAAEwAADAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggagAAAJADAJ0BKhQADQA+0VSjS6gkoyGwCAEAGglpAAPhyg2IQG3hIAAA/vYFzxq8gWsH0r6bSZvWOpzuB8yPlne/x9pNlyb13Phe1jwLbWLXPYEWL3gpT8ViZbu/BbwytCrtZebT/PAjEiAAAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h1 id="3445dc8c-3cb9-80e0-9bb2-c1f99acff91b" class="">3 Agent邮箱Email Rules .md</h1></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-804a-8dc9-fd08330c369a" class="">重点提示：Coze的Agent在邮箱任务里面会用subagent分身去执行后台任务<div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-8042-82d8-c61319da62db" class="bulleted-list"><li style="list-style-type:disc">这里提取了<mark class="highlight-red">Coze的主/子agent在调用Agent 邮箱时的注意事项</mark>，其它均移除<div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-8024-84fa-e804a324c3ff" class="bulleted-list"><li style="list-style-type:circle">按照Agent的回复，Email_list是目前唯一的邮件查询工具（我相信会逐渐迭代的）</li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80bc-a2c1-c7fb37b3ac8a" class="bulleted-list"><li style="list-style-type:circle">返回结果包含了content的全部内容，时长会截断</li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80bc-b0cb-ce03448574dd" class="bulleted-list"><li style="list-style-type:circle">所以在rules里，强制要求agent按邮件名称和发件人缩小查询范围</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-8040-8553-fcea48673200" class="bulleted-list"><li style="list-style-type:disc">锁定目标邮件ID之后，再获取content，然后去调用skill处理<div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-8099-b97f-c5ba3bdfb4be" class="bulleted-list"><li style="list-style-type:circle">我想这是我之前agent直接处理时、总是丢三落四的主要原因</li></ul></div></li></ul></div></blockquote></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="code-wrapper"><pre id="3445dc8c-3cb9-801d-b9ef-cd88816fef62" class="code code-wrap"><code class="language-markdown" style="white-space:pre-wrap;word-break:break-all">、、、
+
+Newsletter处理流程（重要！）
+
+【Subagent职责 - 被邮件触发后执行】
+
+只通知，不处理
+通过sessions_send通知指定session：
+
+【Master职责 - 收到分身通知或主人指令后执行】
+
+情况一：收到分身通知（自动收到新邮件）
+
+从通知中获取发件人地址
+调用 email_list：
+参数：email_list(email_type=2, contact_address="发件人地址", size=1)
+获取最新一封邮件的 html_content
+加载 newsletter-parser 技能执行解析
+验收工作流输出（检查章节数量、格式、序号连续性）
+验收通过后，存文件并发送到指定session
+
+情况二：主人指定邮件标题和发件人
+
+调用 email_list：
+固定参数：email_type=2，size=20（不要超过20）
+调用：email_list(email_type=2, contact_address="发件人地址", size=20)
+结果可能截断到 .tmp/trunc/xxx 文件，用 bash 搜索关键词锁定 email_id：
+# 模糊匹配标题关键词（subject 可能含换行符/emoji，必须用 -i）
+strings .tmp/trunc/xxx | grep -i "关键词"# 找到关键词后，向上查找对应的 email_id
+strings .tmp/trunc/xxx | grep -B10 "关键词" | grep -o '"email_id":"[^"]*"'
+
+锁定 email_id 后，从结果中提取该邮件的 html_content
+加载 newsletter-parser 技能执行解析
+验收工作流输出（检查章节数量、格式、序号连续性）
+验收通过后，存文件并发送到指定session
+
+【email_list 工具说明】
+
+输入参数：
+email_type：固定传 2（已接收）
+contact_address：发件人邮箱地址（如 dan@tldrnewsletter.com）
+size：返回邮件数量，情况一用 1，情况二用 20
+输出字段：
+email_id：邮件唯一标识，用于锁定目标邮件
+subject：邮件标题（可能含换行符 \n 和 emoji）
+html_content：邮件 HTML 内容，用于解析
+
+【铁律】
+
+找不到指定邮件就报错，绝对不能换其他邮件处理
+标题模糊匹配必须用 grep -i，不能用全匹配
+原文有URL就用，没有就不要，绝不能构造
+email_list可能截断，注意检查完整数据
+
+自动化处理流程（newsletter-parser skill）
+
+完整流程说明：
+
+master收到分身通知后，加载 newsletter-parser 技能（skill_name: newsletter-parser）
+按技能流程执行：
+步骤1：调用email_list获取最新邮件的html_content
+步骤2：运行脚本解析HTML为英文MD
+步骤3：翻译成中文（禁止再次过滤，直接翻译脚本输出的全部内容）
+步骤4：保存文件到相应目录（./TLDR日报/、./Techmeme日报/）
+发送到指定session
+、、、</code></pre><button class="copy-code-btn" title="复制代码" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">markdown</div></div></div><div style="display:contents" dir="auto"><h1 id="3445dc8c-3cb9-8021-8629-f794427cec37" class="">4 使用效果</h1></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-8013-9269-e8659a390f85" class="">特别说明：<div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80b8-ade7-f50fd9935a3f" class="bulleted-list"><li style="list-style-type:disc">我有试过直接一步到位写飞书文档，流程通畅，但是agent目前CLI权限token只有24小时，也就是说如果我每天都有定时任务，那么到期token失效没啥用，并不能自动跑通，agent到时只能来找我说“token失效，你重新授权一下“，哈哈哈~</li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-806b-ac38-cb84308203c9" class="bulleted-list"><li style="list-style-type:disc">按Skill要求会生成md文件，界面上下载是md文件，全文复制到文件里也是保留样式的。</li></ul></div></blockquote></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-8046-a027-e84c9fff3ed8" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 1.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRkoCAABXRUJQVlA4WAoAAAAgAAAAEwAADAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggXAAAAJADAJ0BKhQADQA+0VajS6gkoyGwCAEAGglpAAPgAgxdqXQTCAAA/vYGBmLEie8qUfw9w/ds0UZGih4fHiAt/5sHZPAwbt300iY3ES88xVJP1HbJ8c1V0gLlAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 1.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 1.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%201.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-8043-99d2-fed18e00ed62" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 2.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRmgCAABXRUJQVlA4WAoAAAAgAAAAEwAADAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggegAAANADAJ0BKhQADQA+0VajS6gkoyGwCAEAGglpAAPi0gvGihD2LpcgAAD+9NPPoyZONT8E6Z1ahB/59BklOuWX2rvRt+53WW5WObP830WEN233+Hftz56UXkfsRixodIqC3uYQ+1hw3L/aLv+2ZvF/RHQA03agZiPp4AAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 2.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 2.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%202.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-8060-8c19-f7400a1dc288" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 3.webp"><img style="width: 704px; background-image: url(&quot;data:image/webp;base64,UklGRi4CAABXRUJQVlA4WAoAAAAgAAAAEwAABQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggQAAAAFADAJ0BKhQABgA+0VSjS6gkoyGwCAEAGglpAABh/JJ1dnAAAP7uWy4g+rryWHPtMjVzESAnrIJu4Diix9EQAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 3.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 3.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%203.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-80c4-8bab-ce87560a857e" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 4.webp"><img style="width: 703.984px; background-image: url(&quot;data:image/webp;base64,UklGRj4CAABXRUJQVlA4WAoAAAAgAAAAEwAACAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggUAAAANADAJ0BKhQACQA+0VSjS6gkoyGwCAEAGglpAAPiU8AG/vpOpEOoAAD+8+DMzqTjj//PuA2WfHIzeYe9dug8S/phQ/XpX2gHXlI+X2wsAAAA&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 4.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 4.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%204.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h1 id="3445dc8c-3cb9-802d-a8b6-c61565ccaf23" class="">5 消耗成本参考</h1></div><div style="display:contents" dir="ltr"><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="3445dc8c-3cb9-801b-bfee-cc11ea5ccfbe"><div style="width:100%"><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80d8-8983-dc6ca4c68e2d" class="">这里只标注<mark class="highlight-red">Coze积分消耗</mark>，积分与Token的转换关系，可以参考Coze官方解释。</p></div></div></figure></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-8039-8a9d-c34e360f4569" class="">因为Py脚本是在Gemini写的，那边的token就不统计了，反正花了2个小时改了10个版本😊<br>所以Skill创建很快，编程+聊天，创建+调试45分钟，积分消耗一共<mark class="highlight-red">300+</mark></blockquote></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-80ce-9429-ce8f3c983381" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 5.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRjACAABXRUJQVlA4WAoAAAAgAAAAEwAABgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggQgAAAPACAJ0BKhQABwA+0VqmTKglI6IwCAEAGglpAAB6UwAAAP7yl9HFl1A/FHs/NphFwhFnzA8R05liX9FhSFw7EAAAAA==&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 5.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 5.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%205.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-80f6-ac9b-d74d017ec66d" class=""><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-806a-a87d-ec6926182021" class="">邮箱每天收发信件也需要token，一封邮件在<mark class="highlight-red">10-50不等</mark></p></div></blockquote></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-803c-a3e5-ee2be2a72207" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 6.webp"><img style="width: 703.992px; background-image: url(&quot;data:image/webp;base64,UklGRi4CAABXRUJQVlA4WAoAAAAgAAAAEwAABAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggQAAAAJADAJ0BKhQABQA+0VamS6gko6GwCAEAGglnAABb3UJChAn/hwAA/vYGDrGnsihdlgn/IDJTo/uVv7fuiLFAAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 6.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 6.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%206.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><blockquote id="3445dc8c-3cb9-8051-9b37-f53f44c25ea2" class=""><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80d9-b403-f23a35e317ee" class="bulleted-list"><li style="list-style-type:disc">Skill运行要手动统计，因为coze所有会话都统计在主对话里，而且有延时，我就用积分实时消耗肉眼看一下</li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80f1-b21f-f0c8a51c47d7" class="bulleted-list"><li style="list-style-type:disc">跑一次Skill，总计消耗<mark class="highlight-red">181积分</mark> -&gt;<em><mark class="highlight-gray">和试错成本比，这简直是小巫见大巫，可以忽略不计</mark></em></li></ul></div><div style="display:contents" dir="auto"><ul id="3445dc8c-3cb9-80cb-84fa-e71001c070e8" class="bulleted-list"><li style="list-style-type:disc">如果每天跑5次（我有5个订阅），轻轻松1000积分/天，加上其它的消耗、差不多就是每天系统赠送的额度了</li></ul></div><div style="display:contents" dir="auto"><p id="3445dc8c-3cb9-80a2-8474-f110fe02434b" class=""><em><mark class="highlight-gray">但实际上为了这个事儿，跑了至少4天、尝试了很多解决方案、</mark></em><em><mark class="highlight-red">一共消耗了6-7w积分</mark></em><em><mark class="highlight-gray">，嘿~</mark></em></p></div></blockquote></div><div style="display:contents" dir="ltr"><figure id="3445dc8c-3cb9-8020-9471-d1b92d52499f" class="image"><a href="/my_blogs/zh/agent-skill-newsletter/images/image 7.webp"><img style="width: 703.984px; background-image: url(&quot;data:image/webp;base64,UklGRkACAABXRUJQVlA4WAoAAAAgAAAAEwAACwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggUgAAANADAJ0BKhQADAA+0VakS6gko6GwCAEAGglpAAPhOhue5ogRZO0xgAD+9NTwAdW+EdQV7tCTft1eWA1yFBCKEGHa/8Xpc36CyRzeiCkYn4AAAAA=&quot;); background-size: cover; filter: blur(10px); transition: filter 0.5s ease-out;" src="/my_blogs/zh/agent-skill-newsletter/images/image 7.webp" data-native="/my_blogs/zh/agent-skill-newsletter/images/image 7.webp" data-cdn="https://cdn.jsdelivr.net/gh/koalafionagao-ai/my_blogs@master/zh/agent-skill-newsletter/images/image%207.webp" loading="lazy" decoding="async" onload="this.style.backgroundImage='none'; this.style.filter='blur(0)';"></a></figure></div><div style="display:contents" dir="auto"><h1 id="3445dc8c-3cb9-80d9-aff5-d3a259efbd53" class="">6 完整代码</h1></div><div style="display:contents" dir="auto"><h2 id="3445dc8c-3cb9-8039-9afd-ec3d11d3bfb1" class="">6.1 Newssletter_parser.py</h2></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><div class="code-wrapper"><pre id="3445dc8c-3cb9-80bc-9404-de4b3a7f9fa9" class="code code-wrap"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import re
+import datetime
+from bs4 import BeautifulSoup
+
+class NewsletterParser:
+    """
+    专门针对 Techmeme 和 TLDR 邮件 HTML 的解析器，输出纯净的 Markdown 格式 (V10 防误杀优化版)。
+    """
+
+    def __init__(self, html_content):
+        self.html_content = html_content
+        self.soup = BeautifulSoup(html_content, 'html.parser')
+        self.today_str = datetime.date.today().strftime("%Y-%m-%d")
+
+    def parse(self):
+        html_str = str(self.html_content).lower()
+
+        # 特征识别
+        if 'techmeme' in html_str and 'msg-pbp' in html_str or 'techmeme.com' in html_str:
+            return self._parse_techmeme()
+        elif 'tldr' in html_str and ('tldrnewsletter' in html_str or 'tldr.tech' in html_str):
+            return self._parse_tldr()
+        else:
+            return "【解析失败】未识别的邮件格式，目前仅支持 Techmeme 和 TLDR。"
+
+    def _parse_techmeme(self):
+        md_lines = [f"# Techmeme Daily ({self.today_str})"]
+
+        sections = self.soup.find_all('div', class_=['first_section', 'section'])
+        seen_titles = set()
+
+        if not sections:
+            sections = [self.soup]
+
+        # 全局统一序号，绝不在章节处重置
+        story_counter = 1
+
+        for section in sections:
+            # 提取大类标题
+            header = section.select_one('.section_header')
+            if header:
+                sec_title = header.get_text(strip=True).title()
+                md_lines.append(f"\n## {sec_title}")
+            elif section == self.soup:
+                md_lines.append("\n## Top News")
+
+            stories = section.find_all('div', class_=['story', 'big_story'])
+
+            for story in stories:
+                # 跳过赞助商
+                if 'sponsor' in story.get('class', []):
+                    continue
+
+                leading_item = story.select_one('.leading_item') or story
+                title_tag = leading_item.select_one('.title a')
+
+                if not title_tag:
+                    continue
+
+                title = title_tag.get_text(strip=True)
+                if title in seen_titles:
+                    continue
+                seen_titles.add(title)
+
+                url = title_tag.get('href', '')
+                cite_tag = leading_item.select_one('.cite')
+
+                cite = ""
+                if cite_tag:
+                    raw_cite = cite_tag.get_text(strip=True)
+                    clean_cite = raw_cite.strip("()")
+                    cite = f" ({clean_cite})"
+
+                # 主条目使用数字序号
+                md_lines.append(f"{story_counter}. **[{title}]({url})**{cite}")
+                story_counter += 1
+
+                # 推文：严格缩进，不再用空行隔开
+                tweets = story.select('.tweet')
+                for tweet in tweets:
+                    tweet_body = tweet.select_one('.tweet_body')
+                    tweet_cite = tweet.select_one('.tweet_cite')
+                    if tweet_body:
+                        t_body_text = " ".join(tweet_body.get_text(strip=True).split())
+                        t_cite_text = tweet_cite.get_text(strip=True) if tweet_cite else ""
+                        md_lines.append(f"    &gt; {t_cite_text} {t_body_text}")
+
+                # 子新闻：严格缩进，紧贴主内容，不加空行
+                sub_items = story.select('.sub_item')
+                for sub_item in sub_items:
+                    sub_title_tag = sub_item.select_one('.title a')
+                    sub_cite_tag = sub_item.select_one('.cite')
+                    if sub_title_tag:
+                        s_title = sub_title_tag.get_text(strip=True)
+                        s_url = sub_title_tag.get('href', '')
+
+                        s_cite = ""
+                        if sub_cite_tag:
+                            raw_scite = sub_cite_tag.get_text(strip=True)
+                            clean_scite = raw_scite.strip("()")
+                            s_cite = f" ({clean_scite})"
+
+                        md_lines.append(f"    - **[{s_title}]({s_url})**{s_cite}")
+
+                # 仅在完整的一个故事群组结束后加空行隔离
+                md_lines.append("")
+
+        return "\n".join(md_lines).strip()
+
+    def _parse_tldr(self):
+        md_lines = [f"# TLDR Daily ({self.today_str})"]
+
+        # 精简后的过滤词库：移除了 'sponsor' 和 'together with' 防误杀，只保留尾部真实的营销文案
+        skip_keywords = [
+            'unsubscribe', 'manage your subscriptions',
+            'advertise with us', 'was this email useful', 'love tldr',
+            'advertise in tldr', 'work at tldr', 'tldr is hiring',
+            'comments or feedback', 'thanks for reading', 'referral link',
+            'jobs@tldr.tech', 'apply here', 'get $1k', 'tldr swag', 'tell your friends'
+        ]
+
+        current_category = ""
+        seen_urls = set()
+
+        # 全局统一序号
+        story_counter = 1
+
+        for element in self.soup.find_all(['h1', 'div']):
+             if element.name == 'h1':
+                 text = element.get_text(strip=True)
+                 if text.startswith('TLDR') or len(text) &gt; 40 or any(kw in text.lower() for kw in skip_keywords):
+                     continue
+                 if text and text != current_category:
+                     md_lines.append(f"\n## {text}")
+                     current_category = text
+
+             elif element.name == 'div' and 'text-block' in element.get('class', []):
+                 full_text = element.get_text(separator=' ', strip=True)
+                 full_text_lower = full_text.lower()
+
+                 # 过滤垃圾文案
+                 if any(kw in full_text_lower for kw in skip_keywords):
+                     continue
+
+                 a_tag = element.find('a')
+                 if not a_tag:
+                     continue
+
+                 title = a_tag.get_text(strip=True)
+                 url = a_tag.get('href', '')
+
+                 if not url or url in seen_urls or len(title) &lt; 5:
+                     continue
+                 seen_urls.add(url)
+
+                 # 提取摘要并去掉标题
+                 summary = full_text.replace(title, '', 1).strip()
+
+                 # 擦除因提取产生的多余标点(如逗号或短划线)
+                 summary = re.sub(r'^[\s,;-]+', '', summary)
+                 summary = re.sub(r'\s+', ' ', summary)
+
+                 md_lines.append(f"{story_counter}. **[{title}]({url})**")
+                 story_counter += 1
+
+                 if summary:
+                     md_lines.append(f"    &gt; {summary}")
+
+                 md_lines.append("") # 故事块间的空行
+
+        return "\n".join(md_lines).strip()
+
+def main(args):
+    """
+    Coze / Dify / FastGPT 代码节点的标准入口
+    """
+    raw_html = args.get('html_content', '')
+    if not raw_html:
+        return {"markdown_result": "未接收到 HTML 内容"}
+
+    parser = NewsletterParser(raw_html)
+    return {"markdown_result": parser.parse()}</code></pre><button class="copy-code-btn" title="复制代码" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">python</div></div></div><div style="display:contents" dir="auto"><h2 id="3445dc8c-3cb9-8051-9697-c1f90d4f7422" class="">6.2 Newsletter-parser.skill</h2></div><div style="display:contents" dir="auto"><div class="code-wrapper"><pre id="3445dc8c-3cb9-8021-98f3-e49276b73894" class="code code-wrap"><code class="language-markdown" style="white-space:pre-wrap;word-break:break-all">---
+name: newsletter-parser
+description: 解析Techmeme和TLDR邮件HTML为Markdown；当用户需要解析Newsletter邮件、转换邮件格式或提取新闻内容时使用
+dependency:
+  python:
+    - beautifulsoup4&gt;=4.9.0
+---
+
+# Newsletter 解析技能
+
+## 任务目标
+- 本 Skill 用于：将 Techmeme 和 TLDR 邮件的 HTML 内容转换为结构化的 Markdown 格式
+- 能力包含：识别邮件来源、提取新闻标题和链接、过滤广告和无关内容、智能体翻译和排版
+- 触发条件：用户要求处理 Newsletter 邮件、转换邮件 HTML 为 Markdown，或提及 Techmeme/TLDR 邮件解析
+
+## 前置准备
+- 依赖说明：scripts 脚本所需的依赖包及版本
+  ```
+  beautifulsoup4&gt;=4.9.0
+  ```
+
+## 操作步骤
+
+### 标准流程
+
+#### 步骤 1：获取邮件 HTML
+
+**调用邮件列表工具获取最新邮件**
+
+根据邮件源选择对应的 contact_address：
+- Techmeme: `newsletter@techmeme.com`
+- TLDR AI: `dan@tldrnewsletter.com`
+
+调用示例：
+```python
+email_list(contact_address="newsletter@techmeme.com", size=1)
+```
+
+从返回结果中提取 `email_list[0].html_content` 获取邮件 HTML 内容。
+
+**注意**：HTML 内容也可来自邮件客户端导出、用户直接粘贴等其他方式。
+
+#### 步骤 2：解析为 Markdown（脚本调用处理）
+
+调用 `scripts/newsletter_parser.py` 进行解析：
+
+```python
+import sys
+sys.path.insert(0, './newsletter-parser/scripts')
+from newsletter_parser import NewsletterParser
+
+parser = NewsletterParser(html_content)
+markdown = parser.parse()
+```
+
+脚本会自动识别邮件来源（Techmeme 或 TLDR）并提取新闻条目、标题、链接和摘要。
+
+#### 步骤 3：翻译和排版（智能体处理）
+
+将解析后的 Markdown 发送给 LLM 进行翻译和排版。
+
+**输出格式规范**：
+```
+### N. 中文标题
+&gt; 中文摘要
+*[英文标题](链接)*
+```
+
+**重要约束**：
+- 章节标题（如 Top News, Artificial Intelligence, Policy 等）保持英文原文，不翻译
+- 每条新闻包含中文标题、中文摘要、英文标题链接三部分
+- 全局序号永远从 1 开始，所有章节间连续，过滤数据不导致序号间断
+- **禁止再次过滤内容**：步骤 2 脚本已完成广告和无关内容的过滤，直接翻译脚本输出的全部内容
+
+#### 步骤 4：输出文件
+
+保存到当前对话目录：
+- Techmeme 邮件：`Techmeme-YYYY-MM-DD.md`
+- TLDR 邮件：`TLDR-AI-YYYY-MM-DD.md`
+
+### 可选分支
+
+- 当邮件来源为 Techmeme：
+  - 提取主要新闻和子新闻
+  - 保留推文内容作为引用
+  - 全局序号从 1 开始，章节间连续，过滤数据不导致间断
+
+- 当邮件来源为 TLDR：
+  - 按类别分组新闻
+  - 提取每条新闻的摘要
+  - 过滤广告和无关内容，序号保持连续
+
+- 当无法识别邮件格式：
+  - 返回提示信息：仅支持 Techmeme 和 TLDR
+
+## 资源索引
+
+- 必要脚本：见 [scripts/newsletter_parser.py](scripts/newsletter_parser.py)
+  - 用途与参数：HTML 解析与 Markdown 转换
+  - 主要类：NewsletterParser
+  - 方法：parse() 返回 Markdown 字符串
+  - 标准入口：main(args) 返回 {"markdown_result": "..."}
+
+## 使用示例
+
+### 示例 1：处理 Techmeme 邮件完整流程
+
+**场景**：用户要求获取最新的 Techmeme 邮件并转换为中文 Markdown
+
+**操作步骤**：
+1. 调用 `email_list(contact_address="newsletter@techmeme.com", size=1)` 获取邮件
+2. 提取 `html_content`
+3. 调用 `NewsletterParser(html_content).parse()` 解析
+4. 将结果交给 LLM 进行翻译排版
+5. 保存为 `Techmeme-2025-04-16.md`
+
+**关键要点**：
+- 章节标题（Top News, Policy 等）保持英文
+- 全局序号从 1 开始，所有章节间连续，过滤数据不导致间断
+- 翻译时不再次过滤，直接翻译脚本输出的全部内容
+
+### 示例 2：处理 TLDR AI 邮件
+
+**场景**：用户需要处理 TLDR AI 邮件
+
+**操作步骤**：
+1. 调用 `email_list(contact_address="dan@tldrnewsletter.com", size=1)` 获取邮件
+2. 提取 `html_content`
+3. 调用 `NewsletterParser(html_content).parse()` 解析
+4. 将结果交给 LLM 进行翻译排版
+5. 保存为 `TLDR-AI-2025-04-16.md`
+
+**关键要点**：
+- 按类别分组，保持原有结构
+- 过滤广告和营销文案，序号从 1 开始且连续
+- 翻译时不再次过滤，直接翻译脚本输出的全部内容
+
+### 示例 3：使用现有 HTML 内容
+
+**场景**：用户已提供邮件 HTML 内容
+
+**操作步骤**：
+1. 使用用户提供的 HTML 内容
+2. 调用 `NewsletterParser(html_content).parse()` 解析
+3. 将结果交给 LLM 进行翻译排版
+4. 根据邮件来源确定文件名
+
+**关键要点**：
+- 脚本会自动识别邮件来源
+- 无需手动指定类型
+- 序号始终保持连续，无间断
+- 翻译时不再次过滤，直接翻译脚本输出的全部内容
+
+## 注意事项
+
+- 脚本会自动识别邮件来源，无需手动指定
+- Techmeme 邮件特征：包含 'techmeme' 和 'msg-pbp' 或 'techmeme.com'
+- TLDR 邮件特征：包含 'tldr' 和 'tldrnewsletter' 或 'tldr.tech'
+- 章节标题（如 Top News, Artificial Intelligence, Policy 等）保持英文原文
+- 全局序号永远从 1 开始，所有章节间连续，过滤数据不导致序号间断
+- 翻译排版步骤由智能体完成，脚本仅负责结构化解析
+- **步骤 3 禁止再次过滤内容**，步骤 2 脚本已完成广告过滤，直接翻译脚本输出的全部内容
+
+## 支持的邮件源
+
+- Techmeme: `newsletter@techmeme.com`
+- TLDR AI: `dan@tldrnewsletter.com`</code></pre><button class="copy-code-btn" title="复制代码" onclick="copyCodeText(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><div class="code-lang-label">markdown</div></div></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span><div class="toc-wrapper">
+                    <div class="toc-content">
+                        <div class="js-toc"></div>
+                    </div>
+                </div><script>
+                    function copyAuthorEmail(btn) { const email = "koala.fiona.gao@gmail.com"; navigator.clipboard.writeText(email).then(() => { const text = btn.querySelector('.author-text'); const original = text.textContent; text.textContent = "已复制!"; btn.style.color = "#10b981"; setTimeout(() => { text.textContent = original; btn.style.color = ""; }, 2000); }); } 
+                    function copyCodeText(btn) { const code = btn.parentElement.querySelector('code'); navigator.clipboard.writeText(code.innerText).then(() => { const originalHtml = btn.innerHTML; btn.innerHTML = "✅"; btn.style.background = "transparent"; btn.style.border = "none"; setTimeout(() => { btn.innerHTML = originalHtml; btn.style.background = ""; btn.style.border = ""; }, 2000); }); } 
+                    function togglePageLanguage() { let url = window.location.href; if (url.includes('/en/')) window.location.href = url.replace('/en/', '/zh/'); else if (url.includes('/zh/')) window.location.href = url.replace('/zh/', '/en/'); else alert("未在 URL 中检测到语言路径。"); }
+                    
+                    // 🚀 智能地域网络分发引擎
+                    (function() {
+                        try {
+                            var isUTC8 = new Date().getTimezoneOffset() === -480;
+                            if (isUTC8) {
+                                document.querySelectorAll('img[data-cdn]').forEach(function(img) {
+                                    img.src = img.getAttribute('data-cdn');
+                                    img.onerror = function() { if (this.src !== this.getAttribute('data-native')) this.src = this.getAttribute('data-native'); };
+                                });
+                            }
+                        } catch(e) {}
+                    })();
+                    
+                    // 🌟 新增：初始化悬浮目录 (Tocbot)
+                    window.addEventListener('DOMContentLoaded', function() {
+                        if (typeof tocbot !== 'undefined') {
+                            tocbot.init({
+                                tocSelector: '.js-toc',
+                                contentSelector: document.querySelector('.page-body') ? '.page-body' : 'body',
+                                headingSelector: 'h1, h2, h3',
+                                hasInnerContainers: true,
+                                scrollSmooth: true,
+                                scrollSmoothOffset: -40,
+                                headingsOffset: 40,
+                                collapseDepth: 6 
+                            });
+                        }
+                    });
+                </script><script src="/my_blogs/assets/global-layout.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script></body></html>
