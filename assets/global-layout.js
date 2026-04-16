@@ -55,7 +55,7 @@
     `;
     document.head.appendChild(style);
 
-    // 3. 🚀 获取页面数据
+    // 3. 🚀 获取页面数据（完美提取旧数据）
     let meta = window.PAGE_META || {};
     
     if (!window.PAGE_META) {
@@ -73,7 +73,7 @@
 
     const isEn = meta.isEn;
 
-    // 4. 💡 精准原生 SVG Icon 库
+    // 4. 💡 完美复原的精准原生 SVG Icon 库
     const translateIcon = `<svg style="width:14px;height:14px;opacity:0.7;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>`;
     const homeIcon = `<svg style="width:15px;height:15px;opacity:0.8;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`;
     const tagIcon = `<svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>`;
@@ -82,12 +82,12 @@
     const clockIcon = `<svg style="width:14px;height:14px;opacity:0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
     // 5. 🏗️ 构建带有隐藏状态语言切换按钮的 HTML 
-    // 注意下面 id="lang-switch-btn" 默认加了 style="display: none;"
+    // 注意下面 id="lang-switch-btn" 默认加了 style="display:none;"
     const metaHtml = `
         <div class="meta-row">
             <div class="meta-left">
                 ${meta.tags ? `<div style="display:flex;align-items:center;gap:0.35rem;">${tagIcon}<span style="font-weight:600;color:#4b5563;font-size:0.8125rem;">${isEn?'Tags':'标签'}:</span><div class="meta-tags-value" style="display:flex;gap:0.3rem;">${meta.tags}</div></div>` : ''}
-                <div class="author-badge" onclick="copyAuthorEmail(this)" title="koala.fiona.gao@gmail.com">${mailIcon}<span class="author-text">Fiona Gao</span></div>
+                <div class="author-badge" onclick="copyAuthorEmail(this)" title="koala.fiona.gao@gmail.com">${mailIcon}<span class="author-text" style="margin-left:4px;">Fiona Gao</span></div>
             </div>
             <div class="meta-right">
                 <a href="https://koalafionagao-ai.github.io/my_blogs/" target="_blank" class="meta-text-link" style="display:flex;align-items:center;gap:4px;">${homeIcon}${isEn?'Home':'首页'}</a>
@@ -99,7 +99,7 @@
                 ${meta.uTime ? `<div style="display:flex;align-items:center;gap:0.35rem;">${clockIcon}<span style="font-weight:600;color:#4b5563;">${isEn?'Updated':'更新时间'}:</span> <span class="meta-utime-value" style="color: #1f2937;">${meta.uTime}</span></div>` : ''}
             </div>
             <div class="meta-right">
-                <span class="meta-text-link" id="lang-switch-btn" style="display:none;" onclick="togglePageLanguage()">${translateIcon} ${isEn?'中文':'English'}</span>
+                <span class="meta-text-link" id="lang-switch-btn" style="display:none; align-items:center; gap:4px;" onclick="togglePageLanguage()">${translateIcon} ${isEn?'中文':'English'}</span>
             </div>
         </div>`;
     
@@ -137,7 +137,7 @@
         window.location.href = url.includes('/en/') ? url.replace('/en/', '/zh/') : url.replace('/zh/', '/en/');
     };
     
-    // 代码块增强
+    // 代码块增强逻辑
     document.querySelectorAll('pre.code').forEach(pre => {
         const code = pre.querySelector('code'); let lang = 'CODE'; if (code && code.className) { const m = code.className.match(/language-([a-zA-Z0-9]+)/); if (m) lang = m[1]; }
         if (!pre.parentElement.classList.contains('code-wrapper')) {
@@ -161,7 +161,7 @@
         }); 
     };
 
-    // 💡 [方案A新增] 动态试探双语版本是否存在
+    // 💡 [方案A增强版] 内容核验法动态试探双语版本是否存在
     const currentUrl = window.location.href;
     let targetUrl = '';
     
@@ -173,18 +173,23 @@
 
     // 只在正常线上环境且存在目标路径时试探
     if (targetUrl && !currentUrl.startsWith('file://')) {
-        fetch(targetUrl, { method: 'HEAD' })
+        // 使用 GET 请求获取对方页面的源码
+        fetch(targetUrl)
             .then(response => {
-                // 如果发现对应的双语页面真实存在，就把按钮显示出来
-                if (response.ok) {
+                if (!response.ok) throw new Error('Network error or 404');
+                return response.text();
+            })
+            .then(html => {
+                // 核心修复：即使 GitHub 骗我们返回了 200，只要源码里没有咱们的专属标记，就不展示按钮
+                if (html.includes('PAGE_META') || html.includes('page-body')) {
                     const langBtn = document.getElementById('lang-switch-btn');
                     if (langBtn) {
-                        langBtn.style.display = 'flex'; // 恢复原本的 flex 布局显示
+                        langBtn.style.display = 'flex'; // 校验成功，亮出按钮
                     }
                 }
             })
             .catch(error => {
-                // 网络异常或跨域拦截时，保持默认的隐藏状态，不做任何处理
+                // 彻底挂了，保持原本的 display:none
             });
     }
 
