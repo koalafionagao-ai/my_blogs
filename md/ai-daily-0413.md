@@ -82,7 +82,7 @@
 > 生物计算公司使用活神经元构建AI芯片，种子轮融资2500万美元。
 *[A profile of the Biological Computing Company, which uses living neurons to build AI chips](https://www.thedeepview.com/articles/ai-s-next-big-chip-bet-may-be-biological)*
 
-> [!Deepdive]
+> [!Note]
 > [[AI’s next big chip bet may be biological]]> 
 > 这篇文章的核心判断——**“生物芯片将成为 AI 的下一个重大赌注”**，可信度**非常高**。这早已不是科幻概念，而是 2026 年正在真实加速的硬件范式转移（行业内通常称为 Bio-computing 或 Organoid Intelligence，类器官智能）。
 > 
