@@ -126,23 +126,21 @@
         /* Obsidian 专属语法样式: 高亮 */
         mark { background-color: #fef08a; padding: 0 4px; border-radius: 2px; color: var(--text-main); }
         
-        /* Obsidian 专属语法样式: Callout 提示框 */
+        /* Obsidian 专属语法样式: Callout 提示框 (优化段落与列表支持) */
         .obsidian-callout {
             border-radius: 8px;
             padding: 16px 20px;
             margin: 24px 0;
-            background-color: var(--bg-color); /* 燕麦底色 */
-            border-left: 4px solid var(--accent-color);
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+            background-color: #f8fafc; /* 更加契合笔记氛围的浅灰蓝底色 */
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #60a5fa; /* 清爽蓝色左边框 */
         }
         .callout-title {
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--text-main);
             font-size: 1.05rem;
         }
@@ -150,7 +148,11 @@
             color: var(--text-main);
             font-size: 0.95rem;
         }
-        .callout-content p { margin-bottom: 0 !important; font-size: 0.95rem !important;}
+        /* 移除之前粗暴的 margin 限制，只清理最后元素的底部留白 */
+        .callout-content p { font-size: 0.95rem; margin-bottom: 12px; }
+        .callout-content ul { font-size: 0.95rem; margin-bottom: 12px; }
+        .callout-content li { font-size: 0.95rem; margin-bottom: 6px; }
+        .callout-content > *:last-child { margin-bottom: 0; }
         
         /* === 悬浮目录大纲 (TOC) === */
         .toc-wrapper {
@@ -340,40 +342,56 @@
                     }
                 });
 
-                // --- 4. 后置处理：生成 Obsidian Callout 卡片 ---
+                // --- 4. 后置处理：生成 Obsidian Callout 卡片 (完美嵌套支持版) ---
                 tempDiv.querySelectorAll('blockquote').forEach(bq => {
-                    const firstP = bq.querySelector('p');
-                    if (!firstP) return;
+                    // 获取解析后的第一个子元素 (通常是 <p> 标签，包含 [!note] 标识)
+                    const firstChild = bq.firstElementChild;
+                    if (!firstChild) return;
                     
-                    const htmlContent = firstP.innerHTML;
-                    // 正则匹配 [!type] title
-                    const match = htmlContent.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n)([\s\S]*)$/is) || 
-                                  htmlContent.match(/^\[!([a-zA-Z]+)\](.*?)$/is);
+                    const firstText = firstChild.innerHTML;
+                    // 精准匹配首行的 [!type] 和可能紧跟的标题
+                    const match = firstText.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/is);
 
                     if (match) {
                         const type = match[1].toLowerCase();
-                        const title = match[2] ? match[2].trim() : type;
-                        const content = match[3] ? match[3].trim() : '';
+                        let title = match[2] ? match[2].trim() : '';
+                        if (!title) {
+                            // 首字母大写作为默认标题
+                            title = type.charAt(0).toUpperCase() + type.slice(1);
+                        }
+
+                        // 剔除触发语 [!type] 和 title，保留 <p> 内可能存在的其余段落文字
+                        firstChild.innerHTML = firstText.replace(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/is, '').trim();
+                        // 如果剔除后该 <p> 空了，直接删掉避免产生多余空隙
+                        if (firstChild.innerHTML === '') {
+                            firstChild.remove();
+                        }
+
+                        // 【核心修复】此时的 blockquote 内部，已经剥离了 [!note]，
+                        // 剩下的 bq.innerHTML 包含了 marked.js 原汁原味解析的 <ul>、<li>、<strong>、<p> 等所有嵌套格式！
+                        const contentHtml = bq.innerHTML;
 
                         const calloutDiv = document.createElement('div');
                         calloutDiv.className = `obsidian-callout callout-${type}`;
                         
                         // 根据类型自动分配 Emoji 图标
                         let icon = '💡';
-                        if (['warning', 'danger', 'error', 'bug'].includes(type)) icon = '⚠️';
+                        if (['warning', 'danger', 'error', 'bug', 'caution'].includes(type)) icon = '⚠️';
                         else if (['note', 'info'].includes(type)) icon = '📝';
                         else if (['success', 'check', 'done'].includes(type)) icon = '✅';
                         else if (['question', 'help', 'faq'].includes(type)) icon = '❓';
+                        else if (['quote', 'cite'].includes(type)) icon = '💬';
 
+                        // 组装最终卡片，塞入完整的 contentHtml
                         calloutDiv.innerHTML = `
                             <div class="callout-title">
                                 <span class="callout-icon">${icon}</span>
                                 <span>${title}</span>
                             </div>
-                            ${content ? `<div class="callout-content"><p>${content}</p></div>` : ''}
+                            ${contentHtml ? `<div class="callout-content">${contentHtml}</div>` : ''}
                         `;
                         
-                        // 狸猫换太子：将原来的引用块替换为漂亮的 Callout 容器
+                        // 狸猫换太子：将原来的引用块整体替换为我们构建的精美 Callout
                         bq.parentNode.replaceChild(calloutDiv, bq);
                     }
                 });
