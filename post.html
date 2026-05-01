@@ -113,8 +113,19 @@
         #md-content h2 { font-size: 1.4rem; font-weight: 600; margin-top: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-main); }
         #md-content h3 { font-size: 1.2rem; font-weight: 600; margin-top: 28px; color: var(--text-main); }
         #md-content p { font-size: 1.05rem; color: var(--text-main); margin-bottom: 18px; text-align: justify; }
-        #md-content a { color: var(--text-main); text-decoration: underline; text-decoration-color: var(--accent-color); text-underline-offset: 4px; }
-        #md-content a:hover { color: var(--accent-color); }
+        /* 弱化并统一正文链接样式 */
+#md-content a { 
+    color: var(--text-muted); /* 颜色弱化为柔和的灰褐色 */
+    font-weight: 400; /* 强制统一字重，防止部分链接因为加粗而显得突兀 */
+    text-decoration: underline; 
+    text-decoration-color: rgba(163, 155, 139, 0.4); /* 让下划线变得半透明，进一步弱化 */
+    text-underline-offset: 4px; 
+    transition: all 0.2s ease; /* 增加平滑过渡效果 */
+}
+#md-content a:hover { 
+    color: var(--text-main); /* 鼠标悬浮时颜色加深，给予互动反馈 */
+    text-decoration-color: var(--accent-color); /* 悬浮时下划线变清晰 */
+}
         #md-content ul, #md-content ol { padding-left: 20px; margin-bottom: 24px; color: var(--text-main); font-size: 1.05rem; }
         #md-content li { margin-bottom: 10px; }
         #md-content img { max-width: 100%; border-radius: 8px; margin: 24px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
