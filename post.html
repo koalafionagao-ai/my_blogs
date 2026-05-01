@@ -160,9 +160,11 @@
             white-space: normal; /* 覆盖之前的 nowrap，开启自然排版 */
         }
         #md-content th {
-            background-color: #F8F7F3;
-            font-weight: 600;
-        }
+    background-color: #F8F7F3;
+    font-weight: 600;
+    white-space: nowrap; /* 新增：表头强制不换行 */
+    word-break: normal;  /* 新增：恢复默认的单词截断规则 */
+}
         #md-content tbody tr:hover {
             background-color: rgba(0, 0, 0, 0.015);
         }
