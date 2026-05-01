@@ -135,6 +135,37 @@
             opacity: 0.9;
         }
         
+        /* === 高级表格排版 (复刻 Obsidian 网格感) === */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto; /* 移动端防撑爆，支持横向滚动 */
+            margin: 24px 0;
+            border-radius: 8px; /* 给滚动容器加一点圆角 */
+        }
+        #md-content table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem; /* 表格字号稍微收敛，更显精致 */
+            line-height: 1.5;
+            margin: 0; /* Margin 交给 wrapper 管理 */
+            white-space: nowrap; /* 保持内容不被过度挤压换行，配合横向滚动 */
+        }
+        #md-content th, #md-content td {
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            text-align: left;
+            vertical-align: top;
+            color: var(--text-main);
+        }
+        #md-content th {
+            background-color: #F8F7F3; /* 极浅的燕麦灰作为表头底色 */
+            font-weight: 600;
+        }
+        /* 鼠标悬浮表格行的轻微反馈 */
+        #md-content tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+
         /* Obsidian 专属语法样式: 高亮 */
         mark { background-color: #fef08a; padding: 0 4px; border-radius: 2px; color: var(--text-main); }
         
@@ -376,7 +407,15 @@
                     }
                 });
 
-                // --- 4. 后置处理：生成 Obsidian Callout 卡片 (完美嵌套支持版) ---
+                // --- 4. 后置处理：为表格增加响应式滚动包装器 ---
+                tempDiv.querySelectorAll('table').forEach(table => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'table-wrapper';
+                    table.parentNode.insertBefore(wrapper, table);
+                    wrapper.appendChild(table);
+                });
+
+                // --- 5. 后置处理：生成 Obsidian Callout 卡片 (完美嵌套支持版) ---
                 tempDiv.querySelectorAll('blockquote').forEach(bq => {
                     // 获取解析后的第一个子元素 (通常是 <p> 标签，包含 [!note] 标识)
                     const firstChild = bq.firstElementChild;
@@ -401,8 +440,8 @@
                             firstChild.remove();
                         }
 
-                        // 【核心修复】此时的 blockquote 内部，已经剥离了 [!note]，
-                        // 剩下的 bq.innerHTML 包含了 marked.js 原汁原味解析的 <ul>、<li>、<strong>、<p> 等所有嵌套格式！
+                        // 此时的 blockquote 内部，已经剥离了 [!note]，
+                        // 剩下的 bq.innerHTML 包含了 marked.js 原汁原味解析的所有嵌套格式！
                         const contentHtml = bq.innerHTML;
 
                         const calloutDiv = document.createElement('div');
@@ -433,7 +472,7 @@
                 // 将处理完毕的内容插入网页
                 document.getElementById('md-content').innerHTML = tempDiv.innerHTML;
 
-                // --- 5. 初始化侧边目录 (Tocbot) ---
+                // --- 6. 初始化侧边目录 (Tocbot) ---
                 if (typeof tocbot !== 'undefined') {
                     tocbot.init({
                         tocSelector: '.js-toc',
