@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article | Fiona Gao</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.css">
+    
     <style>
         :root {
             --bg-color: #FDFCF8;
@@ -102,6 +104,7 @@
             padding: 40px 50px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.015);
             box-sizing: border-box;
+            position: relative; /* 为目录定位提供参考 */
         }
 
         /* === Markdown 解析排版 === */
@@ -119,10 +122,120 @@
         #md-content code { background-color: #F5F4EE; padding: 3px 6px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: var(--text-main); }
         #md-content pre { background-color: #F5F4EE; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
         #md-content pre code { background-color: transparent; padding: 0; }
-
-        @media (max-width: 768px) {
-            .article-container { padding: 30px 20px; }
+        
+        /* Obsidian 专属语法样式: 高亮 */
+        mark { background-color: #fef08a; padding: 0 4px; border-radius: 2px; color: var(--text-main); }
+        
+        /* Obsidian 专属语法样式: Callout 提示框 */
+        .obsidian-callout {
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 24px 0;
+            background-color: var(--bg-color); /* 燕麦底色 */
+            border-left: 4px solid var(--accent-color);
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
+        .callout-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+        .callout-content {
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+        .callout-content p { margin-bottom: 0 !important; font-size: 0.95rem !important;}
+        
+        /* === 悬浮目录大纲 (TOC) === */
+        .toc-wrapper {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            width: 36px;
+            transition: width 0.3s ease;
+        }
+        /* 防闪烁透明热区：极其宽大的检测层 */
+        .toc-wrapper::after {
+            content: '';
+            position: absolute;
+            top: -40px; bottom: -40px; left: -60px; right: -20px;
+            z-index: -1;
+        }
+        .toc-wrapper:hover { width: 280px; }
+        
+        .toc-content {
+            background: transparent;
+            width: 100%;
+            max-height: 60vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            padding: 0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        .toc-content::-webkit-scrollbar { display: none; }
+        
+        .toc-wrapper:hover .toc-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            border-color: var(--border-color);
+            padding: 1.25rem;
+            max-height: calc(100vh - 120px);
+        }
+        .toc-wrapper:hover .toc-content::-webkit-scrollbar { display: block; width: 4px; }
+        .toc-wrapper:hover .toc-content::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+        
+        /* 重置 tocbot 列表样式 */
+        .toc-list { list-style: none; padding: 0; margin: 0; border: none !important; }
+        .toc-list .toc-list { border: none !important; padding-left: 0; }
+        
+        /* 状态 A：未悬浮（横线地图模式） */
+        .toc-wrapper:not(:hover) .toc-list-item { display: flex; justify-content: flex-end; margin-bottom: 8px; border: none !important; }
+        .toc-wrapper:not(:hover) .toc-link {
+            display: block; width: 16px; height: 4px; background-color: var(--border-color); border-radius: 2px;
+            color: transparent !important; font-size: 0; padding: 0; margin: 0;
+            transition: all 0.2s ease; overflow: hidden; white-space: nowrap; user-select: none; border: none !important;
+        }
+        .toc-wrapper:not(:hover) .toc-list .toc-list { margin-top: 8px; width: 100%; }
+        .toc-wrapper:not(:hover) .toc-list .toc-list .toc-link { width: 10px; }
+        /* 绿薯条高亮 */
+        .toc-wrapper:not(:hover) .is-active-link { background-color: var(--success-color) !important; width: 24px !important; }
+        .toc-wrapper:not(:hover) .toc-link::before { display: none !important; }
+        
+        /* 状态 B：悬浮展开（完整目录模式） */
+        .toc-wrapper:hover .toc-list-item { margin-bottom: 0; display: block; text-align: left; }
+        .toc-wrapper:hover .toc-list .toc-list { padding-left: 1rem; margin-top: 0.2rem; }
+        .toc-wrapper:hover .toc-link {
+            display: block; width: auto; height: auto; background-color: transparent;
+            color: var(--text-muted); margin: 0; padding: 0.4rem 0.5rem; border-radius: 6px;
+            font-size: 0.875rem; white-space: normal; word-break: break-word; line-height: 1.5; transition: all 0.2s;
+            text-decoration: none;
+        }
+        .toc-wrapper:hover .toc-link:hover { background: var(--bg-color); color: var(--text-main); }
+        .toc-wrapper:hover .is-active-link {
+            color: var(--text-main); font-weight: 600; background: var(--bg-color); position: relative;
+        }
+        .toc-wrapper:hover .is-active-link::before {
+            content: ''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 3px; border-radius: 2px; background: var(--success-color);
+        }
+        
+        .is-collapsible, .is-collapsed { max-height: none !important; overflow: visible !important; }
+        
+        /* 移动端适配 */
+        @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
+        @media (max-width: 768px) { .article-container { padding: 30px 20px; } }
 
         /* === 纯静态双语页脚 === */
         .footer {
@@ -133,12 +246,7 @@
             width: 100%;
             max-width: 800px;
         }
-        .footer-line {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
+        .footer-line { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -157,6 +265,12 @@
     <div class="article-container">
         <div id="md-content">Loading article...</div>
     </div>
+    
+    <div class="toc-wrapper">
+        <div class="toc-content">
+            <div class="js-toc"></div>
+        </div>
+    </div>
 
     <div class="footer">
         <div class="footer-line">
@@ -165,15 +279,14 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
     <script>
-        // 邮箱点击复制逻辑
         function copyEmail(element) {
             const email = "koala.fiona.gao@gmail.com";
             const hint = document.getElementById('copy-hint');
             navigator.clipboard.writeText(email).then(() => {
                 hint.style.display = 'block';
                 element.style.color = 'var(--success-color)';
-
                 setTimeout(() => {
                     hint.style.display = 'none';
                     element.style.color = 'var(--text-main)';
@@ -181,7 +294,6 @@
             });
         }
 
-        // 解析渲染 Markdown
         async function loadMarkdown() {
             const urlParams = new URLSearchParams(window.location.search);
             const fileName = urlParams.get('file');
@@ -195,13 +307,93 @@
                 const response = await fetch(`./md/${fileName}.md`);
                 if (!response.ok) throw new Error('Network response was not ok');
                 
-                const mdText = await response.text();
-                document.getElementById('md-content').innerHTML = marked.parse(mdText);
+                let mdText = await response.text();
                 
+                // --- 1. 预处理 Obsidian 专属标记 ---
+                // 处理高亮 ==文字==
+                mdText = mdText.replace(/==(.*?)==/g, '<mark>$1</mark>');
+                // 处理双链 [[文章名]] 或 [[链接|别名]]
+                mdText = mdText.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
+                    let alias = p1;
+                    let link = p1;
+                    if(p1.includes('|')) {
+                        const parts = p1.split('|');
+                        link = parts[0];
+                        alias = parts[1];
+                    }
+                    return `<a href="./post.html?file=${encodeURIComponent(link)}">${alias}</a>`;
+                });
+
+                // --- 2. 基础 Markdown 渲染 ---
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = marked.parse(mdText);
+                
+                // 动态设置网页标题
                 const h1 = tempDiv.querySelector('h1');
                 if(h1) document.title = h1.innerText + " | Fiona Gao";
+
+                // --- 3. 后置处理：给标题加 ID (用于目录跳转) ---
+                tempDiv.querySelectorAll('h1, h2, h3').forEach((h, index) => {
+                    if (!h.id) {
+                        const safeText = h.textContent.trim().replace(/\s+/g, '-').toLowerCase() || 'heading';
+                        h.id = `${safeText}-${index}`;
+                    }
+                });
+
+                // --- 4. 后置处理：生成 Obsidian Callout 卡片 ---
+                tempDiv.querySelectorAll('blockquote').forEach(bq => {
+                    const firstP = bq.querySelector('p');
+                    if (!firstP) return;
+                    
+                    const htmlContent = firstP.innerHTML;
+                    // 正则匹配 [!type] title
+                    const match = htmlContent.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n)([\s\S]*)$/is) || 
+                                  htmlContent.match(/^\[!([a-zA-Z]+)\](.*?)$/is);
+
+                    if (match) {
+                        const type = match[1].toLowerCase();
+                        const title = match[2] ? match[2].trim() : type;
+                        const content = match[3] ? match[3].trim() : '';
+
+                        const calloutDiv = document.createElement('div');
+                        calloutDiv.className = `obsidian-callout callout-${type}`;
+                        
+                        // 根据类型自动分配 Emoji 图标
+                        let icon = '💡';
+                        if (['warning', 'danger', 'error', 'bug'].includes(type)) icon = '⚠️';
+                        else if (['note', 'info'].includes(type)) icon = '📝';
+                        else if (['success', 'check', 'done'].includes(type)) icon = '✅';
+                        else if (['question', 'help', 'faq'].includes(type)) icon = '❓';
+
+                        calloutDiv.innerHTML = `
+                            <div class="callout-title">
+                                <span class="callout-icon">${icon}</span>
+                                <span>${title}</span>
+                            </div>
+                            ${content ? `<div class="callout-content"><p>${content}</p></div>` : ''}
+                        `;
+                        
+                        // 狸猫换太子：将原来的引用块替换为漂亮的 Callout 容器
+                        bq.parentNode.replaceChild(calloutDiv, bq);
+                    }
+                });
+
+                // 将处理完毕的内容插入网页
+                document.getElementById('md-content').innerHTML = tempDiv.innerHTML;
+
+                // --- 5. 初始化侧边目录 (Tocbot) ---
+                if (typeof tocbot !== 'undefined') {
+                    tocbot.init({
+                        tocSelector: '.js-toc',
+                        contentSelector: '#md-content',
+                        headingSelector: 'h1, h2, h3',
+                        hasInnerContainers: true,
+                        scrollSmooth: true,
+                        scrollSmoothOffset: -40,
+                        headingsOffset: 40,
+                        collapseDepth: 6 
+                    });
+                }
 
             } catch (error) {
                 document.getElementById('md-content').innerHTML = "<h1>404</h1><p>Oops! The article you are looking for doesn't exist.</p>";
