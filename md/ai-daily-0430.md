@@ -1,4 +1,4 @@
-# All Updates | 26-04-30
+# Key Updates | 26-04-30
 
 ## 1 新模型
 
