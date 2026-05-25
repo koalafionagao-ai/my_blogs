@@ -104,7 +104,7 @@
             padding: 40px 50px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.015);
             box-sizing: border-box;
-            position: relative; /* 为目录定位提供参考 */
+            position: relative; 
         }
 
         /* === Markdown 解析排版 === */
@@ -116,16 +116,16 @@
         
         /* 弱化并统一正文链接样式 */
         #md-content a { 
-            color: var(--text-muted); /* 颜色弱化为柔和的灰褐色 */
-            font-weight: 400; /* 强制统一字重，防止部分链接因为加粗而显得突兀 */
+            color: var(--text-muted); 
+            font-weight: 400; 
             text-decoration: underline; 
-            text-decoration-color: rgba(163, 155, 139, 0.4); /* 让下划线变得半透明，进一步弱化 */
+            text-decoration-color: rgba(163, 155, 139, 0.4); 
             text-underline-offset: 4px; 
-            transition: all 0.2s ease; /* 增加平滑过渡效果 */
+            transition: all 0.2s ease; 
         }
         #md-content a:hover { 
-            color: var(--text-main); /* 鼠标悬浮时颜色加深，给予互动反馈 */
-            text-decoration-color: var(--accent-color); /* 悬浮时下划线变清晰 */
+            color: var(--text-main); 
+            text-decoration-color: var(--accent-color); 
         }
         
         #md-content ul, #md-content ol { padding-left: 20px; margin-bottom: 24px; color: var(--text-main); font-size: 1.05rem; }
@@ -135,7 +135,7 @@
         #md-content pre { background-color: #F5F4EE; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
         #md-content pre code { background-color: transparent; padding: 0; }
         
-        /* 弱化后的普通引用样式: 仅保留左侧强调线，去除背景和圆角 */
+        /* 弱化后的普通引用样式 */
         #md-content blockquote { 
             border-left: 3px solid var(--accent-color); 
             margin: 24px 0; 
@@ -172,12 +172,12 @@
             word-break: normal; 
             overflow-wrap: anywhere;
             white-space: normal;
-            min-width: 90px; /* 🔥核心修复：防止如 04-14 这类连字符日期被极致挤压从而被迫换行 */
+            min-width: 90px; 
         }
         #md-content th {
             background-color: #F8F7F3;
             font-weight: 600;
-            white-space: nowrap; /* 表头强制不换行 */
+            white-space: nowrap; 
         }
         #md-content tbody tr:hover {
             background-color: rgba(0, 0, 0, 0.015);
@@ -387,7 +387,9 @@
                 
                 // --- 1. 预处理 Obsidian 专属标记 ---
                 mdText = mdText.replace(/==(.*?)==/g, '<mark>$1</mark>');
-                mdText = mdText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                
+                // 【已彻底移除导致全屏反选崩溃的强制加粗正则】
+
                 mdText = mdText.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
                     let alias = p1;
                     let link = p1;
@@ -401,7 +403,9 @@
 
                 // --- 2. 基础 Markdown 渲染 ---
                 const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = marked.parse(mdText);
+                
+                // 【修复：添加 breaks: true 参数，开启同 Obsidian 一致的自然换行解析】
+                tempDiv.innerHTML = marked.parse(mdText, { breaks: true });
                 
                 const h1 = tempDiv.querySelector('h1');
                 if(h1) document.title = h1.innerText + " | Fiona Gao";
@@ -422,29 +426,25 @@
                     wrapper.appendChild(table);
                 });
 
-                // --- 5. 后置处理：生成 Obsidian Callout 卡片 (高容错加强版) ---
+                // --- 5. 后置处理：生成 Obsidian Callout 卡片 (终极精准手术版) ---
                 tempDiv.querySelectorAll('blockquote').forEach(bq => {
                     const firstChild = bq.firstElementChild;
                     if (!firstChild) return;
                     
-                    const firstText = firstChild.innerHTML;
+                    const firstHtml = firstChild.innerHTML;
                     
-                    // 🔥核心修复：正则更具包容性，允许开头有空格或被 HTML 标签包裹（例如被 <strong> 包裹）
-                    const match = firstText.match(/^\s*(?:<[^>]+>)*\[!([a-zA-Z]+)\](?:<\/[^>]+>)*(.*?)(?:<br>|\n|$)/is);
+                    // 仅精准提取起头的 [!TYPE] 与标题，不再滥杀无辜
+                    const match = firstHtml.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/i);
 
                     if (match) {
                         const type = match[1].toLowerCase();
-                        let title = match[2] ? match[2].trim() : '';
-                        
-                        // 清理标题中可能残留的结尾标签 (如 </strong>)
-                        title = title.replace(/^<\/[^>]+>/, '').trim();
-
+                        let title = match[2].trim();
                         if (!title) {
                             title = type.charAt(0).toUpperCase() + type.slice(1);
                         }
 
-                        // 精准剔除 [!type] 和同行标题，保留后续所有节点和排版
-                        firstChild.innerHTML = firstText.replace(/^\s*(?:<[^>]+>)*\[!([a-zA-Z]+)\](?:<\/[^>]+>)*(.*?)(?:<br>|\n|$)/is, '').trim();
+                        // 精准切除头部标签，保留子元素里所有原本的加粗、斜体等排版
+                        firstChild.innerHTML = firstHtml.substring(match[0].length).trim();
                         if (firstChild.innerHTML === '') {
                             firstChild.remove();
                         }
