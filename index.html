@@ -318,41 +318,75 @@ koala.fiona.gao@gmail.com
 <aside class="timeline-sidebar">
     <div class="timeline-header" id="timeline-title">📡 AI Radar</div>
     
-    <div class="month-group">
-        
-
-    <div class="month-group">
-        <div class="month-title" onclick="toggleTimeline(this)">
-            <span>2026 / May</span>
-            <span class="icon">▶</span>
-        </div>
-        <div class="month-content">
+    <div id="timeline-en" class="content-lang-section active">
+        <div class="month-group">
+            <div class="month-title" onclick="toggleTimeline(this)">
+                <span>2026 / May</span>
+                <span class="icon">▶</span>
             </div>
+            <div class="month-content">
+            </div>
+        </div>
+
+        <div class="month-group">
+            <div class="month-title open" onclick="toggleTimeline(this)">
+                <span>2026 / Apr</span>
+                <span class="icon">▶</span>
+            </div>
+            <div class="month-content open">
+                <div class="timeline-item">
+                    <div class="item-date">04-30</div>
+                    <a href="./post.html?file=ai-daily-0430-en" class="item-link" target="_blank" rel="noopener noreferrer">Key Updates</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-19</div>
+                    <a href="./post.html?file=ai-daily-0419-en" class="item-link" target="_blank" rel="noopener noreferrer">Google Updates</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-18</div>
+                    <a href="./post.html?file=ai-daily-0418-en" class="item-link" target="_blank" rel="noopener noreferrer">Claude Updates</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-13</div>
+                    <a href="./post.html?file=ai-daily-0413-en" class="item-link" target="_blank" rel="noopener noreferrer">Techmeme Summary</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="month-group">
-        <div class="month-title open" onclick="toggleTimeline(this)">
-            <span>2026 / Apr</span>
-            <span class="icon">▶</span>
+    <div id="timeline-zh" class="content-lang-section">
+        <div class="month-group">
+            <div class="month-title" onclick="toggleTimeline(this)">
+                <span>2026 / 5月</span>
+                <span class="icon">▶</span>
+            </div>
+            <div class="month-content">
+            </div>
         </div>
-        <div class="month-content open">
-            <div class="timeline-item">
-                <div class="item-date">04-30</div>
-                <a href="./post.html?file=ai-daily-0430" class="item-link" target="_blank" rel="noopener noreferrer">Key Updates </a>
-            </div>
-            <div class="timeline-item">
-                <div class="item-date">04-19</div>
-                <a href="./post.html?file=ai-daily-0419" class="item-link" target="_blank" rel="noopener noreferrer">Google Updates </a>
-            </div>
-            <div class="timeline-item">
-                <div class="item-date">04-18</div>
-                <a href="./post.html?file=ai-daily-0418" class="item-link" target="_blank" rel="noopener noreferrer">Claude Updates </a>
-            </div>
-            <div class="timeline-item">
-                <div class="item-date">04-13</div>
-                <a href="./post.html?file=ai-daily-0413" class="item-link" target="_blank" rel="noopener noreferrer">Techmeme Summary </a>
-            </div>
 
+        <div class="month-group">
+            <div class="month-title open" onclick="toggleTimeline(this)">
+                <span>2026 / 4月</span>
+                <span class="icon">▶</span>
+            </div>
+            <div class="month-content open">
+                <div class="timeline-item">
+                    <div class="item-date">04-30</div>
+                    <a href="./post.html?file=ai-daily-0430-zh" class="item-link" target="_blank" rel="noopener noreferrer">核心功能更新</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-19</div>
+                    <a href="./post.html?file=ai-daily-0419-zh" class="item-link" target="_blank" rel="noopener noreferrer">谷歌动态汇总</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-18</div>
+                    <a href="./post.html?file=ai-daily-0418-zh" class="item-link" target="_blank" rel="noopener noreferrer">Claude 动态汇总</a>
+                </div>
+                <div class="timeline-item">
+                    <div class="item-date">04-13</div>
+                    <a href="./post.html?file=ai-daily-0413-zh" class="item-link" target="_blank" rel="noopener noreferrer">Techmeme 科技简报</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -405,6 +439,8 @@ const pageDesc = document.getElementById('page-desc');
 const footerText = document.getElementById('footer-text');
 const copyHint = document.getElementById('copy-hint');
 const timelineTitle = document.getElementById('timeline-title'); // 增量代码：同步翻译时间线标题
+const timelineEn = document.getElementById('timeline-en'); // 新增：英文时间线容器
+const timelineZh = document.getElementById('timeline-zh'); // 新增：中文时间线容器
 
 if (lang === 'zh') {
 contentEn.classList.remove('active');
@@ -413,6 +449,8 @@ navEn.classList.remove('active');
 navZh.classList.add('active');
 btnEn.classList.remove('active');
 btnZh.classList.add('active');
+timelineEn.classList.remove('active'); // 新增：隐藏英文时间线
+timelineZh.classList.add('active');    // 新增：显示中文时间线
 
 pageTitle.textContent = "博客与思考";
 pageDesc.textContent = "记录我在 AI、金融科技与产品管理领域的探索与复盘。";
@@ -432,6 +470,8 @@ navZh.classList.remove('active');
 navEn.classList.add('active');
 btnZh.classList.remove('active');
 btnEn.classList.add('active');
+timelineZh.classList.remove('active'); // 新增：隐藏中文时间线
+timelineEn.classList.add('active');    // 新增：显示英文时间线
 
 pageTitle.textContent = "My Blogs & Thoughts";
 pageDesc.textContent = "Documenting my journey and insights in AI, Fintech, and Product Management.";
