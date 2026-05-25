@@ -104,7 +104,7 @@
             padding: 40px 50px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.015);
             box-sizing: border-box;
-            position: relative; /* 为目录定位提供参考 */
+            position: relative; 
         }
 
         /* === Markdown 解析排版 === */
@@ -113,19 +113,21 @@
         #md-content h2 { font-size: 1.4rem; font-weight: 600; margin-top: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-main); }
         #md-content h3 { font-size: 1.2rem; font-weight: 600; margin-top: 28px; color: var(--text-main); }
         #md-content p { font-size: 1.05rem; color: var(--text-main); margin-bottom: 18px; text-align: justify; }
+        
         /* 弱化并统一正文链接样式 */
-#md-content a { 
-    color: var(--text-muted); /* 颜色弱化为柔和的灰褐色 */
-    font-weight: 400; /* 强制统一字重，防止部分链接因为加粗而显得突兀 */
-    text-decoration: underline; 
-    text-decoration-color: rgba(163, 155, 139, 0.4); /* 让下划线变得半透明，进一步弱化 */
-    text-underline-offset: 4px; 
-    transition: all 0.2s ease; /* 增加平滑过渡效果 */
-}
-#md-content a:hover { 
-    color: var(--text-main); /* 鼠标悬浮时颜色加深，给予互动反馈 */
-    text-decoration-color: var(--accent-color); /* 悬浮时下划线变清晰 */
-}
+        #md-content a { 
+            color: var(--text-muted); 
+            font-weight: 400; 
+            text-decoration: underline; 
+            text-decoration-color: rgba(163, 155, 139, 0.4); 
+            text-underline-offset: 4px; 
+            transition: all 0.2s ease; 
+        }
+        #md-content a:hover { 
+            color: var(--text-main); 
+            text-decoration-color: var(--accent-color); 
+        }
+        
         #md-content ul, #md-content ol { padding-left: 20px; margin-bottom: 24px; color: var(--text-main); font-size: 1.05rem; }
         #md-content li { margin-bottom: 10px; }
         #md-content img { max-width: 100%; border-radius: 8px; margin: 24px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -133,7 +135,7 @@
         #md-content pre { background-color: #F5F4EE; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 24px; }
         #md-content pre code { background-color: transparent; padding: 0; }
         
-        /* 弱化后的普通引用样式: 仅保留左侧强调线，去除背景和圆角 */
+        /* 弱化后的普通引用样式 */
         #md-content blockquote { 
             border-left: 3px solid var(--accent-color); 
             margin: 24px 0; 
@@ -146,7 +148,7 @@
             opacity: 0.9;
         }
         
-        /* === 高级表格排版 (自适应换行版) === */
+        /* === 高级表格排版 (自适应换行 + 防连字符截断版) === */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -159,7 +161,7 @@
             font-size: 0.95rem;
             line-height: 1.5;
             margin: 0;
-            table-layout: auto; /* 允许根据内容自动调整列宽并换行 */
+            table-layout: auto; 
         }
         #md-content th, #md-content td {
             border: 1px solid var(--border-color);
@@ -167,15 +169,16 @@
             text-align: left;
             vertical-align: top;
             color: var(--text-main);
-            word-break: break-word; /* 允许长内容/网址自然换行，不撑爆表格 */
-            white-space: normal; /* 覆盖之前的 nowrap，开启自然排版 */
+            word-break: normal; 
+            overflow-wrap: anywhere;
+            white-space: normal;
+            min-width: 90px; 
         }
         #md-content th {
-    background-color: #F8F7F3;
-    font-weight: 600;
-    white-space: nowrap; /* 新增：表头强制不换行 */
-    word-break: normal;  /* 新增：恢复默认的单词截断规则 */
-}
+            background-color: #F8F7F3;
+            font-weight: 600;
+            white-space: nowrap; 
+        }
         #md-content tbody tr:hover {
             background-color: rgba(0, 0, 0, 0.015);
         }
@@ -185,16 +188,15 @@
         
         /* Obsidian 专属语法样式: Callout 提示框 (去卡片化，高级莫兰迪色系) */
         .obsidian-callout {
-            border-radius: 0 8px 8px 0; /* 仅保留右侧微圆角 */
+            border-radius: 0 8px 8px 0; 
             padding: 16px 20px;
             margin: 24px 0;
-            border: none; /* 移除全包围边框 */
-            box-shadow: none; /* 移除阴影 */
+            border: none; 
+            box-shadow: none; 
         }
         
-        /* 针对不同类型的提示框，稍微加深底色以区别于正文，配合强对比左边框 */
         .callout-note, .callout-info { 
-            background-color: #F5F4EE; /* 略深于页面的燕麦底色 */
+            background-color: #F5F4EE; 
             border-left: 4px solid #A39B8B; 
         }
         .callout-warning, .callout-danger, .callout-error, .callout-bug, .callout-caution { 
@@ -243,7 +245,6 @@
             width: 36px;
             transition: width 0.3s ease;
         }
-        /* 防闪烁透明热区 */
         .toc-wrapper::after {
             content: '';
             position: absolute;
@@ -278,11 +279,9 @@
         .toc-wrapper:hover .toc-content::-webkit-scrollbar { display: block; width: 4px; }
         .toc-wrapper:hover .toc-content::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
         
-        /* 重置 tocbot 列表样式 */
         .toc-list { list-style: none; padding: 0; margin: 0; border: none !important; }
         .toc-list .toc-list { border: none !important; padding-left: 0; }
         
-        /* 状态 A：未悬浮（横线地图模式） */
         .toc-wrapper:not(:hover) .toc-list-item { display: flex; justify-content: flex-end; margin-bottom: 8px; border: none !important; }
         .toc-wrapper:not(:hover) .toc-link {
             display: block; width: 16px; height: 4px; background-color: var(--border-color); border-radius: 2px;
@@ -291,11 +290,9 @@
         }
         .toc-wrapper:not(:hover) .toc-list .toc-list { margin-top: 8px; width: 100%; }
         .toc-wrapper:not(:hover) .toc-list .toc-list .toc-link { width: 10px; }
-        /* 绿薯条高亮 */
         .toc-wrapper:not(:hover) .is-active-link { background-color: var(--success-color) !important; width: 24px !important; }
         .toc-wrapper:not(:hover) .toc-link::before { display: none !important; }
         
-        /* 状态 B：悬浮展开（完整目录模式） */
         .toc-wrapper:hover .toc-list-item { margin-bottom: 0; display: block; text-align: left; }
         .toc-wrapper:hover .toc-list .toc-list { padding-left: 1rem; margin-top: 0.2rem; }
         .toc-wrapper:hover .toc-link {
@@ -314,11 +311,9 @@
         
         .is-collapsible, .is-collapsed { max-height: none !important; overflow: visible !important; }
         
-        /* 移动端适配 */
         @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
         @media (max-width: 768px) { .article-container { padding: 30px 20px; } }
 
-        /* === 纯静态双语页脚 === */
         .footer {
             margin-top: 80px;
             padding: 40px 0;
@@ -391,13 +386,10 @@
                 let mdText = await response.text();
                 
                 // --- 1. 预处理 Obsidian 专属标记 ---
-                // 处理高亮 ==文字==
                 mdText = mdText.replace(/==(.*?)==/g, '<mark>$1</mark>');
                 
-                // 🔥【修复1】强制处理粗体 **文字**，绕过 marked.js 对中文引号周边加粗解析失效的 Bug
-                mdText = mdText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                // 【已彻底移除导致全屏反选崩溃的强制加粗正则】
 
-                // 处理双链 [[文章名]] 或 [[链接|别名]]
                 mdText = mdText.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
                     let alias = p1;
                     let link = p1;
@@ -411,9 +403,10 @@
 
                 // --- 2. 基础 Markdown 渲染 ---
                 const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = marked.parse(mdText);
                 
-                // 动态设置网页标题
+                // 【修复：添加 breaks: true 参数，开启同 Obsidian 一致的自然换行解析】
+                tempDiv.innerHTML = marked.parse(mdText, { breaks: true });
+                
                 const h1 = tempDiv.querySelector('h1');
                 if(h1) document.title = h1.innerText + " | Fiona Gao";
 
@@ -433,22 +426,25 @@
                     wrapper.appendChild(table);
                 });
 
-                // --- 5. 后置处理：生成 Obsidian Callout 卡片 (完美嵌套支持版) ---
+                // --- 5. 后置处理：生成 Obsidian Callout 卡片 (终极精准手术版) ---
                 tempDiv.querySelectorAll('blockquote').forEach(bq => {
                     const firstChild = bq.firstElementChild;
                     if (!firstChild) return;
                     
-                    const firstText = firstChild.innerHTML;
-                    const match = firstText.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/is);
+                    const firstHtml = firstChild.innerHTML;
+                    
+                    // 仅精准提取起头的 [!TYPE] 与标题，不再滥杀无辜
+                    const match = firstHtml.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/i);
 
                     if (match) {
                         const type = match[1].toLowerCase();
-                        let title = match[2] ? match[2].trim() : '';
+                        let title = match[2].trim();
                         if (!title) {
                             title = type.charAt(0).toUpperCase() + type.slice(1);
                         }
 
-                        firstChild.innerHTML = firstText.replace(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/is, '').trim();
+                        // 精准切除头部标签，保留子元素里所有原本的加粗、斜体等排版
+                        firstChild.innerHTML = firstHtml.substring(match[0].length).trim();
                         if (firstChild.innerHTML === '') {
                             firstChild.remove();
                         }
@@ -477,20 +473,18 @@
                     }
                 });
 
-                // 🔥【修复3】后置处理：强制将内容区所有普通链接设为新标签打开
+                // --- 6. 后置处理：强制普通链接新标签打开 ---
                 tempDiv.querySelectorAll('a').forEach(a => {
                     const href = a.getAttribute('href');
-                    // 排除页内锚点跳转链接（以 # 开头的通常是目录或注脚）
                     if (href && !href.startsWith('#')) {
                         a.setAttribute('target', '_blank');
                         a.setAttribute('rel', 'noopener noreferrer');
                     }
                 });
 
-                // 将处理完毕的内容插入网页
                 document.getElementById('md-content').innerHTML = tempDiv.innerHTML;
 
-                // --- 6. 初始化侧边目录 (Tocbot) ---
+                // --- 7. 初始化侧边目录 (Tocbot) ---
                 if (typeof tocbot !== 'undefined') {
                     tocbot.init({
                         tocSelector: '.js-toc',
