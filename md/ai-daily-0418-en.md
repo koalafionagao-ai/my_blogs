@@ -1,5 +1,5 @@
 # Claude Updates | 26-04-18
-### 一、Models
+### 1 Models
 
 > [!NOTE]
 >  **Dual-Flagship Evolution: Building an Intelligence Gap for "Commerce" and "Defense"**
@@ -73,7 +73,7 @@
 >**[Anthropic says Opus 4.7 uses “an updated tokenizer that improves how the model processes text”, but “the tradeoff is that the same input can map to more tokens”](https://techmeme.us14.list-manage.com/track/click?u=94ccd3ae223561415b05892ab&id=218797f7e8&e=9d4559c20f)** (Zac Hall / 9to5Mac)
 
 ---
-### 二、Applications
+### 2 Applications
 
 > [!NOTE]
 > **Anthropic's Pivot: From "Model R&D Company" to "AI-Native Application Platform"**
@@ -166,7 +166,7 @@
 
 ---
 
-### 三、Government Relations
+### 3 Government Relations
 
 > [!NOTE]
 > **“I don’t want AI turned on our own people"**
@@ -218,7 +218,7 @@
 
 ---
 
-### 四、Business/Values
+### 4 Business/Values
 
 > [!NOTE]
 > - **Business Model Leap: From "Software Subscription" to "Infrastructure Taxing."** A pure subscription model (SaaS) has a hard revenue ceiling, whereas a "base seat fee + usage-based billing" model is the classic play of cloud computing (PaaS/IaaS) giants.
