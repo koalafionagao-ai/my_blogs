@@ -109,7 +109,41 @@
 
         /* === Markdown 解析排版 === */
         #md-content { line-height: 1.8; }
-        #md-content h1 { font-size: 2rem; font-weight: 600; margin-top: 0; color: var(--text-main); line-height: 1.4; }
+        
+        /* 🔥 新增：让 h1 标题变为 Flex 布局，以容纳右侧的语言切换按钮 */
+        #md-content h1 { 
+            font-size: 2rem; 
+            font-weight: 600; 
+            margin-top: 0; 
+            color: var(--text-main); 
+            line-height: 1.4; 
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        
+        /* 🔥 新增：标题栏双语切换按钮样式 (复刻截图风格) */
+        .title-lang-btn {
+            display: inline-flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            margin-top: 4px; /* 稍微下沉一点，与标题文字视觉对齐 */
+        }
+        .title-lang-btn:hover {
+            color: var(--text-main);
+            background-color: #F5F4EE;
+        }
+
         #md-content h2 { font-size: 1.4rem; font-weight: 600; margin-top: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-main); }
         #md-content h3 { font-size: 1.2rem; font-weight: 600; margin-top: 28px; color: var(--text-main); }
         #md-content p { font-size: 1.05rem; color: var(--text-main); margin-bottom: 18px; text-align: justify; }
@@ -312,7 +346,12 @@
         .is-collapsible, .is-collapsed { max-height: none !important; overflow: visible !important; }
         
         @media (max-width: 1280px) { .toc-wrapper { display: none !important; } }
-        @media (max-width: 768px) { .article-container { padding: 30px 20px; } }
+        @media (max-width: 768px) { 
+            .article-container { padding: 30px 20px; } 
+            /* 手机端防标题和按钮过度拥挤 */
+            #md-content h1 { flex-direction: column; gap: 8px; align-items: flex-start; }
+            .title-lang-btn { margin-top: 0; }
+        }
 
         .footer {
             margin-top: 80px;
@@ -328,7 +367,7 @@
 <body>
 
     <div class="nav-top">
-        <a href="./index.html" class="back-link">← Back to Blogs</a>
+        <a href="./index.html" class="back-link" id="back-btn">← Back to Blogs</a>
         <div class="author-info">
             by Fiona Gao | 
             <span class="email-copy" onclick="copyEmail(this)">
@@ -349,14 +388,38 @@
     </div>
 
     <div class="footer">
-        <div class="footer-line">
+        <!-- 🔥 新增：直接物理翻译写死两个版权 div，通过 display 切换 -->
+        <div class="footer-line" id="footer-en" style="display: block;">
             © 2026 Fiona Gao. All Rights Reserved.<br>
             LEGAL DISCLAIMER: All content is original. Unauthorized reproduction or commercial use is strictly prohibited.
+        </div>
+        <div class="footer-line" id="footer-zh" style="display: none;">
+            © 2026 Fiona Gao. 原创文章，保留所有权利。<br>
+            法律声明: 本站皆为原创内容。未经书面许可，严禁任何形式的未经授权转载或商业使用。
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.21.2/tocbot.min.js"></script>
     <script>
+        // === 点击语言切换的跳转逻辑 ===
+        function switchArticleLang(targetLang) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileName = urlParams.get('file');
+            if (!fileName) return;
+
+            let newFileName = fileName;
+            
+            if (targetLang === 'zh' && !fileName.endsWith('-zh')) {
+                newFileName = fileName.endsWith('-en') ? fileName.replace(/-en$/, '-zh') : fileName + '-zh';
+            } else if (targetLang === 'en' && !fileName.endsWith('-en')) {
+                newFileName = fileName.endsWith('-zh') ? fileName.replace(/-zh$/, '-en') : fileName + '-en';
+            }
+
+            if (newFileName !== fileName) {
+                window.location.href = `./post.html?file=${newFileName}`;
+            }
+        }
+
         function copyEmail(element) {
             const email = "koala.fiona.gao@gmail.com";
             const hint = document.getElementById('copy-hint');
@@ -379,6 +442,14 @@
                 return;
             }
 
+            // 获取当前语言状态
+            const isZh = fileName.endsWith('-zh');
+            document.getElementById('back-btn').textContent = isZh ? '← 返回主页' : '← Back to Blogs';
+            
+            // 🔥 根据语言切换底部版权的显示隐藏
+            document.getElementById('footer-en').style.display = isZh ? 'none' : 'block';
+            document.getElementById('footer-zh').style.display = isZh ? 'block' : 'none';
+
             try {
                 const response = await fetch(`./md/${fileName}.md`);
                 if (!response.ok) throw new Error('Network response was not ok');
@@ -388,8 +459,6 @@
                 // --- 1. 预处理 Obsidian 专属标记 ---
                 mdText = mdText.replace(/==(.*?)==/g, '<mark>$1</mark>');
                 
-                // 【已彻底移除导致全屏反选崩溃的强制加粗正则】
-
                 mdText = mdText.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
                     let alias = p1;
                     let link = p1;
@@ -403,12 +472,31 @@
 
                 // --- 2. 基础 Markdown 渲染 ---
                 const tempDiv = document.createElement('div');
-                
-                // 【修复：添加 breaks: true 参数，开启同 Obsidian 一致的自然换行解析】
                 tempDiv.innerHTML = marked.parse(mdText, { breaks: true });
                 
                 const h1 = tempDiv.querySelector('h1');
-                if(h1) document.title = h1.innerText + " | Fiona Gao";
+                if(h1) {
+                    document.title = h1.innerText + " | Fiona Gao";
+                    
+                    // 🔥 核心增量：将优美的翻译图标直接注入到 H1 标题区域的右侧
+                    const langBtn = document.createElement('button');
+                    langBtn.className = 'title-lang-btn';
+                    
+                    // 标准 Material 风格的 "文A" 翻译图标 SVG
+                    const svgIcon = `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="margin-right: 6px; opacity: 0.8;"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>`;
+                    
+                    if (isZh) {
+                        // 当前是中文版，按钮显示切换到英文
+                        langBtn.innerHTML = svgIcon + '<span>English</span>';
+                        langBtn.onclick = () => switchArticleLang('en');
+                    } else {
+                        // 当前是英文版，按钮显示切换到中文
+                        langBtn.innerHTML = svgIcon + '<span>中文</span>';
+                        langBtn.onclick = () => switchArticleLang('zh');
+                    }
+                    
+                    h1.appendChild(langBtn);
+                }
 
                 // --- 3. 后置处理：给标题加 ID (用于目录跳转) ---
                 tempDiv.querySelectorAll('h1, h2, h3').forEach((h, index) => {
@@ -433,8 +521,7 @@
                     
                     const firstHtml = firstChild.innerHTML;
                     
-                    // 仅精准提取起头的 [!TYPE] 与标题，不再滥杀无辜
-                    const match = firstHtml.match(/^\[!([a-zA-Z]+)\](.*?)(?:<br>|\n|$)/i);
+                    const match = firstHtml.match(/^\s*(?:<[^>]+>)*\[!([a-zA-Z]+)\](?:<\/[^>]+>)*(.*?)(?:<br>|\n|$)/i);
 
                     if (match) {
                         const type = match[1].toLowerCase();
@@ -443,7 +530,6 @@
                             title = type.charAt(0).toUpperCase() + type.slice(1);
                         }
 
-                        // 精准切除头部标签，保留子元素里所有原本的加粗、斜体等排版
                         firstChild.innerHTML = firstHtml.substring(match[0].length).trim();
                         if (firstChild.innerHTML === '') {
                             firstChild.remove();
