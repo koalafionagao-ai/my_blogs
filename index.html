@@ -74,15 +74,18 @@ white-space: nowrap;
 .lang-btn { background: transparent; border: none; padding: 8px 20px; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; border-radius: 26px; transition: all 0.3s ease; font-weight: 500; }
 .lang-btn.active { background: var(--card-bg); color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-/* 增量修改：稍微拓宽容器以容纳第三栏 */
+/* 布局容器 */
 .layout-container { display: flex; width: 100%; max-width: 1200px; gap: 40px; align-items: flex-start; }
 
-/* 侧边栏 */
+/* 左侧边栏 */
 .sidebar { width: 220px; position: sticky; top: 40px; flex-shrink: 0; }
 .nav-menu { display: none; flex-direction: column; gap: 8px; }
 .nav-menu.active { display: flex; }
 .nav-link { text-decoration: none; color: var(--text-muted); font-size: 0.95rem; padding: 10px 16px; border-radius: 8px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
 .nav-link:hover { background-color: var(--nav-hover); color: var(--text-main); }
+
+/* 移动端专属 Tab，PC端隐藏 */
+.mobile-tab { display: none; }
 
 /* 主内容区 */
 .main-content { flex-grow: 1; min-width: 0; max-width: 650px;}
@@ -105,9 +108,56 @@ white-space: nowrap;
 .arrow { font-size: 1.2rem; color: var(--accent-color); margin-left: 20px; transition: transform 0.3s ease; }
 .blog-card:hover .arrow { transform: translateX(4px); color: var(--text-main); }
 
-/* === 增量代码：右侧时间线板块 CSS === */
+/* === 右侧时间线板块 CSS === */
 .timeline-sidebar { width: 240px; position: sticky; top: 40px; flex-shrink: 0; }
 .timeline-header { font-size: 1.1rem; color: var(--text-main); margin: 0 0 16px 0; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+/* === AI Daily 专属导流卡片 === */
+.radar-hero-card {
+    margin-bottom: 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+.radar-hero-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    text-decoration: none;
+    color: var(--text-main);
+}
+.radar-hero-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.03);
+    background: var(--nav-hover); 
+}
+.radar-hero-content h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.radar-hero-content p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.radar-hero-card .external-arrow {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.radar-hero-card:hover .external-arrow {
+    transform: translate(2px, -2px);
+    color: var(--text-main);
+}
+
 .month-group { margin-bottom: 10px; }
 .month-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); background: var(--card-bg); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; user-select: none; }
 .month-title:hover { border-color: var(--accent-color); }
@@ -147,8 +197,8 @@ line-height: 1.4;
 .sidebar { width: 100%; position: sticky; top: 0; background-color: var(--bg-color); z-index: 100; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
 .nav-menu.active { flex-direction: row; overflow-x: auto; white-space: nowrap; }
 .nav-link { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; }
+.nav-menu .mobile-tab { display: flex; } /* 移动端显示 Radar Tab */
 .anchor-section { scroll-margin-top: 80px; }
-/* 手机端适配时间线 */
 .main-content { max-width: 100%; }
 .timeline-sidebar { width: 100%; position: static; margin-top: 20px; }
 }
@@ -181,12 +231,12 @@ koala.fiona.gao@gmail.com
 <a href="#en-ai-in-action" class="nav-link">🤖 AI in Action</a>
 <a href="#en-ai-insights" class="nav-link">💡 AI Insights</a>
 <a href="#en-case-studies" class="nav-link">📂 Case Studies</a>
-</nav>
+<a href="#radar-section" class="nav-link mobile-tab">📡 AI Radar</a> </nav>
 <nav id="nav-zh" class="nav-menu">
 <a href="#zh-ai-in-action" class="nav-link">🤖 AI 实战</a>
 <a href="#zh-ai-insights" class="nav-link">💡 AI 观察</a>
 <a href="#zh-case-studies" class="nav-link">📂 案例分析</a>
-</nav>
+<a href="#radar-section" class="nav-link mobile-tab">📡 AI 简报</a> </nav>
 </aside>
 
 <main class="main-content">
@@ -266,10 +316,6 @@ koala.fiona.gao@gmail.com
 <div class="arrow">→</div>
 </a>
 </div>
-   
-
-
-    
 </section>
 
 <section id="zh-ai-insights" class="anchor-section">
@@ -315,10 +361,20 @@ koala.fiona.gao@gmail.com
 
 </main>
 
-<aside class="timeline-sidebar">
+<aside id="radar-section" class="timeline-sidebar anchor-section">
     <div class="timeline-header" id="timeline-title">📡 AI Radar</div>
     
     <div id="timeline-en" class="content-lang-section active">
+        <div class="radar-hero-card">
+            <a href="https://koalafionagao-ai.github.io/cursor/ai_daily/" target="_blank" rel="noopener noreferrer" class="radar-hero-link">
+                <div class="radar-hero-content">
+                    <h4>⚡ Live AI Daily</h4>
+                    <p>Real-time source aggregator</p>
+                </div>
+                <div class="external-arrow">↗</div>
+            </a>
+        </div>
+
         <div class="month-group">
             <div class="month-title" onclick="toggleTimeline(this)">
                 <span>2026 / May</span>
@@ -355,6 +411,16 @@ koala.fiona.gao@gmail.com
     </div>
 
     <div id="timeline-zh" class="content-lang-section">
+        <div class="radar-hero-card">
+            <a href="https://koalafionagao-ai.github.io/cursor/ai_daily/" target="_blank" rel="noopener noreferrer" class="radar-hero-link">
+                <div class="radar-hero-content">
+                    <h4>⚡ 全网 AI 速递</h4>
+                    <p>一手资讯与模型动态实时聚合</p>
+                </div>
+                <div class="external-arrow">↗</div>
+            </a>
+        </div>
+
         <div class="month-group">
             <div class="month-title" onclick="toggleTimeline(this)">
                 <span>2026 / 5月</span>
@@ -404,14 +470,12 @@ LEGAL DISCLAIMER: All content is original. Unauthorized reproduction or commerci
 </div>
 
 <script>
-// 增量代码：时间线手风琴折叠交互逻辑
 function toggleTimeline(element) {
     const content = element.nextElementSibling;
     element.classList.toggle('open');
     content.classList.toggle('open');
 }
 
-// 邮箱复制功能
 function copyEmail(element) {
 const email = "koala.fiona.gao@gmail.com";
 const hint = document.getElementById('copy-hint');
@@ -426,7 +490,6 @@ element.style.color = '';
 });
 }
 
-// 语言切换功能
 function switchLang(lang) {
 const contentEn = document.getElementById('content-en');
 const contentZh = document.getElementById('content-zh');
@@ -438,9 +501,9 @@ const pageTitle = document.getElementById('page-title');
 const pageDesc = document.getElementById('page-desc');
 const footerText = document.getElementById('footer-text');
 const copyHint = document.getElementById('copy-hint');
-const timelineTitle = document.getElementById('timeline-title'); // 增量代码：同步翻译时间线标题
-const timelineEn = document.getElementById('timeline-en'); // 新增：英文时间线容器
-const timelineZh = document.getElementById('timeline-zh'); // 新增：中文时间线容器
+const timelineTitle = document.getElementById('timeline-title');
+const timelineEn = document.getElementById('timeline-en'); 
+const timelineZh = document.getElementById('timeline-zh'); 
 
 if (lang === 'zh') {
 contentEn.classList.remove('active');
@@ -449,13 +512,13 @@ navEn.classList.remove('active');
 navZh.classList.add('active');
 btnEn.classList.remove('active');
 btnZh.classList.add('active');
-timelineEn.classList.remove('active'); // 新增：隐藏英文时间线
-timelineZh.classList.add('active');    // 新增：显示中文时间线
+timelineEn.classList.remove('active'); 
+timelineZh.classList.add('active');    
 
 pageTitle.textContent = "博客与思考";
 pageDesc.textContent = "记录我在 AI、金融科技与产品管理领域的探索与复盘。";
 copyHint.textContent = "已复制！";
-timelineTitle.textContent = "📡 AI 简报"; // 增量代码
+timelineTitle.textContent = "📡 AI 简报"; 
 
 footerText.innerHTML = `
 © 2026 Fiona Gao. 原创文章，保留所有权利。
@@ -470,13 +533,13 @@ navZh.classList.remove('active');
 navEn.classList.add('active');
 btnZh.classList.remove('active');
 btnEn.classList.add('active');
-timelineZh.classList.remove('active'); // 新增：隐藏中文时间线
-timelineEn.classList.add('active');    // 新增：显示英文时间线
+timelineZh.classList.remove('active'); 
+timelineEn.classList.add('active');    
 
 pageTitle.textContent = "My Blogs & Thoughts";
 pageDesc.textContent = "Documenting my journey and insights in AI, Fintech, and Product Management.";
 copyHint.textContent = "Copied!";
-timelineTitle.textContent = "📡 AI Radar"; // 增量代码
+timelineTitle.textContent = "📡 AI Radar"; 
 
 footerText.innerHTML = `
 © 2026 Fiona Gao. All Rights Reserved.
